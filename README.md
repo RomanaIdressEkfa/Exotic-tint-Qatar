@@ -30,3 +30,9 @@ Upload the contents of **`dist/`** to the web root. English lives at `/`, Arabic
 URLs keep the old WordPress structure (`/about/`, `/service/<slug>/`, `/contact/`) so existing Google rankings carry over.
 Old URLs `/reviews/`, `/blogs/` and the 3 blog-post URLs are rebuilt at the same addresses; `/commercial-window-tinting/` redirects to the commercial service page.
 
+
+## GitHub Pages
+
+Every push to `main` builds the site and publishes `dist/` via `.github/workflows/deploy.yml`
+(Settings → Pages → Source: **GitHub Actions**). The build uses `BASE=/<repo-name>/` so links work at
+`https://<user>.github.io/<repo-name>/`. For a custom domain or local dev, build without `BASE`.

@@ -110,7 +110,8 @@
         tabs.forEach(function (x) { x.setAttribute('aria-selected', String(x === tab)); });
         sceneImg.style.opacity = '0';
         setTimeout(function () {
-          sceneImg.src = '/assets/img/' + tab.getAttribute('data-scene') + '.webp';
+          // Keep whatever base path the page was built with (works on GitHub Pages sub-paths too)
+          sceneImg.src = sceneImg.getAttribute('src').replace(/[^/]+\.webp$/, tab.getAttribute('data-scene') + '.webp');
           sceneImg.onload = function () { sceneImg.style.opacity = '1'; };
         }, 200);
       });

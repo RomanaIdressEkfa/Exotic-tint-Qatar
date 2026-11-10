@@ -1674,8 +1674,14 @@ ${quoteSection()}`;
 
 /* ------------------------------------------------------------------ build */
 const renderers = { home: pageHome, about: pageAbout, services: pageServices, service: pageService, contact: pageContact, reviews: pageReviews, blogs: pageBlogs, post: pagePost };
+// Site base path: "/" for a custom domain or local dev, "/Exotic-tint-Qatar/" for GitHub Pages.
+// Set with the BASE environment variable at build time.
+const BASE = ('/' + (process.env.BASE || '').replace(/^\/+|\/+$/g, '') + '/').replace('//', '/');
 function write(file, html) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
+  if (BASE !== '/' && file.endsWith('.html')) {
+    html = html.replace(/(href|src|action)="\/(?!\/)/g, `$1="${BASE}`).replace(/url=\/(?!\/)/g, `url=${BASE}`);
+  }
   fs.writeFileSync(file, html);
 }
 
