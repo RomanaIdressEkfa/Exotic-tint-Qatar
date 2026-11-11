@@ -446,9 +446,3 @@ html[lang='ar'] .xp-vtitle { transform: none; }
   .sv-block:first-child { border-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .sv-sheen, .sv-beads span { animation: none !important; transform: none !important; opacity: 1 !important; } }
-
-/* ---------- Clean homepage: pinned scenes ---------- */
-[data-sec-card]:not(:first-child), [data-sec-text]:not(:first-child) { visibility: hidden; }
-@media (min-width: 1024px) {
-  .browse-tile { position: absolute; left: var(--x); top: var(--y); width: var(--w); }
-}

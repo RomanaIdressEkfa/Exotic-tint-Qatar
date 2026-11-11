@@ -1379,157 +1379,6 @@ function quoteSection() {
 </section>`;
 }
 
-/* ============================================================
-   Clean homepage sections (one idea per section)
-   ============================================================ */
-
-/* Navy stats band with a Three.js particle wave behind it */
-function statsBand() {
-  const stat = (n, suf, label) => `
-      <div class="text-center">
-        <p class="font-head text-[2.6rem] font-extrabold leading-none text-white sm:text-6xl" dir="ltr"><span data-count="${n}">${n}</span><span class="text-gold-400">${suf}</span></p>
-        <p class="mt-3 text-[11px] font-bold uppercase tracking-[0.22em] text-white/55">${label}</p>
-      </div>`;
-  return `
-<section class="px-2.5 pt-16 sm:px-3 lg:pt-24">
-  <div class="relative overflow-hidden rounded-[28px] bg-ink">
-    <canvas class="pointer-events-none absolute inset-0 h-full w-full" data-waves aria-hidden="true"></canvas>
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/40 via-transparent to-ink/80"></div>
-    <div class="container-site relative py-16 text-center lg:py-20" data-assemble>
-      <h2 class="font-head text-[2.1rem] font-extrabold leading-tight text-white sm:text-5xl" data-a="up">${tr('Always <span class="text-grad">cool</span>. Always protected.', 'برودة <span class="text-grad">دائمة</span>. حماية دائمة.')}</h2>
-      <p class="mx-auto mt-3 max-w-xl text-white/60" data-a="up">${tr('Qatar’s window film specialists — on-site, 7 days a week.', 'مختصو أفلام النوافذ في قطر — في موقعك، ٧ أيام في الأسبوع.')}</p>
-      <div class="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-y-10 lg:grid-cols-4" data-a="up">
-        ${stat(C.services.length, '', tr('Specialist services', 'خدمات متخصصة'))}
-        ${stat(C.areas.length, '+', tr('Areas covered', 'مناطق نغطيها'))}
-        ${stat(99, '%', tr('UV blocked', 'حجب الأشعة'))}
-        ${stat(7, '/7', tr('Days open', 'أيام العمل'))}
-      </div>
-    </div>
-  </div>
-</section>`;
-}
-
-/* "Film for every space" — pinned on desktop; photo cards stack as the text changes */
-function sectors() {
-  const items = [
-    { s: C.services[0], img: 'automotive', title: tr('Cars', 'السيارات') },
-    { s: C.services[1], img: 'residential', title: tr('Villas & homes', 'الفلل والمنازل') },
-    { s: C.services[2], img: 'commercial', title: tr('Offices & retail', 'المكاتب والمحلات') },
-    { s: C.services[4], img: 'marble', title: tr('Glass & surfaces', 'الزجاج والأسطح'), link: href('service/'), text: tr('Custom frosted designs, invisible marble protection and spill-proof nano coating for fabrics.', 'تصاميم مصنفرة مخصصة وحماية غير مرئية للرخام وطلاء نانو مقاوم للانسكاب للأقمشة.') },
-  ];
-  const link = (it) => it.link || href('service/' + it.s.slug + '/');
-  const text = (it) => it.text || t(it.s.summary);
-  const card = (it, i) => `
-          <div class="sec-text ${i ? 'absolute inset-x-0 top-0' : 'relative'}" data-sec-text>
-            <div class="rounded-[22px] border border-line bg-white p-6 shadow-card sm:p-7">
-              <p class="flex items-center gap-2 font-head text-xl font-bold text-ink"><span class="h-2 w-2 rounded-full bg-gold-500"></span>${it.title}</p>
-              <p class="mt-3 leading-relaxed text-muted">${text(it)}</p>
-              <a href="${link(it)}" class="mt-5 inline-flex items-center gap-1.5 text-sm font-extrabold uppercase tracking-wider text-gold-700 hover:gap-2.5">${tr('Explore', 'استكشف')} ${arrow('h-4 w-4')}</a>
-            </div>
-          </div>`;
-  return `
-<section class="relative" data-sectors>
-  <div class="container-site grid items-center gap-10 py-20 lg:min-h-screen lg:grid-cols-12 lg:py-0">
-    <div class="lg:col-span-5">
-      <h2 class="font-head text-[2.3rem] font-extrabold leading-[1.05] text-ink sm:text-[3.4rem]">${tr('Film for', 'أفلام')}<br><span class="text-grad">${tr('every space', 'لكل مساحة')}</span></h2>
-      <span class="mt-5 block h-1 w-16 rounded-full bg-grad"></span>
-      <div class="relative mt-10 hidden lg:block">${items.map(card).join('')}</div>
-      <div class="mt-8 hidden gap-2 lg:flex">${items.map((_, i) => `<span class="h-1.5 w-8 rounded-full bg-line transition-all duration-500" data-sec-dot></span>`).join('')}</div>
-    </div>
-    <div class="relative hidden lg:col-span-7 lg:block">
-      <div class="relative mx-auto aspect-[5/4] w-full max-w-[640px]">
-        ${items
-          .map(
-            (it, i) => `<a href="${link(it)}" class="sec-card absolute inset-0 overflow-hidden rounded-[28px] border-[6px] border-white bg-white shadow-float" style="z-index:${i + 1}" data-sec-card>
-          <img src="/assets/img/${it.img}.webp" alt="${esc(it.title)}" class="h-full w-full object-cover" decoding="async">
-        </a>`
-          )
-          .join('')}
-      </div>
-    </div>
-    <!-- mobile: simple list -->
-    <div class="grid gap-5 sm:grid-cols-2 lg:hidden">
-      ${items
-        .map(
-          (it) => `<a href="${link(it)}" class="overflow-hidden rounded-[24px] border border-line bg-white shadow-card">
-        <img src="/assets/img/${it.img}.webp" alt="${esc(it.title)}" class="aspect-[16/10] w-full object-cover" loading="lazy">
-        <div class="p-5"><p class="font-head text-lg font-bold text-ink">${it.title}</p><p class="mt-1 line-clamp-2 text-sm text-muted">${text(it)}</p></div>
-      </a>`
-        )
-        .join('')}
-    </div>
-  </div>
-</section>`;
-}
-
-/* "Protect what you love" — big centred words, service photos burst out around them on scroll */
-function browse() {
-  // [service index, left%, top%, width%] final positions around the centre
-  const spots = [
-    [0, 3, 7, 22], [1, 11, 40, 17], [2, 3, 70, 20],
-    [3, 75, 6, 22], [4, 81, 40, 16], [5, 76, 70, 21],
-  ];
-  return `
-<section class="relative" data-browse>
-  <div class="relative h-auto lg:h-screen">
-    <div class="relative z-10 flex flex-col items-center justify-center px-4 pt-20 text-center lg:absolute lg:inset-0 lg:pt-0">
-      <p class="font-head text-[2.8rem] font-extrabold leading-[0.95] text-ink sm:text-7xl lg:text-[6.5rem]" data-browse-title>
-        ${tr('Protect', 'احمِ')}<br><span class="text-grad">${tr('what you', 'ما')}</span><br>${tr('love', 'تحب')}
-      </p>
-      <a href="${href('service/')}" class="btn btn-dark mt-8">${t(C.ui.nav.allServices)} ${arrow()}</a>
-    </div>
-    <div class="grid grid-cols-2 gap-3 px-4 pb-20 pt-10 lg:block lg:p-0">
-      ${spots
-        .map(([si, x, y, w]) => {
-          const s = C.services[si];
-          return `<a href="${href('service/' + s.slug + '/')}" class="browse-tile group relative block overflow-hidden rounded-[18px] shadow-float lg:absolute" style="--x:${x}%;--y:${y}%;--w:${w}%" data-browse-tile>
-          <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
-          <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/75 via-transparent to-transparent"></span>
-          <span class="absolute bottom-3 start-3 end-3 text-xs font-extrabold uppercase tracking-wider text-white sm:text-sm">${t(s.short)}</span>
-        </a>`;
-        })
-        .join('')}
-    </div>
-  </div>
-</section>`;
-}
-
-/* Dark photo call-to-action band */
-function ctaPhoto() {
-  return `
-<section class="px-2.5 sm:px-3">
-  <div class="relative overflow-hidden rounded-[28px] bg-ink" data-assemble>
-    <img src="/assets/img/residential.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-50" loading="lazy" data-parallax-img>
-    <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/20 rtl:bg-gradient-to-l"></div>
-    <div class="container-site relative py-20 lg:py-28">
-      <p class="text-sm font-semibold text-white/70" data-a="up">${tr('Summer is coming.', 'الصيف قادم.')}</p>
-      <h2 class="mt-3 max-w-2xl font-head text-[2.4rem] font-extrabold leading-[1.05] text-white sm:text-6xl" data-a="up">${tr('Beat the heat <span class="text-grad">before it beats you.</span>', 'تغلّب على الحرارة <span class="text-grad">قبل أن تتغلّب عليك.</span>')}</h2>
-      <div class="mt-9 flex flex-wrap gap-3" data-a="up">
-        <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
-        <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-glass">${waIcon('h-4 w-4')} WhatsApp</a>
-      </div>
-    </div>
-  </div>
-</section>`;
-}
-
-/* Latest articles — three simple cards */
-function latest() {
-  return `
-<section class="py-20 lg:py-28" data-assemble>
-  <div class="container-site">
-    <div class="flex items-end justify-between gap-6">
-      <div data-a="left">
-        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-gold-700">${tr('Insights &amp; guides', 'مقالات وأدلة')}</p>
-        <h2 class="mt-2 font-head text-[2rem] font-extrabold text-ink sm:text-[2.6rem]">${tr('Latest <span class="text-grad">updates</span>', 'أحدث <span class="text-grad">المقالات</span>')}</h2>
-      </div>
-      <a href="${href('blogs/')}" class="hidden items-center gap-1.5 text-sm font-extrabold uppercase tracking-wider text-ink hover:text-gold-700 sm:inline-flex">${tr('View all', 'عرض الكل')} ${arrow('h-4 w-4')}</a>
-    </div>
-    <div class="mt-10 grid gap-5 md:grid-cols-3">${POSTS.map((p, i) => `<div data-a="up">${postCard(p, i)}</div>`).join('')}</div>
-  </div>
-</section>`;
-}
-
 function pageHero({ chip, title, text, crumbs = [], image, alt, chips = {} }) {
   return `
 <section class="px-2.5 sm:px-3">
@@ -1588,15 +1437,17 @@ function pageHome(page) {
       },
     },
     hero() +
-      statsBand() +
-      sectors() +
-      tintStudio() +
+      whyUs() +
+      servicesSlider() +
       howItWorks() +
-      browse() +
       '<div class="h-20 lg:h-28"></div>' +
+      tintStudio() +
+      showcase() +
+      bookFast() +
+      gallery() +
       testimonials() +
-      ctaPhoto() +
-      latest()
+      faqSection(C.homeFaq) +
+      quoteSection()
   );
 }
 
@@ -1639,9 +1490,17 @@ ${pageHero({
   </div>
 </section>
 ${promiseSection()}
+${statsStrip()}
+<div class="-mt-20 lg:-mt-28"></div>
+${whyUs()}
 ${processTimeline()}
-${ctaPhoto()}
-<div class="h-20 lg:h-28"></div>`;
+${bookFast()}
+${gallery()}
+${areasSection()}
+${testimonials()}
+${reviewUs()}
+${ctaBanner()}
+${quoteSection()}`;
   return layout(
     page,
     {
@@ -1738,8 +1597,8 @@ ${hero}
     <div class="lg:col-span-6">${S.map(block).join('')}</div>
   </div>
 </section>
-${ctaPhoto()}
-<div class="h-20 lg:h-28"></div>`;
+${faqSection(C.homeFaq)}
+${quoteSection()}`;
   return layout(
     page,
     {
@@ -1804,6 +1663,11 @@ ${pageHero({
     </div>
   </div>
 </section>
+${processTimeline()}
+${howItWorks()}
+<div class="h-20 lg:h-28"></div>
+${s.slug === 'automotive-window-tinting' || s.slug.includes('residential') || s.slug.includes('commercial') ? filmTech() : ''}
+${testimonials()}
 ${faqSection(s.faq, tr(`${t(s.title)} <span class="text-grad">FAQ</span>`, `أسئلة حول <span class="text-grad">${t(s.title)}</span>`))}
 <section class="pb-20 lg:pb-28">
   <div class="container-site">
@@ -1817,8 +1681,9 @@ ${faqSection(s.faq, tr(`${t(s.title)} <span class="text-grad">FAQ</span>`, `أس
     <div class="no-scrollbar -mx-4 mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 pt-2" data-slider>${related.map((r) => serviceCard(r)).join('')}</div>
   </div>
 </section>
-${ctaPhoto()}
-<div class="h-20 lg:h-28"></div>`;
+${areasSection()}
+${ctaBanner()}
+${quoteSection()}`;
   return layout(
     page,
     {
@@ -1877,6 +1742,9 @@ ${quoteSection()}
   </div>
 </section>
 ${mapSection()}
+${bookFast()}
+${areasSection()}
+${reviewUs()}
 ${faqSection(C.homeFaq)}`;
   return layout(
     page,
@@ -1922,8 +1790,10 @@ ${pageHero({
   </div>
 </section>
 ${reviewUs()}
-${ctaPhoto()}
-<div class="h-20 lg:h-28"></div>`;
+${statsStrip()}
+${gallery()}
+${ctaBanner()}
+${quoteSection()}`;
   return layout(page, { title: tr('Client Reviews — Exotic Tint Qatar', 'آراء العملاء — إكزوتك تينت قطر'), description: tr('Read what drivers, homeowners and businesses in Qatar say about Exotic Tint Qatar.', 'اقرأ آراء السائقين وأصحاب المنازل والشركات في قطر عن إكزوتك تينت قطر.'), image: 'residential' }, body);
 }
 
@@ -1951,14 +1821,15 @@ ${pageHero({
   alt: tr('Window with desert view', 'نافذة تطل على الصحراء'),
   chips: chipHeat(),
 })}
-<section class="py-20 lg:py-28">
+${blogSection()}
+<section class="pb-20 lg:pb-28">
   <div class="container-site">
     ${sectionHead({ eyebrow: tr('All articles', 'كل المقالات'), title: tr('Latest <span class="text-grad">posts</span>', 'أحدث <span class="text-grad">المقالات</span>') })}
     <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">${POSTS.map(postCard).join('')}</div>
   </div>
 </section>
-${ctaPhoto()}
-<div class="h-20 lg:h-28"></div>`;
+${ctaBanner()}
+${quoteSection()}`;
   return layout(page, { title: tr('Blog — Window Tint & Protection Guides | Exotic Tint Qatar', 'المدونة — أدلة التظليل والحماية | إكزوتك تينت قطر'), description: tr('Guides on window tinting, nano ceramic film and marble protection in Qatar.', 'أدلة عن تظليل النوافذ وأفلام النانو سيراميك وحماية الرخام في قطر.'), image: 'blog-ceramic' }, body);
 }
 
@@ -2037,8 +1908,7 @@ function pagePost(page) {
     <div class="mt-10 grid gap-5 md:grid-cols-2">${others.map(postCard).join('')}</div>
   </div>
 </section>
-${ctaPhoto()}
-<div class="h-20 lg:h-28"></div>`;
+${quoteSection()}`;
   return layout(
     page,
     {
@@ -2058,11 +1928,6 @@ const renderers = { home: pageHome, about: pageAbout, services: pageServices, se
 const BASE = ('/' + (process.env.BASE || '').replace(/^\/+|\/+$/g, '') + '/').replace('//', '/');
 function write(file, html) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  // Pages without the quote form send "#quote" buttons to the contact page's form
-  if (file.endsWith('.html') && !html.includes('id="quote"')) {
-    const contact = (html.includes('<html lang="ar"') ? '/ar/' : '/') + 'contact/#quote';
-    html = html.split('href="#quote"').join(`href="${contact}"`);
-  }
   if (BASE !== '/' && file.endsWith('.html')) {
     html = html.replace(/(href|src|action)="\/(?!\/)/g, `$1="${BASE}`).replace(/url=\/(?!\/)/g, `url=${BASE}`);
   }
