@@ -417,3 +417,116 @@
   }
   play(0);
 })();
+
+/* Tint savings calculator: monthly spend × cooling share × AC-load reduction */
+(function () {
+  var box = document.querySelector('[data-sav]');
+  if (!box) return;
+  var films = JSON.parse(box.dataset.films), modes = JSON.parse(box.dataset.modes);
+  var q = function (s) { return box.querySelector(s); };
+  var range = q('[data-sav-range]'), note = q('[data-sav-note]');
+  var ar = document.documentElement.lang === 'ar';
+  var fmt = function (n) { return Math.round(n).toLocaleString(ar ? 'ar-EG' : 'en-US'); };
+  var film = 2, mode = 'car';
+  function calc() {
+    var m = modes[mode], f = films[film], spend = Number(range.value);
+    var cool = spend * m.share / 100, month = cool * f.ac / 100;
+    range.style.setProperty('--fill', ((spend - m.min) / (m.max - m.min)) * 100 + '%');
+    q('[data-sav-spend]').textContent = fmt(spend);
+    q('[data-sav-cool]').textContent = fmt(cool);
+    q('[data-sav-month]').textContent = fmt(month);
+    q('[data-sav-year]').textContent = fmt(month * 12);
+    q('[data-sav-ac2]').textContent = fmt(f.ac);
+  }
+  function pickFilm(i) {
+    film = i;
+    var f = films[i];
+    box.querySelectorAll('[data-sav-film]').forEach(function (b, n) { b.setAttribute('aria-selected', String(n === i)); });
+    q('[data-sav-heat]').textContent = f.heatTxt;
+    q('[data-sav-uv]').textContent = f.uv;
+    q('[data-sav-ac]').textContent = fmt(f.ac);
+    q('[data-sav-heatbar]').style.width = f.heat + '%';
+    q('[data-sav-uvbar]').style.width = f.uvN + '%';
+    q('[data-sav-acbar]').style.width = f.ac * 2 + '%';
+    calc();
+  }
+  function pickMode(md) {
+    mode = md;
+    var m = modes[md];
+    box.querySelectorAll('[data-sav-mode]').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.savMode === md)); });
+    range.min = m.min; range.max = m.max; range.step = m.step; range.value = m.val;
+    q('[data-sav-label]').textContent = m.label;
+    note.textContent = note.dataset[md];
+    calc();
+  }
+  box.querySelectorAll('[data-sav-film]').forEach(function (b, i) { b.addEventListener('click', function () { pickFilm(i); }); });
+  box.querySelectorAll('[data-sav-mode]').forEach(function (b) { b.addEventListener('click', function () { pickMode(b.dataset.savMode); }); });
+  range.addEventListener('input', calc);
+  calc();
+})();
+
+/* Car explainer: scroll steps drive the sticky diagram */
+(function () {
+  var ex = document.querySelector('[data-ex]');
+  if (!ex) return;
+  var steps = Array.prototype.slice.call(document.querySelectorAll('[data-ex-step]'));
+  var pips = Array.prototype.slice.call(ex.querySelectorAll('[data-ex-pip]'));
+  var tEl = ex.querySelector('[data-ex-temp]');
+  var ar = document.documentElement.lang === 'ar';
+  var cur = 0, tNow = 38, raf = 0;
+  var fmt = function (n) { return Math.round(n).toLocaleString(ar ? 'ar-EG' : 'en-US'); };
+  function go(n) {
+    if (n === cur) return;
+    cur = n;
+    var el = steps[n - 1];
+    ex.setAttribute('data-step', n);
+    steps.forEach(function (s) { s.classList.toggle('is-active', s === el); });
+    pips.forEach(function (p) { p.classList.toggle('is-on', Number(p.dataset.exPip) === n); });
+    var from = tNow, to = Number(el.dataset.temp), t0 = performance.now();
+    cancelAnimationFrame(raf);
+    (function f(now) {
+      var p = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - p, 3);
+      tNow = from + (to - from) * e; tEl.textContent = fmt(tNow);
+      if (p < 1) raf = requestAnimationFrame(f);
+    })(t0);
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) go(Number(e.target.dataset.exStep)); });
+    }, { rootMargin: window.innerWidth >= 1024 ? '-45% 0px -45% 0px' : '-60% 0px -25% 0px' });
+    steps.forEach(function (s) { io.observe(s); });
+  }
+  go(1);
+})();
+
+/* Car "how it works" stepper: auto-plays when visible, tabs to jump, pauses on hover */
+(function () {
+  var hw = document.querySelector('[data-hw]');
+  if (!hw) return;
+  var tabs = Array.prototype.slice.call(hw.querySelectorAll('[data-hw-tab]'));
+  var caps = Array.prototype.slice.call(hw.querySelectorAll('[data-hw-cap]'));
+  var temps = JSON.parse(hw.dataset.temps), tEl = hw.querySelector('[data-hw-temp]');
+  var ar = document.documentElement.lang === 'ar';
+  var started = false, DUR = 3600, idx = -1, timer = null, visible = false, paused = false, tNow = temps[0], raf = 0;
+  hw.style.setProperty('--hw-dur', DUR / 1000 + 's');
+  var fmt = function (n) { return Math.round(n).toLocaleString(ar ? 'ar-EG' : 'en-US') + '°C'; };
+  function go(i) {
+    idx = (i + tabs.length) % tabs.length;
+    hw.setAttribute('data-step', idx);
+    tabs.forEach(function (t, n) { t.setAttribute('aria-selected', String(n === idx)); var b = t.querySelector('.hw-bar'); b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; });
+    caps.forEach(function (c, n) { c.classList.toggle('is-on', n === idx); });
+    var from = tNow, to = temps[idx], t0 = performance.now();
+    cancelAnimationFrame(raf);
+    (function f(now) { var p = Math.min(1, (now - t0) / 1100), e = 1 - Math.pow(1 - p, 3); tNow = from + (to - from) * e; tEl.textContent = fmt(tNow); if (p < 1) raf = requestAnimationFrame(f); })(t0);
+  }
+  function loop() { clearInterval(timer); timer = setInterval(function () { if (visible && !paused) go(idx + 1); }, DUR); }
+  tabs.forEach(function (t, n) { t.addEventListener('click', function () { started = true; go(n); loop(); }); });
+  hw.addEventListener('mouseenter', function () { paused = true; hw.classList.add('is-paused'); });
+  hw.addEventListener('mouseleave', function () { paused = false; hw.classList.remove('is-paused'); });
+  new IntersectionObserver(function (es) {
+    visible = es[0].isIntersecting;
+    if (visible && !started) { started = true; go(0); loop(); }
+  }, { threshold: 0.3 }).observe(hw);
+  hw.setAttribute('data-step', '0');
+
+})();

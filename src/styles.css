@@ -446,3 +446,115 @@ html[lang='ar'] .xp-vtitle { transform: none; }
   .sv-block:first-child { border-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .sv-sheen, .sv-beads span { animation: none !important; transform: none !important; opacity: 1 !important; } }
+
+/* ---------- Automotive page ---------- */
+.car3d .car-card { opacity: 0; transform: translateY(12px); transition: opacity .6s ease .6s, transform .6s ease .6s; }
+.car3d.is-ready .car-card, .car3d.car-fallback .car-card { opacity: 1; transform: none; }
+.car3d.car-fallback canvas { display: none; }
+.car3d.car-fallback .car-fallback-img { display: block; }
+.car3d canvas { -webkit-mask-image: radial-gradient(ellipse 75% 72% at 50% 50%, #000 64%, transparent 100%); mask-image: radial-gradient(ellipse 75% 72% at 50% 50%, #000 64%, transparent 100%); }
+.shade { transition: flex-grow .7s cubic-bezier(.2,.8,.2,1); cursor: pointer; }
+.shade-more { opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s; }
+.shade-strip:not(:hover) .shade.is-on, .shade:hover, .shade:focus-visible { flex-grow: 3.2; }
+.shade-strip:not(:hover) .shade.is-on .shade-more, .shade:hover .shade-more, .shade:focus-visible .shade-more { opacity: 1; transform: none; transition-delay: .25s; }
+@media (max-width: 639px) {
+  .shade-strip { height: auto; flex-direction: column; }
+  .shade { min-height: 118px; flex: none; }
+  .shade-strip .shade.is-on, .shade:hover { flex-grow: 0; }
+  .shade-more { opacity: 1; transform: none; }
+}
+
+/* ---------- Car explainer diagram ---------- */
+.ex-stage text { font-family: Figtree, 'IBM Plex Sans Arabic', sans-serif; }
+.ex-small { font-size: 13px; font-weight: 700; fill: #5b6b82; }
+.ex-temp { font-family: Urbanist, 'IBM Plex Sans Arabic', sans-serif !important; font-size: 30px; font-weight: 800; fill: #12233d; }
+.ex-tag { font-size: 11.5px; paint-order: stroke; stroke: #fffaf2; stroke-width: 4px; font-weight: 800; fill: #12233d; opacity: 0; transition: opacity .5s; }
+.ray-label { font-size: 13px; font-weight: 800; opacity: 0; transition: opacity .5s; }
+.ray path, .ray-bounce { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 14 10; animation: ex-flow 1s linear infinite; transition: opacity .6s, stroke-width .6s; }
+@keyframes ex-flow { to { stroke-dashoffset: -24; } }
+.ray-out, .ray-bounce, .ex-stop, .ex-hot, .ex-cool { opacity: 0; transition: opacity .7s; }
+.ex-film .ly { transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .5s; opacity: 0; }
+.ex-bar { fill: #9ca3af; transition: width .8s, fill .8s; }
+/* step 1: rays arrive */
+[data-ex] .ray-label { opacity: 1; }
+/* step 2: everything passes, cabin hot */
+[data-ex][data-step='2'] .ray-out { opacity: 1; }
+[data-ex][data-step='2'] .ex-hot { opacity: 1; }
+[data-ex][data-step='2'] .ex-bar, [data-ex][data-step='3'] .ex-bar { width: 56px; fill: #ef4444; }
+/* step 3: film layers pulled apart */
+[data-ex][data-step='3'] .ray path { opacity: .2; }
+[data-ex][data-step='3'] .ex-hot { opacity: .6; }
+[data-ex][data-step='3'] .ly { opacity: 1; }
+[data-ex][data-step='3'] .ly1 { transform: translate(26px, 0); }
+[data-ex][data-step='3'] .ly2 { transform: translate(70px, 0); }
+[data-ex][data-step='3'] .ly3 { transform: translate(114px, 0); }
+[data-ex][data-step='3'] .ly1 .ex-tag { opacity: 1; transform: translateY(0); }
+[data-ex][data-step='3'] .ly .ex-tag { opacity: 1; }
+[data-ex][data-step='3'] .ly2 .ex-tag { transform: translateY(20px); }
+[data-ex][data-step='3'] .ly3 .ex-tag { transform: translateY(40px); }
+/* steps 4–5: film on — heat bounces, UV stops, light passes */
+[data-ex][data-step='4'] .ly, [data-ex][data-step='5'] .ly { opacity: 1; }
+[data-ex][data-step='4'] .r-light .ray-out, [data-ex][data-step='5'] .r-light .ray-out { opacity: .7; stroke-width: 4; }
+[data-ex][data-step='4'] .r-heat .ray-out, [data-ex][data-step='5'] .r-heat .ray-out { opacity: .25; stroke-width: 2; }
+[data-ex][data-step='4'] .ray-bounce, [data-ex][data-step='5'] .ray-bounce { opacity: 1; }
+[data-ex][data-step='4'] .ex-stop, [data-ex][data-step='5'] .ex-stop { opacity: 1; }
+[data-ex][data-step='4'] .ex-cool, [data-ex][data-step='5'] .ex-cool { opacity: 1; }
+[data-ex][data-step='4'] .ex-bar, [data-ex][data-step='5'] .ex-bar { width: 26px; fill: #34d399; }
+[data-ex][data-step='5'] .ray path { opacity: .35; }
+.ex-pip.is-on { width: 2.5rem; background: #e9a63b; }
+.ex-step { opacity: .35; transition: opacity .5s; }
+.ex-step.is-active { opacity: 1; }
+@media (max-width: 1023px) { .ex-step { opacity: 1; border-top: 1px dashed var(--line); } .ex-step:first-child { border-top: 0; } }
+@media (prefers-reduced-motion: reduce) { .ray path, .ray-bounce { animation: none; } }
+
+/* ---------- Car "how it works" stepper ---------- */
+.hw-tab { color: var(--muted); transition: background .3s; }
+.hw-tab:hover { background: #fdfaf4; }
+.hw-tab[aria-selected='true'] { background: var(--tint); }
+.hw-tab + .hw-tab { border-inline-start: 1px solid var(--line); }
+.hw-bar { width: 0; }
+.hw-tab[aria-selected='true'] .hw-bar { animation: xp-progress var(--hw-dur, 5.5s) linear forwards; }
+.hw.is-paused .hw-tab[aria-selected='true'] .hw-bar { animation-play-state: paused; }
+.hw-cap { display: none; }
+.hw-cap.is-on { display: block; animation: hw-in .5s ease; }
+@keyframes hw-in { from { opacity: 0; transform: translateY(10px); } }
+.hw-zone { font: 800 12px Figtree, 'IBM Plex Sans Arabic', sans-serif; letter-spacing: .16em; fill: #9aa5b8; }
+.hw-small { font: 700 13px Figtree, 'IBM Plex Sans Arabic', sans-serif; fill: #5b6b82; }
+.hw-line { fill: none; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset .9s ease, opacity .3s; }
+.hw-hot, .hw-cool { opacity: 0; transition: opacity .8s; }
+.hw-film { opacity: 0; transition: opacity .6s; }
+.hw-merc { transform-origin: 604px 260px; transform: scaleY(.45); transition: transform 1s ease, fill .8s; }
+.hw-bulb { transition: fill .8s; }
+.hw-pill {
+  position: absolute; transform: translate(-50%, -50%) scale(.9); opacity: 0; transition: opacity .4s, transform .4s;
+  display: inline-flex; align-items: center; gap: .3rem; white-space: nowrap;
+  background: #fff; color: var(--c); border: 1.5px solid color-mix(in srgb, var(--c) 35%, #fff);
+  border-radius: 999px; padding: .25rem .6rem; font-size: 12px; font-weight: 800; box-shadow: 0 6px 16px -8px rgba(18,35,61,.35);
+}
+.hw-temp { position: absolute; right: 0.5%; top: 84%; font: 800 1.15rem Urbanist, sans-serif; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .15rem .55rem; box-shadow: 0 6px 16px -8px rgba(18,35,61,.3); }
+/* step 0: sun */
+[data-hw][data-step='0'] .hw-in1, [data-hw][data-step='0'] .hw-in2, [data-hw][data-step='0'] .hw-in3 { opacity: 1; stroke-dashoffset: 0; }
+[data-hw][data-step='0'] .hw-p1 { opacity: 1; transform: translate(-50%, -50%); transition-delay: .6s; }
+/* step 1: no film */
+[data-hw][data-step='1'] .hw-line:is(.hw-in1, .hw-in2, .hw-in3, .hw-thru) { opacity: 1; stroke-dashoffset: 0; }
+[data-hw][data-step='1'] .hw-thru { transition-delay: .5s; }
+[data-hw][data-step='1'] .hw-p2 { opacity: 1; transform: translate(-50%, -50%); transition-delay: 1.1s; }
+[data-hw][data-step='1'] .hw-hot { opacity: .12; }
+[data-hw][data-step='1'] .hw-merc { transform: scaleY(.95); }
+/* step 2-3: with film */
+[data-hw]:is([data-step='2'], [data-step='3']) .hw-film { opacity: 1; }
+[data-hw]:is([data-step='2'], [data-step='3']) .hw-line:is(.hw-in1, .hw-in2, .hw-in3, .hw-film-light, .hw-bounce) { opacity: 1; stroke-dashoffset: 0; }
+[data-hw]:is([data-step='2'], [data-step='3']) :is(.hw-film-light, .hw-bounce) { transition-delay: .5s; }
+[data-hw][data-step='2'] .hw-p3 { opacity: 1; transform: translate(-50%, -50%); transition-delay: 1.1s; }
+[data-hw]:is([data-step='2'], [data-step='3']) .hw-merc { transform: scaleY(.6); fill: #34d399; }
+[data-hw]:is([data-step='2'], [data-step='3']) .hw-bulb { fill: #34d399; }
+[data-hw][data-step='3'] .hw-cool { opacity: .12; }
+[data-hw][data-step='3'] .hw-line { opacity: .35; }
+@media (max-width: 639px) { .hw-pill { font-size: 10px; padding: .15rem .45rem; } .hw-temp { font-size: .95rem; } }
+@media (prefers-reduced-motion: reduce) { .hw-line { transition: none; } }
+/* scroll hint mouse */
+.car-mouse { position: relative; width: 14px; height: 20px; border: 2px solid currentColor; border-radius: 8px; }
+.car-mouse::after { content: ''; position: absolute; left: 50%; top: 3px; width: 2px; height: 5px; margin-left: -1px; border-radius: 2px; background: currentColor; animation: car-wheel 1.4s ease-in-out infinite; }
+@keyframes car-wheel { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(6px); opacity: 0; } }
+.hw.is-scroll .hw-tab[aria-selected='true'] .hw-bar { animation: none; }
+.hw.is-scroll .hw-bar { transition: width .15s linear; }

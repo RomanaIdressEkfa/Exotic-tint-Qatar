@@ -133,7 +133,7 @@ function head(page, meta) {
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Urbanist:wght@500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
 <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
-${page.key === 'home' ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
+${(page.key === 'home' || (page.service && page.service.slug === 'automotive-window-tinting')) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
 ${meta.jsonld ? `<script type="application/ld+json">${JSON.stringify(meta.jsonld)}</script>` : ''}
 </head>`;
 }
@@ -322,7 +322,6 @@ function footer() {
 </a>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
 <script src="/assets/js/motion.js" defer></script>
 </body>
@@ -335,7 +334,7 @@ ${header(page)}
 <main id="main">
 ${body}
 </main>
-${page.key === 'home' ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n</body>') : footer()}`;
+${page.key === 'home' ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n</body>') : page.service && page.service.slug === 'automotive-window-tinting' ? footer().replace('</body>', '<script type="module" src="/assets/js/car3d.js"></script>\n</body>') : footer()}`;
 
 /* --------------------------------------------------------------- sections */
 function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
@@ -697,6 +696,104 @@ function tintStudio() {
         <div class="mt-6 grid gap-3 sm:grid-cols-2">
           <a href="#quote" class="btn btn-primary">${tr('Get this shade', 'اطلب هذه الدرجة')} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-glass">${waIcon('h-4 w-4')} ${tr('Ask an expert', 'اسأل خبيراً')}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+/* Tint explained + money-saved calculator
+   Film figures come from the client's article "Super Nano Ceramic vs Nano Ceramic vs Regular Tint".
+   Savings model (shown openly on the page):
+     saving = monthly spend × cooling share × AC-load reduction
+     cooling share: car ≈ 15% of fuel in summer; home ≈ 60% of the electricity bill
+     AC-load reduction: regular 10%, nano ceramic 20%, super nano ceramic 30% ("up to 30%" in the article) */
+function savings() {
+  const films = [
+    { id: 'regular', name: tr('Regular tint', 'التظليل العادي'), heat: 25, heatTxt: '20–30%', uv: '40–50%', uvN: 45, ac: 10 },
+    { id: 'nano', name: tr('Nano ceramic', 'نانو سيراميك'), heat: 75, heatTxt: '70–80%', uv: '99%', uvN: 99, ac: 20 },
+    { id: 'super', name: tr('Super nano ceramic', 'سوبر نانو سيراميك'), heat: 94, heatTxt: '90–98%', uv: '99%+', uvN: 99, ac: 30 },
+  ];
+  const modes = {
+    car: { label: tr('My monthly petrol spend', 'إنفاقي الشهري على البنزين'), min: 200, max: 2000, step: 50, val: 600, share: 15 },
+    home: { label: tr('My monthly Kahramaa bill', 'فاتورة كهرماء الشهرية'), min: 300, max: 5000, step: 100, val: 1500, share: 60 },
+  };
+  const qar = tr('QAR', 'ر.ق');
+  return `
+<section id="savings" class="pb-20 lg:pb-28" data-assemble>
+  <div class="container-site">
+    ${sectionHead({
+      eyebrow: tr('Tint, explained', 'التظليل ببساطة'),
+      title: tr('Darker isn’t cooler. <span class="text-grad">The right film is.</span>', 'الأغمق ليس الأبرد. <span class="text-grad">الفيلم الصحيح هو الأبرد.</span>'),
+      text: tr('The shade you choose is about privacy. What cuts the heat — and your fuel and electricity bills — is the film technology inside.', 'درجة التظليل تتعلق بالخصوصية. أما ما يخفض الحرارة — وفواتير الوقود والكهرباء — فهو تقنية الفيلم نفسها.'),
+      center: true,
+    })}
+    <div class="mt-12 grid gap-5 lg:grid-cols-12" data-sav data-films='${esc(JSON.stringify(films))}' data-modes='${esc(JSON.stringify(modes))}'>
+
+      <!-- LEFT: what sunlight is made of, and what each film stops -->
+      <div class="card p-6 sm:p-8 lg:col-span-7" data-a="left">
+        <p class="flex items-center gap-3 font-head text-lg font-bold text-ink"><span class="ico ico-soft !h-10 !w-10">${icon('sun', 'h-[18px] w-[18px]', 2.2)}</span>${tr('What hits your glass', 'ما الذي يصل إلى زجاجك')}</p>
+        <div class="mt-5 flex h-12 overflow-hidden rounded-2xl text-xs font-extrabold text-white">
+          <div class="flex items-center justify-center bg-gradient-to-r from-rose-500 to-orange-400" style="width:53%">${tr('Heat (infrared) 53%', 'حرارة ٥٣٪')}</div>
+          <div class="flex items-center justify-center bg-gradient-to-r from-amber-300 to-yellow-200 text-ink" style="width:44%">${tr('Light 44%', 'ضوء ٤٤٪')}</div>
+          <div class="flex items-center justify-center bg-violet-500" style="width:3%" title="UV 3%"></div>
+        </div>
+        <div class="mt-2 grid grid-cols-3 gap-3 text-[13px] leading-snug text-muted">
+          <p><b class="text-rose-500">${tr('Heat', 'الحرارة')}</b> — ${tr('makes the cabin hot and the AC work hard.', 'تسخّن المقصورة وترهق المكيف.')}</p>
+          <p><b class="text-amber-600">${tr('Light', 'الضوء')}</b> — ${tr('what you see. The shade % controls this (privacy).', 'ما تراه. نسبة التظليل تتحكم به (الخصوصية).')}</p>
+          <p><b class="text-violet-600">UV</b> — ${tr('burns skin and fades interiors.', 'يحرق البشرة ويُبهت الأثاث.')}</p>
+        </div>
+
+        <div class="my-7 border-t border-dashed border-line"></div>
+        <p class="font-head text-lg font-bold text-ink">${tr('How much each film stops', 'كم يحجب كل فيلم')}</p>
+        <div class="mt-4 inline-flex flex-wrap gap-1.5 rounded-2xl border border-line bg-white p-1.5 shadow-card" role="tablist">
+          ${films.map((f, i) => `<button type="button" role="tab" aria-selected="${i === 2}" data-sav-film="${i}" class="rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-ink aria-selected:shadow-gold">${f.name}</button>`).join('')}
+        </div>
+        <div class="mt-6 space-y-5">
+          <div>
+            <div class="flex items-center justify-between text-sm font-bold"><span class="text-ink">${tr('Heat blocked', 'الحرارة المحجوبة')}</span><span class="text-rose-500" dir="ltr" data-sav-heat>${films[2].heatTxt}</span></div>
+            <div class="mt-2 h-3 overflow-hidden rounded-full bg-rose-100"><div class="h-full rounded-full bg-gradient-to-r from-rose-500 to-orange-400 transition-[width] duration-700" style="width:${films[2].heat}%" data-sav-heatbar></div></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-sm font-bold"><span class="text-ink">${tr('UV blocked', 'الأشعة المحجوبة')}</span><span class="text-violet-600" dir="ltr" data-sav-uv>${films[2].uv}</span></div>
+            <div class="mt-2 h-3 overflow-hidden rounded-full bg-violet-100"><div class="h-full rounded-full bg-violet-500 transition-[width] duration-700" style="width:${films[2].uvN}%" data-sav-uvbar></div></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-sm font-bold"><span class="text-ink">${tr('AC workload cut', 'تخفيض حمل المكيف')}</span><span class="text-emerald-600" dir="ltr"><span data-sav-ac>${films[2].ac}</span>%</span></div>
+            <div class="mt-2 h-3 overflow-hidden rounded-full bg-emerald-100"><div class="h-full rounded-full bg-emerald-500 transition-[width] duration-700" style="width:${films[2].ac * 2}%" data-sav-acbar></div></div>
+          </div>
+        </div>
+        <p class="mt-6 flex gap-2 rounded-2xl border border-[#f6e3bf] bg-tint p-4 text-sm text-ink-2">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}<span>${tr('Any shade — light or dark — can come in nano or super nano ceramic. So you can keep a <b>legal, lighter shade</b> and still block most of the heat.', 'يمكن لأي درجة — فاتحة أو داكنة — أن تكون نانو أو سوبر نانو سيراميك. لذلك يمكنك اختيار <b>درجة فاتحة ومسموحة</b> مع حجب معظم الحرارة.')}</span></p>
+      </div>
+
+      <!-- RIGHT: money saved -->
+      <div class="relative overflow-hidden rounded-[22px] p-6 navy-bg sm:p-8 lg:col-span-5" data-a="right">
+        <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
+        <div class="relative">
+          <p class="font-head text-lg font-bold text-white">${tr('How much will you save?', 'كم ستوفر؟')}</p>
+          <div class="mt-4 grid grid-cols-2 gap-1 rounded-2xl bg-white/10 p-1" role="tablist">
+            <button type="button" role="tab" aria-selected="true" data-sav-mode="car" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('car', 'h-4 w-4', 2.2)} ${tr('Car · petrol', 'سيارة · بنزين')}</button>
+            <button type="button" role="tab" aria-selected="false" data-sav-mode="home" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('home', 'h-4 w-4', 2.2)} ${tr('Home · electricity', 'منزل · كهرباء')}</button>
+          </div>
+          <div class="mt-6 flex items-end justify-between gap-3">
+            <label class="text-sm font-semibold text-white/75" for="sav-spend" data-sav-label>${modes.car.label}</label>
+            <span class="font-head text-xl font-extrabold text-white" dir="ltr"><span data-sav-spend>600</span> <span class="text-sm text-white/60">${qar}</span></span>
+          </div>
+          <input id="sav-spend" type="range" class="range mt-3" min="${modes.car.min}" max="${modes.car.max}" step="${modes.car.step}" value="${modes.car.val}" data-sav-range dir="ltr">
+
+          <div class="mt-7 rounded-2xl bg-white p-5 text-center">
+            <p class="text-xs font-bold uppercase tracking-wider text-muted">${tr('You could save about', 'يمكنك توفير حوالي')}</p>
+            <p class="mt-1 font-head text-5xl font-extrabold text-ink" dir="ltr"><span data-sav-year>0</span> <span class="text-xl text-muted">${qar}</span></p>
+            <p class="text-sm font-semibold text-emerald-600">${tr('per year', 'سنوياً')} · <span dir="ltr"><span data-sav-month>0</span> ${qar}</span> ${tr('per month', 'شهرياً')}</p>
+          </div>
+
+          <div class="mt-5 space-y-2 text-sm text-white/75">
+            <p class="flex justify-between gap-3"><span>${tr('Spent on cooling (AC)', 'ما يُنفق على التبريد')}</span><b class="text-white" dir="ltr"><span data-sav-cool>0</span> ${qar}/${tr('mo', 'شهر')}</b></p>
+            <p class="flex justify-between gap-3"><span>${tr('AC workload cut by', 'تخفيض حمل المكيف')}</span><b class="text-white" dir="ltr"><span data-sav-ac2>30</span>%</b></p>
+          </div>
+          <a href="#quote" class="btn btn-primary mt-6 w-full">${tr('Start saving — free quote', 'ابدأ التوفير — عرض مجاني')} ${arrow()}</a>
+          <p class="mt-4 text-[11px] leading-relaxed text-white/50" data-sav-note data-car="${esc(tr('Estimate. Assumes AC uses about 15% of a car’s fuel in Qatar’s summer. Real savings depend on your car, driving and film.', 'تقدير. يفترض أن المكيف يستهلك حوالي ١٥٪ من وقود السيارة في صيف قطر. التوفير الفعلي يعتمد على سيارتك وقيادتك والفيلم.'))}" data-home="${esc(tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.'))}">${tr('Estimate. Assumes AC uses about 15% of a car’s fuel in Qatar’s summer. Real savings depend on your car, driving and film.', 'تقدير. يفترض أن المكيف يستهلك حوالي ١٥٪ من وقود السيارة في صيف قطر. التوفير الفعلي يعتمد على سيارتك وقيادتك والفيلم.')}</p>
         </div>
       </div>
     </div>
@@ -1442,6 +1539,7 @@ function pageHome(page) {
       howItWorks() +
       '<div class="h-20 lg:h-28"></div>' +
       tintStudio() +
+      savings() +
       showcase() +
       bookFast() +
       gallery() +
@@ -1610,7 +1708,308 @@ ${quoteSection()}`;
   );
 }
 
+/* How car window film works — compact auto-playing stepper with a clear diagram */
+function carExplainer() {
+  const deg = (n) => (L === 'ar' ? Number(n).toLocaleString('ar-EG') : n);
+  const steps = [
+    { title: tr('The sun hits your car', 'الشمس تضرب سيارتك'), text: tr('Sunlight is three things: heat you feel, light you see, and UV that burns skin and fades your dashboard.', 'ضوء الشمس ثلاثة أشياء: حرارة تشعر بها، وضوء تراه، وأشعة فوق بنفسجية تحرق البشرة وتُبهت لوحة القيادة.'), tab: tr('Sun', 'الشمس') },
+    { title: tr('Without film, it all gets in', 'بدون فيلم، كل شيء يدخل'), text: tr('Plain glass lets the heat and UV straight into the cabin. A parked car in a Qatar summer can pass 60°C.', 'الزجاج العادي يُدخل الحرارة والأشعة مباشرة. قد تتجاوز حرارة السيارة المتوقفة ٦٠° في صيف قطر.'), tab: tr('No film', 'بدون فيلم') },
+    { title: tr('With Exotic Tint', 'مع إكزوتك تينت'), text: tr('The ceramic layer in the film bounces the heat back outside and stops the UV. Light still comes in, so you can see clearly.', 'طبقة السيراميك في الفيلم تعكس الحرارة للخارج وتوقف الأشعة. الضوء يدخل لترى بوضوح.'), tab: tr('With film', 'مع الفيلم') },
+    { title: tr('What you get', 'ماذا تحصل عليه'), text: tr('A cooler cabin the moment you get in. The AC works less, so you burn less petrol.', 'مقصورة أبرد لحظة الركوب. المكيف يعمل أقل، فتستهلك بنزيناً أقل.'), tab: tr('Result', 'النتيجة') },
+  ];
+  const arrow = (id, color) => `<marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="${color}"/></marker>`;
+  const line = (cls, d, color, mk) => `<path class="hw-line ${cls}" d="${d}" stroke="${color}" marker-end="url(#${mk})" pathLength="1"/>`;
+  const pill = (cls, x, y, color, text, ic) => `<span dir="${L === 'ar' ? 'rtl' : 'ltr'}" class="hw-pill ${cls}" style="left:${x}%;top:${y}%;--c:${color}">${ic}${text}</span>`;
+  const xIc = '<svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const backIc = '<svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg>';
+  const inIc = '<svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+  const diagram = `
+  <div class="hw-diagram relative" dir="ltr">
+    <svg viewBox="0 0 640 360" class="w-full" aria-hidden="true">
+      <defs>${arrow('hw-r', '#ef4444')}${arrow('hw-y', '#e9a63b')}${arrow('hw-v', '#8b5cf6')}
+        <radialGradient id="hw-sun"><stop offset="0" stop-color="#fff7e0"/><stop offset=".6" stop-color="#f6c766"/><stop offset="1" stop-color="#e9a63b"/></radialGradient>
+        <linearGradient id="hw-in" x1="0" x2="1"><stop offset="0" stop-color="#f3f6fb"/><stop offset="1" stop-color="#e9eff8"/></linearGradient>
+      </defs>
+      <!-- zones -->
+      <rect x="326" y="16" width="300" height="328" rx="22" fill="url(#hw-in)" class="hw-cabin"/>
+      <rect x="326" y="16" width="300" height="328" rx="22" fill="#ef4444" class="hw-hot"/>
+      <rect x="326" y="16" width="300" height="328" rx="22" fill="#38bdf8" class="hw-cool"/>
+      <text x="40" y="34" class="hw-zone">${tr('OUTSIDE', 'الخارج')}</text>
+      <text x="378" y="46" class="hw-zone">${tr('INSIDE YOUR CAR', 'داخل سيارتك')}</text>
+      <!-- sun -->
+      <circle cx="80" cy="96" r="54" fill="#f6c766" opacity=".2"/>
+      <circle cx="80" cy="96" r="32" fill="url(#hw-sun)"/>
+      <!-- incoming rays -->
+      ${line('hw-in1', 'M114 104 L292 130', '#ef4444', 'hw-r')}
+      ${line('hw-in2', 'M112 116 L292 196', '#e9a63b', 'hw-y')}
+      ${line('hw-in3', 'M104 126 L292 262', '#8b5cf6', 'hw-v')}
+      <!-- through rays (no film) -->
+      ${line('hw-thru hw-thru1', 'M318 132 L450 146', '#ef4444', 'hw-r')}
+      ${line('hw-thru hw-thru2', 'M318 198 L450 206', '#e9a63b', 'hw-y')}
+      ${line('hw-thru hw-thru3', 'M318 264 L450 268', '#8b5cf6', 'hw-v')}
+      <!-- with film: light through, heat bounced, UV stopped -->
+      ${line('hw-film-light', 'M318 198 L450 206', '#e9a63b', 'hw-y')}
+      ${line('hw-bounce', 'M292 134 L150 206', '#ef4444', 'hw-r')}
+      <!-- window: glass + film -->
+      <rect x="296" y="40" width="20" height="290" rx="6" fill="#d9ecff" stroke="#9cc4ea" stroke-width="2"/>
+      <rect x="316" y="40" width="9" height="290" rx="3" fill="#1d3150" class="hw-film"/>
+      <text x="306" y="352" text-anchor="middle" class="hw-small">${tr('Car window', 'زجاج السيارة')}</text>
+      <!-- seat -->
+      <path d="M470 300 L470 178 Q470 156 492 156 L502 156 Q520 156 518 176 L513 248 L566 248 Q582 248 582 264 L582 300 Z" fill="#c47f1e"/>
+      <!-- thermometer -->
+      <rect x="596" y="64" width="16" height="200" rx="8" fill="#fff" stroke="#e3e7ee" stroke-width="2"/>
+      <rect x="600" y="70" width="8" height="190" rx="4" fill="#ef4444" class="hw-merc"/>
+      <circle cx="604" cy="276" r="15" fill="#ef4444" class="hw-bulb"/>
+    </svg>
+    <!-- labels (HTML so they stay crisp and translate) -->
+    ${pill('hw-p1', 22, 22, '#ef4444', tr('Heat 53%', 'حرارة ٥٣٪'), '')}
+    ${pill('hw-p1', 21, 43, '#c47f1e', tr('Light 44%', 'ضوء ٤٤٪'), '')}
+    ${pill('hw-p1', 19, 64, '#8b5cf6', tr('UV 3%', 'أشعة ٣٪'), '')}
+    ${pill('hw-p2', 58, 32, '#ef4444', tr('Heat gets in', 'الحرارة تدخل'), inIc)}
+    ${pill('hw-p2', 58, 49, '#c47f1e', tr('Light gets in', 'الضوء يدخل'), inIc)}
+    ${pill('hw-p2', 58, 66, '#8b5cf6', tr('UV gets in', 'الأشعة تدخل'), inIc)}
+    ${pill('hw-p3', 14, 50, '#ef4444', tr('Heat bounced back', 'الحرارة ارتدت'), backIc)}
+    ${pill('hw-p3', 56, 49, '#c47f1e', tr('Light comes in', 'الضوء يدخل'), inIc)}
+    ${pill('hw-p3', 52, 72, '#8b5cf6', tr('UV blocked', 'الأشعة محجوبة'), xIc)}
+    ${pill('hw-p3 hw-film-tag', 46, 7, '#1d3150', tr('Ceramic film', 'فيلم سيراميك'), '')}
+    <span class="hw-temp" data-hw-temp>${deg(38)}°C</span>
+  </div>`;
+
+  return `
+<section class="relative pt-20 lg:pt-28" data-assemble>
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
+      <div>
+        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-gold-700">${tr('How it works', 'كيف يعمل')}</p>
+        <h2 class="mt-3 font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${tr('How the film keeps <span class="text-grad">your car cool</span>', 'كيف يُبقي الفيلم <span class="text-grad">سيارتك باردة</span>')}</h2>
+      </div>
+    </div>
+    <div class="hw mt-8 overflow-hidden rounded-[28px] border border-line bg-white shadow-soft" data-hw data-temps='[38,62,52,52]' data-a="up">
+      <div class="grid grid-cols-4 border-b border-line" role="tablist">
+        ${steps
+          .map(
+            (s, i) => `<button type="button" role="tab" aria-selected="${i === 0}" class="hw-tab relative px-2 py-4 text-center sm:px-4" data-hw-tab="${i}">
+          <span class="block text-[11px] font-extrabold text-gold-700">${num(pad(i + 1))}</span>
+          <span class="block font-head text-sm font-bold text-ink sm:text-base">${s.tab}</span>
+          <span class="absolute inset-x-0 bottom-0 h-[3px]"><span class="hw-bar block h-full bg-grad"></span></span>
+        </button>`
+          )
+          .join('')}
+      </div>
+      <div class="grid items-center gap-6 p-5 sm:p-8 lg:grid-cols-12 lg:gap-10 lg:p-10">
+        <div class="lg:col-span-4">
+          ${steps
+            .map(
+              (s, i) => `<div class="hw-cap ${i === 0 ? 'is-on' : ''}" data-hw-cap="${i}">
+            <h3 class="font-head text-[1.6rem] font-extrabold leading-tight text-ink sm:text-[1.9rem]">${s.title}</h3>
+            <p class="mt-3 text-[1.03rem] leading-relaxed text-muted">${s.text}</p>
+            ${i === 2 ? `<div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-rose-50 px-3 py-1.5 text-sm font-bold text-rose-600">${tr('Up to 98% heat blocked', 'حجب حتى ٩٨٪ من الحرارة')}</span><span class="rounded-full bg-violet-50 px-3 py-1.5 text-sm font-bold text-violet-600">${tr('99% UV blocked', 'حجب ٩٩٪ من الأشعة')}</span></div>` : ''}
+            ${i === 3 ? `<ul class="mt-5 space-y-2 text-[0.98rem] font-semibold text-ink-2">${[tr('About 10°C cooler cabin*', 'مقصورة أبرد بنحو ١٠°*'), tr('AC works less — less petrol', 'المكيف يعمل أقل — بنزين أقل'), tr('Skin and dashboard protected', 'البشرة ولوحة القيادة محمية')].map((x) => `<li class="flex items-center gap-2.5"><span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('check', 'h-3.5 w-3.5', 3)}</span>${x}</li>`).join('')}</ul><p class="mt-3 text-xs text-muted">${tr('*Illustrative, with super nano ceramic film.', '*توضيحي، مع فيلم سوبر نانو سيراميك.')}</p>` : ''}
+          </div>`
+            )
+            .join('')}
+        </div>
+        <div class="lg:col-span-8">${diagram}</div>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+/* ============================================================
+   Automotive window tinting — focused, animated service page
+   ============================================================ */
+function pageAutomotive(page) {
+  const s = page.service;
+  const wa = waLink(tr('Hi, I want a price for car window tinting. My car is: ', 'مرحباً، أريد سعر تظليل سيارة. سيارتي: '));
+  const deg = (n) => (L === 'ar' ? Number(n).toLocaleString('ar-EG') : n);
+
+  /* 1. Hero — 3D car */
+  const hero = `
+<section class="px-2.5 sm:px-3">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    <div class="pointer-events-none absolute inset-0 grid-lines"></div>
+    <div class="container-site relative grid items-center gap-8 py-10 lg:grid-cols-12 lg:py-8">
+      <div class="lg:col-span-5">
+        <nav class="flex items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
+          <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}
+          <a href="${href('service/')}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.services)}</a>
+        </nav>
+        <p class="mt-6 text-xs font-extrabold uppercase tracking-[0.2em] text-gold-700" data-a="left">${tr('Car window tinting', 'تظليل زجاج السيارات')}</p>
+        <h1 class="mt-3 font-head text-[2.6rem] font-extrabold leading-[1.02] text-ink sm:text-[3.6rem] xl:text-[4.2rem]">
+          <span class="block" data-split>${tr('Get in.', 'اركب.')}</span>
+          <span class="block text-grad" data-a="up">${tr('It’s already cool.', 'وهي باردة أصلاً.')}</span>
+        </h1>
+        <p class="mt-5 max-w-md text-[1.08rem] leading-relaxed text-muted" data-a="up">${tr('Ceramic film that blocks up to 98% of the sun’s heat. We fit it at your home or office — anywhere in Qatar.', 'فيلم سيراميك يحجب حتى ٩٨٪ من حرارة الشمس. نركّبه في منزلك أو مكتبك — في أي مكان في قطر.')}</p>
+        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+          <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Get a price', 'اعرف السعر')}</a>
+          <a href="tel:${C.site.phoneRaw}" class="btn btn-white">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
+        </div>
+        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink-2" data-a="up">
+          <li class="flex items-center gap-2">${icon('clock', 'h-4 w-4 text-gold-600', 2.2)} ${tr('Done in a few hours', 'خلال ساعات قليلة')}</li>
+          <li class="flex items-center gap-2">${icon('truck', 'h-4 w-4 text-gold-600', 2.2)} ${tr('We come to you', 'نأتي إليك')}</li>
+          <li class="flex items-center gap-2">${icon('shield', 'h-4 w-4 text-gold-600', 2.2)} ${tr('Legal shades only', 'درجات مسموحة فقط')}</li>
+        </ul>
+      </div>
+      <div class="relative lg:col-span-7" data-a="up">
+        <div class="car3d relative aspect-[4/3] w-full lg:aspect-[7/5]" data-car>
+          <canvas class="relative h-full w-full" role="img" aria-label="${tr('3D car showing window film keeping the cabin cool', 'سيارة ثلاثية الأبعاد توضح كيف يُبقي الفيلم المقصورة باردة')}"></canvas>
+          <img src="/assets/img/automotive.webp" alt="" class="car-fallback-img absolute inset-[6%] hidden h-[88%] w-[88%] rounded-[24px] object-cover shadow-float">
+          <div class="room-hud car-card absolute end-0 top-[4%] w-[10rem] overflow-hidden rounded-2xl p-3.5 sm:w-48 sm:p-4">
+            <span class="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/80 to-transparent opacity-0" data-c-sweep></span>
+            <p class="relative text-[11px] font-bold uppercase tracking-wider text-muted">${tr('Cabin temperature', 'حرارة المقصورة')}</p>
+            <p class="relative mt-1 font-head text-[2.4rem] font-extrabold leading-none text-ink" dir="ltr"><span data-c-temp>38</span><span class="text-lg text-muted">°C</span></p>
+            <p class="relative mt-2 text-[11px] font-semibold text-muted" data-c-state data-on="${tr('With Exotic Tint', 'مع إكزوتك تينت')}" data-off="${tr('Parked in the sun', 'متوقفة تحت الشمس')}">${tr('Parked in the sun', 'متوقفة تحت الشمس')}</p>
+          </div>
+          <div class="room-hud car-card absolute bottom-[16%] start-0 flex items-center gap-3 rounded-2xl p-2.5 pe-4">
+            <svg class="h-11 w-11 -rotate-90" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#cuv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-c-ring/><defs><linearGradient id="cuv"><stop stop-color="#F6C766"/><stop offset="1" stop-color="#C47F1E"/></linearGradient></defs></svg>
+            <div><p class="text-[11px] font-bold uppercase tracking-wider text-muted">${tr('UV blocked', 'حجب الأشعة')}</p><p class="font-head text-xl font-extrabold text-ink" dir="ltr"><span data-c-uv>0</span>%</p></div>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 flex justify-center">
+            <div class="room-hud inline-flex rounded-full p-1.5" role="group">
+              <button type="button" class="room-btn" data-c-mode="off" aria-pressed="true">${icon('sun', 'h-4 w-4', 2.2)} ${tr('No film', 'بدون فيلم')}</button>
+              <button type="button" class="room-btn" data-c-mode="on" aria-pressed="false">${icon('shield', 'h-4 w-4', 2.2)} ${tr('With Exotic Tint', 'مع إكزوتك تينت')}</button>
+            </div>
+          </div>
+        </div>
+        <div class="mx-auto mt-4 flex max-w-xs items-center gap-3" aria-hidden="true">
+          <span class="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-ink-2">${icon('layers', 'h-3.5 w-3.5 text-gold-600', 2.2)}${tr('Applying film', 'تركيب الفيلم')}</span>
+          <span class="h-1.5 flex-1 overflow-hidden rounded-full bg-line"><span class="block h-full w-0 rounded-full bg-grad" data-c-progress></span></span>
+        </div>
+        <p class="mt-2 text-center text-[11px] text-muted">${tr(`Illustrative: ${deg(62)}°C parked cabin vs ${deg(52)}°C with super nano ceramic film.`, `توضيحي: ${deg(62)}° للمقصورة المتوقفة مقابل ${deg(52)}° مع فيلم سوبر نانو سيراميك.`)}</p>
+      </div>
+    </div>
+  </div>
+</section>`;
+
+  /* 2. Same car, five shades */
+  const shades = [
+    [70, tr('Almost clear', 'شبه شفاف'), tr('Windscreen strip, max visibility', 'شريط الزجاج الأمامي، أعلى رؤية')],
+    [50, tr('Light', 'فاتح'), tr('Subtle look, less glare', 'مظهر هادئ ووهج أقل')],
+    [35, tr('Medium', 'متوسط'), tr('Our most popular balance', 'التوازن الأكثر طلباً')],
+    [20, tr('Dark', 'داكن'), tr('Strong privacy for rear glass', 'خصوصية قوية للزجاج الخلفي')],
+    [5, tr('Limo', 'ليموزين'), tr('Maximum privacy', 'أقصى خصوصية')],
+  ];
+  const shadeSec = `
+<section class="py-20 lg:py-28" data-assemble>
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
+      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${tr('Same car. <span class="text-grad">Five shades.</span>', 'نفس السيارة. <span class="text-grad">خمس درجات.</span>')}</h2>
+      <p class="max-w-sm text-muted">${tr('The % is how much light gets through. Lower = darker and more private. Heat is blocked by the film type, not the shade.', 'النسبة هي مقدار الضوء الذي يمر. أقل = أغمق وأكثر خصوصية. الحرارة يحجبها نوع الفيلم وليس الدرجة.')}</p>
+    </div>
+    <div class="shade-strip mt-10 flex h-[420px] gap-2 overflow-hidden rounded-[28px] sm:h-[460px]" data-a="up" dir="ltr">
+      ${shades
+        .map(
+          ([v, name, use], i) => `<div class="shade group relative flex-1 overflow-hidden rounded-[18px] ${i === 2 ? 'is-on' : ''}" tabindex="0">
+        <img src="/assets/img/automotive.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${18 + i * 16}% 50%" loading="lazy">
+        <div class="absolute inset-0" style="background:rgba(8,12,20,${((100 - v) / 100) * 0.88})"></div>
+        <div class="absolute inset-x-0 bottom-0 p-4 text-white ${L === 'ar' ? 'text-right' : ''}" dir="${L === 'ar' ? 'rtl' : 'ltr'}">
+          <p class="font-head text-3xl font-extrabold leading-none sm:text-4xl" dir="ltr">${v}%</p>
+          <p class="shade-more mt-2 font-head font-bold">${name}</p>
+          <p class="shade-more text-xs text-white/75">${use}</p>
+        </div>
+      </div>`
+        )
+        .join('')}
+    </div>
+    <p class="mt-4 text-center text-sm text-muted">${tr('Not sure which shade is legal for your car? We check before we fit.', 'لست متأكداً من الدرجة المسموحة لسيارتك؟ نتحقق قبل التركيب.')}</p>
+  </div>
+</section>`;
+
+  /* 3. Three films */
+  const films = [
+    { name: tr('Regular', 'عادي'), heat: '20–30%', uv: '40–50%', life: tr('2–4 yrs', '٢–٤ سنوات'), note: tr('Looks dark. Little heat blocked. Can fade purple.', 'يبدو داكناً. يحجب حرارة قليلة. قد يبهت للبنفسجي.') },
+    { name: tr('Nano ceramic', 'نانو سيراميك'), heat: '70–80%', uv: '99%', life: tr('8–10 yrs', '٨–١٠ سنوات'), note: tr('Strong heat block. No phone or GPS signal issues.', 'حجب قوي للحرارة. لا يؤثر على إشارة الجوال أو GPS.') },
+    { name: tr('Super nano ceramic', 'سوبر نانو سيراميك'), heat: '90–98%', uv: '99%+', life: tr('10–15 yrs', '١٠–١٥ سنة'), note: tr('Coolest cabin, even in a light shade.', 'أبرد مقصورة حتى بدرجة فاتحة.'), best: true },
+  ];
+  const filmSec = `
+<section class="px-2.5 sm:px-3">
+  <div class="relative overflow-hidden rounded-[28px] bg-ink" data-assemble>
+    <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
+    <div class="container-site relative py-20 lg:py-24">
+      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-white sm:text-[2.7rem]" data-a="up">${tr('Pick the film, <span class="text-grad">not just the colour.</span>', 'اختر الفيلم، <span class="text-grad">وليس اللون فقط.</span>')}</h2>
+      <div class="mt-10 grid gap-4 lg:grid-cols-3">
+        ${films
+          .map(
+            (f) => `<div class="relative rounded-[22px] p-7 ${f.best ? 'bg-white text-ink shadow-glow' : 'border border-white/10 bg-white/[0.04] text-white'}" data-a="up">
+          ${f.best ? `<span class="absolute end-6 top-6 rounded-full bg-grad px-3 py-1 text-[11px] font-extrabold uppercase text-ink">${tr('Recommended', 'موصى به')}</span>` : ''}
+          <p class="font-head text-xl font-bold">${f.name}</p>
+          <p class="mt-6 text-xs font-bold uppercase tracking-wider ${f.best ? 'text-muted' : 'text-white/50'}">${tr('Heat blocked', 'الحرارة المحجوبة')}</p>
+          <p class="font-head text-5xl font-extrabold ${f.best ? 'text-grad' : ''}" dir="ltr">${f.heat}</p>
+          <div class="mt-6 grid grid-cols-2 gap-3 border-t ${f.best ? 'border-line' : 'border-white/10'} pt-5 text-sm">
+            <div><p class="${f.best ? 'text-muted' : 'text-white/50'}">UV</p><p class="font-bold" dir="ltr">${f.uv}</p></div>
+            <div><p class="${f.best ? 'text-muted' : 'text-white/50'}">${tr('Lasts', 'يدوم')}</p><p class="font-bold">${f.life}</p></div>
+          </div>
+          <p class="mt-5 text-sm ${f.best ? 'text-ink-2' : 'text-white/60'}">${f.note}</p>
+        </div>`
+          )
+          .join('')}
+      </div>
+    </div>
+  </div>
+</section>`;
+
+  /* 4. Three steps — quiet, typographic */
+  const steps3 = [
+    [tr('Send your car model', 'أرسل طراز سيارتك'), tr('On WhatsApp. We reply with a fixed price.', 'عبر واتساب. نرد بسعر ثابت.')],
+    [tr('We come to you', 'نأتي إليك'), tr('Home, office or parking — any day, 8 AM to 6 PM.', 'المنزل أو المكتب أو الموقف — أي يوم من ٨ ص إلى ٦ م.')],
+    [tr('Drive away cooler', 'انطلق بسيارة أبرد'), tr('Fitted in a few hours, checked before we leave.', 'تركيب خلال ساعات قليلة وفحص قبل المغادرة.')],
+  ];
+  const stepSec = `
+<section class="py-20 lg:py-28" data-assemble>
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end" data-a="up">
+      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${tr('Three steps. <span class="text-grad">Zero hassle.</span>', 'ثلاث خطوات. <span class="text-grad">دون عناء.</span>')}</h2>
+      <a href="${wa}" target="_blank" rel="noopener" class="inline-flex w-max items-center gap-2 text-sm font-bold text-ink underline decoration-gold-400 decoration-2 underline-offset-8 hover:text-gold-700">${tr('Start on WhatsApp', 'ابدأ عبر واتساب')} ${arrow('h-4 w-4')}</a>
+    </div>
+    <ol class="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
+      ${steps3
+        .map(
+          ([s1, s2], i) => `<li class="border-t-2 ${i === 0 ? 'border-gold-500' : 'border-line'} pt-6" data-a="up">
+        <p class="font-head text-sm font-extrabold tracking-wider text-gold-600">${num(pad(i + 1))}</p>
+        <h3 class="mt-3 font-head text-2xl font-bold text-ink">${s1}</h3>
+        <p class="mt-2 max-w-xs text-muted">${s2}</p>
+      </li>`
+        )
+        .join('')}
+    </ol>
+  </div>
+</section>`;
+
+  /* 5. FAQ — same premium layout as the rest of the site */
+  const faqSec = faqSection(s.faq, tr('Quick <span class="text-grad">answers</span>', 'إجابات <span class="text-grad">سريعة</span>'));
+
+  /* 6. CTA */
+  const cta = `
+<section class="px-2.5 pb-16 sm:px-3">
+  <div class="relative overflow-hidden rounded-[28px] bg-ink">
+    <img src="/assets/img/automotive.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" loading="lazy">
+    <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/30 rtl:bg-gradient-to-l"></div>
+    <div class="container-site relative flex flex-col items-start justify-between gap-6 py-16 lg:flex-row lg:items-center lg:py-20">
+      <h2 class="max-w-xl font-head text-[2.1rem] font-extrabold leading-tight text-white sm:text-5xl">${tr('Send your car model. <span class="text-grad">Get a price in minutes.</span>', 'أرسل طراز سيارتك. <span class="text-grad">واحصل على السعر خلال دقائق.</span>')}</h2>
+      <div class="flex flex-wrap gap-3">
+        <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} WhatsApp</a>
+        <a href="tel:${C.site.phoneRaw}" class="btn btn-glass">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
+      </div>
+    </div>
+  </div>
+</section>`;
+
+  return layout(
+    page,
+    {
+      title: tr('Car Window Tinting in Qatar | Exotic Tint Qatar', 'تظليل زجاج السيارات في قطر | إكزوتك تينت قطر'),
+      description: tr('Ceramic car window tint that blocks up to 98% of solar heat and 99% of UV. Fitted at your home or office anywhere in Qatar.', 'تظليل سيراميك لزجاج السيارات يحجب حتى ٩٨٪ من حرارة الشمس و٩٩٪ من الأشعة. نركّبه في منزلك أو مكتبك في أي مكان في قطر.'),
+      image: s.img,
+      jsonld: { '@context': 'https://schema.org', '@type': 'Service', name: t(s.title), description: t(s.summary), areaServed: 'Qatar', provider: { '@type': 'LocalBusiness', name: 'Exotic Tint Qatar', telephone: C.site.phoneRaw } },
+    },
+    hero + carExplainer() + shadeSec + filmSec + stepSec + faqSec + cta
+  );
+}
+
 function pageService(page) {
+  if (page.service.slug === 'automotive-window-tinting') return pageAutomotive(page);
   const s = page.service;
   const v = SV[s.slug];
   const related = C.services.filter((x) => x !== s);
@@ -1949,6 +2348,7 @@ function write(file, html) {
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'main.js'), path.join(DIST, 'assets', 'js', 'main.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'motion.js'), path.join(DIST, 'assets', 'js', 'motion.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'room3d.js'), path.join(DIST, 'assets', 'js', 'room3d.js'));
+  fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'car3d.js'), path.join(DIST, 'assets', 'js', 'car3d.js'));
   fs.rmSync(path.join(DIST, 'assets', 'img', 'favicon.svg'), { force: true });
   // Old WordPress URL kept alive → points to the new commercial service page
   const to = '/service/commercial-window-tinting-services/';

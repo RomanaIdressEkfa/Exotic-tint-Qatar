@@ -21,7 +21,7 @@
   var rand = function (a, b) { return a + Math.random() * (b - a); };
 
   /* ---- Smooth scrolling (mouse / trackpad only) ---- */
-  if (window.Lenis && finePointer) {
+  if (false && window.Lenis) { // smooth scrolling disabled: native scroll feels faster
     var lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
     root.style.scrollBehavior = 'auto';
     lenis.on('scroll', ST.update);
