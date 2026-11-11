@@ -23,7 +23,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Urbanist:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
+
 
 </head>
 <body>
@@ -124,33 +125,34 @@
 
 
 <section class="px-2.5 sm:px-3">
-  <div class="hero-bg relative overflow-hidden rounded-[28px]">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    <div class="aurora " aria-hidden="true"><span></span><span></span><span></span></div>
     <div class="pointer-events-none absolute inset-0 grid-lines"></div>
     <div class="container-site relative grid items-center gap-10 py-14 lg:grid-cols-2 lg:py-20">
       <div>
-        <nav class="flex flex-wrap items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-reveal style="--d:0ms">
+        <nav class="flex flex-wrap items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
           <a href="/" class="font-semibold hover:text-gold-700">Home</a>
           <svg class="h-3.5 w-3.5 -rotate-90 rtl:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span class="font-semibold text-ink">About</span>
         </nav>
-        <span class="chip mt-6" data-reveal style="--d:40ms"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>About us</span>
-        <h1 class="mt-5 text-balance font-head text-[2.15rem] font-extrabold leading-[1.08] text-ink min-[400px]:text-[2.5rem] sm:text-[3.2rem] lg:text-[2.9rem] xl:text-[3.4rem]" data-reveal style="--d:80ms">Comfort, privacy &amp; protection — <span class="text-grad">installed on-site</span></h1>
-        <p class="mt-5 max-w-xl text-[1.1rem] leading-relaxed text-muted" data-reveal style="--d:140ms">Exotic Tint Qatar specialises in premium window tinting and protective film solutions for cars, homes, offices and commercial spaces.</p>
-        <div class="mt-8 flex flex-wrap gap-3" data-reveal style="--d:200ms">
+        <span class="chip mt-6" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>About us</span>
+        <h1 class="mt-5 text-balance font-head text-[2.15rem] font-extrabold leading-[1.08] text-ink min-[400px]:text-[2.5rem] sm:text-[3.2rem] lg:text-[2.9rem] xl:text-[3.4rem]" data-split>Comfort, privacy &amp; protection — <span class="text-grad">installed on-site</span></h1>
+        <p class="mt-5 max-w-xl text-[1.1rem] leading-relaxed text-muted" data-a="up">Exotic Tint Qatar specialises in premium window tinting and protective film solutions for cars, homes, offices and commercial spaces.</p>
+        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="#quote" class="btn btn-primary">Get a free quote <svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <a href="https://wa.me/97431608423?text=Hello%20Exotic%20Tint%20Qatar%2C%20I%20would%20like%20a%20free%20quote." target="_blank" rel="noopener" class="btn btn-white"><svg class="h-5 w-5 text-[#25D366]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.81-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47 2.53 0 4.9.99 6.7 2.78a9.4 9.4 0 0 1 2.77 6.7c0 5.22-4.25 9.46-9.48 9.46zm8.06-17.53A11.33 11.33 0 0 0 12.04.6C5.76.6.65 5.7.65 11.98c0 2 .52 3.96 1.52 5.69L.55 23.4l5.86-1.54a11.4 11.4 0 0 0 5.62 1.43h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg> WhatsApp us</a>
         </div>
       </div>
       
-  <div class="relative mx-auto w-full max-w-[440px] py-6" data-reveal style="--d:150ms">
-    <div class="orbit inset-[-6%] hidden sm:block"></div>
-    <div class="orbit inset-[-16%] hidden opacity-60 sm:block"></div>
-    <span class="absolute start-[2%] top-[12%] text-2xl text-gold-500">✦</span>
-    <span class="absolute bottom-[18%] end-[-2%] h-3 w-3 rounded-full bg-gold-400"></span>
-    <div class="arch relative aspect-[4/5]">
-      <img src="/assets/img/commercial.webp" alt="Technician working on a glass façade" class="h-full w-full object-cover" fetchpriority="high">
+  <div class="relative mx-auto w-full max-w-[440px] py-6" data-parallax>
+    <div class="orbit orbit-spin inset-[-6%] hidden sm:block" data-a="orbit"></div>
+    <div class="orbit orbit-spin-rev inset-[-16%] hidden opacity-60 sm:block" data-a="orbit"></div>
+    <span class="absolute start-[2%] top-[12%] text-2xl text-gold-500" data-a="pop" data-depth="18">✦</span>
+    <span class="absolute bottom-[18%] end-[-2%] h-3 w-3 rounded-full bg-gold-400" data-a="pop" data-depth="-14"></span>
+    <div class="arch relative aspect-[4/5]" data-a="arch">
+      <img src="/assets/img/commercial.webp" alt="Technician working on a glass façade" class="h-full w-full object-cover" fetchpriority="high" data-arch-img>
     </div>
-    <div class="float-chip floaty absolute end-[-2%] top-[14%] flex items-center gap-3 p-3 pe-5 xl:end-[-10%]"><span class="ico"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span><span><span class="block text-xs text-muted">UV blocked</span><span class="block font-head text-lg font-extrabold text-ink">99%</span></span></div>
-    <div class="float-chip floaty-2 absolute bottom-[14%] start-[-2%] flex items-center gap-3 p-3 pe-5 xl:start-[-10%]"><span class="grid h-9 w-9 place-items-center rounded-full bg-emerald-50 text-emerald-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span><span class="block text-xs text-muted">Free estimate</span><span class="block font-head text-base font-extrabold text-ink">Flat-rate</span></span></div>
+    <div class="absolute end-[-2%] top-[14%] z-10 xl:end-[-10%]" data-a="fly-tr" data-depth="26"><div class="float-chip floaty flex items-center gap-3 p-3 pe-5"><span class="ico"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span><span><span class="block text-xs text-muted">UV blocked</span><span class="block font-head text-lg font-extrabold text-ink">99%</span></span></div></div>
+    <div class="absolute bottom-[14%] start-[-2%] z-10 xl:start-[-10%]" data-a="fly-bl" data-depth="-22"><div class="float-chip floaty-2 flex items-center gap-3 p-3 pe-5"><span class="grid h-9 w-9 place-items-center rounded-full bg-emerald-50 text-emerald-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span><span class="block text-xs text-muted">Free estimate</span><span class="block font-head text-base font-extrabold text-ink">Flat-rate</span></span></div></div>
   </div>
     </div>
   </div>
@@ -229,25 +231,25 @@
       
       <div class="flex flex-col items-center px-4 py-9 text-center   ">
         <span class="ico"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span>
-        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr">99<sup class="text-2xl text-gold-600">%</sup></span>
+        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr"><span data-count="99">99</span><sup class="text-2xl text-gold-600">%</sup></span>
         <span class="mt-2 font-head text-lg font-bold text-ink">UV blocked</span>
         <span class="text-sm text-muted">With ceramic films</span>
       </div>
       <div class="flex flex-col items-center px-4 py-9 text-center border-s border-dashed border-line  ">
         <span class="ico"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg></span>
-        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr">60<sup class="text-2xl text-gold-600">%</sup></span>
+        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr"><span data-count="60">60</span><sup class="text-2xl text-gold-600">%</sup></span>
         <span class="mt-2 font-head text-lg font-bold text-ink">Heat rejection</span>
         <span class="text-sm text-muted">Premium auto films</span>
       </div>
       <div class="flex flex-col items-center px-4 py-9 text-center  border-t border-dashed border-line lg:border-t-0 lg:border-s">
         <span class="ico"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></span>
-        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr">6<sup class="text-2xl text-gold-600">+</sup></span>
+        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr"><span data-count="6">6</span><sup class="text-2xl text-gold-600">+</sup></span>
         <span class="mt-2 font-head text-lg font-bold text-ink">Specialist services</span>
         <span class="text-sm text-muted">Cars, homes & surfaces</span>
       </div>
       <div class="flex flex-col items-center px-4 py-9 text-center border-s border-dashed border-line border-t border-dashed border-line lg:border-t-0 ">
         <span class="ico"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
-        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr">7<sup class="text-2xl text-gold-600">/7</sup></span>
+        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr"><span data-count="7">7</span><sup class="text-2xl text-gold-600">/7</sup></span>
         <span class="mt-2 font-head text-lg font-bold text-ink">Days a week</span>
         <span class="text-sm text-muted">8 AM – 6 PM</span>
       </div>
@@ -256,65 +258,66 @@
 </section>
 <div class="-mt-20 lg:-mt-28"></div>
 
-<section class="py-20 lg:py-28">
+<section class="relative pb-16 pt-12 lg:pb-24 lg:pt-16" data-assemble>
   <div class="container-site">
-    <div class="grid gap-5 lg:grid-cols-12">
-      <div class="relative overflow-hidden rounded-[28px] p-8 navy-bg sm:p-10 lg:col-span-5 lg:row-span-2" data-reveal style="--d:0ms">
-        <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
-        <div class="relative flex h-full flex-col">
+    <div class="relative overflow-hidden rounded-[30px] navy-bg p-6 shadow-float sm:p-9 lg:p-10" data-a="up">
+      <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
+      <img src="/assets/img/residential.webp" alt="" class="pointer-events-none absolute inset-y-0 end-0 hidden h-full w-1/2 object-cover opacity-[0.13] [mask-image:linear-gradient(to_left,#000,transparent)] rtl:[mask-image:linear-gradient(to_right,#000,transparent)] lg:block" loading="lazy">
+      <div class="pointer-events-none absolute -start-20 -top-24 h-64 w-64 rounded-full bg-gold-400/25 blur-3xl"></div>
+      <div class="relative grid items-end gap-6 lg:grid-cols-12">
+        <div class="lg:col-span-7">
           <span class="eyebrow !text-gold-300">Why Exotic Tint</span>
-          <h2 class="mt-4 font-head text-[2rem] font-extrabold leading-[1.1] text-white sm:text-[2.5rem]">Qatar’s top window tint &amp; <span class="text-grad">protection experts</span></h2>
-          <p class="mt-4 leading-relaxed text-white/70">We reduce heat, block UV rays and enhance privacy with expert installation across Doha, Lusail, Al Rayyan and beyond.</p>
-          <div class="relative mt-8 overflow-hidden rounded-[22px] border-4 border-white/10">
-            <img src="/assets/img/residential.webp" alt="Tinted villa windows" class="aspect-[16/10] w-full object-cover" loading="lazy">
-            <div class="float-chip absolute bottom-3 start-3 flex items-center gap-2 px-3 py-2 text-sm font-bold text-ink"><span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span> Trusted across Qatar</div>
+          <h2 class="mt-3 font-head text-[1.8rem] font-extrabold leading-[1.12] text-white sm:text-[2.3rem]">Qatar’s top window tint &amp; <span class="text-grad">protection experts</span></h2>
+          <p class="mt-3 max-w-xl text-[0.98rem] leading-relaxed text-white/65">Expert on-site installation across Doha, Lusail, Al Rayyan and beyond.</p>
+        </div>
+        <div class="flex flex-col gap-4 lg:col-span-5 lg:items-end">
+          <div class="grid w-full grid-cols-3 divide-x divide-white/10 rounded-2xl border border-white/10 bg-white/[0.05] py-3 rtl:divide-x-reverse lg:w-auto lg:min-w-[19rem]">
+            <div class="text-center"><p class="font-head text-xl font-extrabold text-white" dir="ltr">6</p><p class="text-[11px] font-semibold text-white/50">Services</p></div><div class="text-center"><p class="font-head text-xl font-extrabold text-white" dir="ltr">8+</p><p class="text-[11px] font-semibold text-white/50">Areas</p></div><div class="text-center"><p class="font-head text-xl font-extrabold text-white" dir="ltr">7/7</p><p class="text-[11px] font-semibold text-white/50">Days open</p></div>
           </div>
-          <div class="mt-auto pt-8">
-            <div class="flex flex-wrap items-center justify-between gap-4 rounded-[20px] bg-white p-4 ps-5">
-              <div><p class="text-xs font-semibold uppercase tracking-wider text-muted">Call us!</p><a href="tel:+97431608423" class="font-head text-2xl font-extrabold text-ink" dir="ltr">+974 3160 8423</a></div>
-              <a href="tel:+97431608423" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold" aria-label="Call us"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.910a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>
-            </div>
+          <a href="tel:+97431608423" class="group flex w-full items-center justify-between gap-4 rounded-2xl bg-white p-2.5 ps-4 transition hover:bg-gold-50 lg:w-auto lg:min-w-[19rem]">
+            <span><span class="block text-[10px] font-bold uppercase tracking-wider text-muted">Call · free estimate</span><span class="block font-head text-lg font-extrabold text-ink" dir="ltr">+974 3160 8423</span></span>
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-grad text-ink shadow-gold transition group-hover:scale-110"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.910a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <div class="relative mt-6 grid grid-cols-2 gap-3 sm:mt-8 lg:grid-cols-4">
+        
+        <div class="glass-dark group relative overflow-hidden rounded-[20px] p-4 sm:rounded-[22px] sm:p-5 transition duration-500 hover:-translate-y-1 hover:bg-white/[0.09]" data-a="up">
+          <span class="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100 rtl:origin-right" style="background:linear-gradient(90deg,#FCA5A5,transparent)"></span>
+          <div class="flex items-center justify-between gap-3">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.08] ring-1 ring-inset ring-white/10 transition duration-500 group-hover:-rotate-6 sm:h-12 sm:w-12 sm:rounded-2xl"><img src="/assets/img/3d/thermometer.webp" alt="" class="h-7 w-7 drop-shadow-lg sm:h-8 sm:w-8" loading="lazy" width="200" height="200"></span>
+            <div class="text-end"><p class="font-head text-[1.3rem] font-extrabold leading-none sm:text-[1.7rem]" style="color:#FCA5A5" dir="ltr">−10°C</p><p class="mt-1 hidden text-[11px] font-semibold text-white/50 sm:block">cooler inside</p></div>
           </div>
+          <h3 class="mt-3 font-head text-[0.98rem] font-bold leading-snug text-white sm:mt-4 sm:text-lg">Heat reduction</h3>
+          <p class="mt-1 hidden text-sm leading-relaxed text-white/60 sm:block">Cooler rooms and cabins with heat-rejection film.</p>
         </div>
-      </div>
-      <div class="grid gap-5 sm:grid-cols-2 lg:col-span-7">
-      
-      <div class="group relative overflow-hidden rounded-[28px] border border-line bg-white p-7 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-soft" data-reveal style="--d:0ms">
-        <div class="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-gold-100/60 transition duration-500 group-hover:scale-125"></div>
-        <div class="relative flex h-full flex-col">
-          <div class="flex items-start justify-between gap-3"><img src="/assets/img/3d/thermometer.webp" alt="" class="h-20 w-20 drop-shadow-xl transition duration-500 group-hover:-rotate-6 group-hover:scale-110" loading="lazy" width="200" height="200"><span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-gold-700 shadow-sm">Up to 10°C cooler</span></div>
-          <h3 class="mt-6 font-head text-[1.35rem] font-bold text-ink">Heat reduction</h3>
-          <p class="mt-2 leading-relaxed text-muted">Keep spaces cool and comfortable with heat-rejection window film.</p>
-          <span class="mt-auto pt-5 font-head text-5xl font-extrabold leading-none text-gold-100">01</span>
+        <div class="glass-dark group relative overflow-hidden rounded-[20px] p-4 sm:rounded-[22px] sm:p-5 transition duration-500 hover:-translate-y-1 hover:bg-white/[0.09]" data-a="up">
+          <span class="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100 rtl:origin-right" style="background:linear-gradient(90deg,#93C5FD,transparent)"></span>
+          <div class="flex items-center justify-between gap-3">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.08] ring-1 ring-inset ring-white/10 transition duration-500 group-hover:-rotate-6 sm:h-12 sm:w-12 sm:rounded-2xl"><img src="/assets/img/3d/shield.webp" alt="" class="h-7 w-7 drop-shadow-lg sm:h-8 sm:w-8" loading="lazy" width="200" height="200"></span>
+            <div class="text-end"><p class="font-head text-[1.3rem] font-extrabold leading-none sm:text-[1.7rem]" style="color:#93C5FD" dir="ltr">99%</p><p class="mt-1 hidden text-[11px] font-semibold text-white/50 sm:block">UV blocked</p></div>
+          </div>
+          <h3 class="mt-3 font-head text-[0.98rem] font-bold leading-snug text-white sm:mt-4 sm:text-lg">UV protection</h3>
+          <p class="mt-1 hidden text-sm leading-relaxed text-white/60 sm:block">Protects skin, furniture and interiors from fading.</p>
         </div>
-      </div>
-      <div class="group relative overflow-hidden rounded-[28px] border border-line bg-white p-7 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-soft" data-reveal style="--d:80ms">
-        <div class="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-gold-100/60 transition duration-500 group-hover:scale-125"></div>
-        <div class="relative flex h-full flex-col">
-          <div class="flex items-start justify-between gap-3"><img src="/assets/img/3d/shield.webp" alt="" class="h-20 w-20 drop-shadow-xl transition duration-500 group-hover:-rotate-6 group-hover:scale-110" loading="lazy" width="200" height="200"><span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-gold-700 shadow-sm">Ceramic films</span></div>
-          <h3 class="mt-6 font-head text-[1.35rem] font-bold text-ink">99% UV protection</h3>
-          <p class="mt-2 leading-relaxed text-muted">Safeguard interiors and skin from harmful rays all year.</p>
-          <span class="mt-auto pt-5 font-head text-5xl font-extrabold leading-none text-gold-100">02</span>
+        <div class="glass-dark group relative overflow-hidden rounded-[20px] p-4 sm:rounded-[22px] sm:p-5 transition duration-500 hover:-translate-y-1 hover:bg-white/[0.09]" data-a="up">
+          <span class="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100 rtl:origin-right" style="background:linear-gradient(90deg,#F6C766,transparent)"></span>
+          <div class="flex items-center justify-between gap-3">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.08] ring-1 ring-inset ring-white/10 transition duration-500 group-hover:-rotate-6 sm:h-12 sm:w-12 sm:rounded-2xl"><img src="/assets/img/3d/locked.webp" alt="" class="h-7 w-7 drop-shadow-lg sm:h-8 sm:w-8" loading="lazy" width="200" height="200"></span>
+            <div class="text-end"><p class="font-head text-[1.3rem] font-extrabold leading-none sm:text-[1.7rem]" style="color:#F6C766" dir="ltr">1-way</p><p class="mt-1 hidden text-[11px] font-semibold text-white/50 sm:block">mirror view</p></div>
+          </div>
+          <h3 class="mt-3 font-head text-[0.98rem] font-bold leading-snug text-white sm:mt-4 sm:text-lg">Daytime privacy</h3>
+          <p class="mt-1 hidden text-sm leading-relaxed text-white/60 sm:block">See out clearly while keeping prying eyes out.</p>
         </div>
-      </div>
-      <div class="group relative overflow-hidden rounded-[28px] border border-line bg-white p-7 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-soft" data-reveal style="--d:160ms">
-        <div class="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-gold-100/60 transition duration-500 group-hover:scale-125"></div>
-        <div class="relative flex h-full flex-col">
-          <div class="flex items-start justify-between gap-3"><img src="/assets/img/3d/locked.webp" alt="" class="h-20 w-20 drop-shadow-xl transition duration-500 group-hover:-rotate-6 group-hover:scale-110" loading="lazy" width="200" height="200"><span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-gold-700 shadow-sm">Day-time privacy</span></div>
-          <h3 class="mt-6 font-head text-[1.35rem] font-bold text-ink">Privacy & security</h3>
-          <p class="mt-2 leading-relaxed text-muted">Peace of mind for vehicles, villas and workplaces.</p>
-          <span class="mt-auto pt-5 font-head text-5xl font-extrabold leading-none text-gold-100">03</span>
+        <div class="glass-dark group relative overflow-hidden rounded-[20px] p-4 sm:rounded-[22px] sm:p-5 transition duration-500 hover:-translate-y-1 hover:bg-white/[0.09]" data-a="up">
+          <span class="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100 rtl:origin-right" style="background:linear-gradient(90deg,#6EE7B7,transparent)"></span>
+          <div class="flex items-center justify-between gap-3">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.08] ring-1 ring-inset ring-white/10 transition duration-500 group-hover:-rotate-6 sm:h-12 sm:w-12 sm:rounded-2xl"><img src="/assets/img/3d/voltage.webp" alt="" class="h-7 w-7 drop-shadow-lg sm:h-8 sm:w-8" loading="lazy" width="200" height="200"></span>
+            <div class="text-end"><p class="font-head text-[1.3rem] font-extrabold leading-none sm:text-[1.7rem]" style="color:#6EE7B7" dir="ltr">30%</p><p class="mt-1 hidden text-[11px] font-semibold text-white/50 sm:block">less AC usage</p></div>
+          </div>
+          <h3 class="mt-3 font-head text-[0.98rem] font-bold leading-snug text-white sm:mt-4 sm:text-lg">Energy savings</h3>
+          <p class="mt-1 hidden text-sm leading-relaxed text-white/60 sm:block">Less AC load and lower Kahramaa bills.</p>
         </div>
-      </div>
-      <div class="group relative overflow-hidden rounded-[28px] border border-line bg-white p-7 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-soft" data-reveal style="--d:240ms">
-        <div class="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-gold-100/60 transition duration-500 group-hover:scale-125"></div>
-        <div class="relative flex h-full flex-col">
-          <div class="flex items-start justify-between gap-3"><img src="/assets/img/3d/voltage.webp" alt="" class="h-20 w-20 drop-shadow-xl transition duration-500 group-hover:-rotate-6 group-hover:scale-110" loading="lazy" width="200" height="200"><span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-gold-700 shadow-sm">Up to 30% less AC</span></div>
-          <h3 class="mt-6 font-head text-[1.35rem] font-bold text-ink">Energy savings</h3>
-          <p class="mt-2 leading-relaxed text-muted">Lower AC load and reduce Kahramaa bills.</p>
-          <span class="mt-auto pt-5 font-head text-5xl font-extrabold leading-none text-gold-100">04</span>
-        </div>
-      </div>
       </div>
     </div>
   </div>
@@ -349,9 +352,9 @@
   </div>
 </section>
 
-<section class="pb-20 lg:pb-28">
+<section class="pb-20 lg:pb-28" data-assemble>
   <div class="container-site">
-    <div class="relative overflow-hidden rounded-[28px] bg-grad p-7 shadow-glow sm:p-12" data-reveal style="--d:0ms">
+    <div class="relative overflow-hidden rounded-[28px] bg-grad p-7 shadow-glow sm:p-12" data-a="zoom">
       <div class="pointer-events-none absolute -end-24 -top-24 h-80 w-80 rounded-full border-[40px] border-white/15"></div>
       <div class="pointer-events-none absolute -bottom-32 start-1/3 h-72 w-72 rounded-full bg-white/10"></div>
       <div class="relative grid items-center gap-12 lg:grid-cols-2">
@@ -366,21 +369,23 @@
             <a href="tel:+97431608423" class="btn btn-white"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.910a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <span dir="ltr">+974 3160 8423</span></a>
           </div>
         </div>
-        <div class="relative mx-auto w-full max-w-[340px]">
+        <div class="relative mx-auto w-full max-w-[340px]" data-a="right">
+          <p class="mb-3 text-center text-xs font-semibold text-ink/60">Example of how booking works</p>
           <div class="rounded-[38px] bg-ink p-2.5 shadow-[0_40px_70px_-25px_rgba(18,35,61,.7)]">
             <div class="overflow-hidden rounded-[30px] bg-[#efe7dd]">
               <div class="flex items-center gap-3 bg-[#075E54] px-4 py-3 text-white">
                 <img src="/assets/img/logo-original.webp" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5">
-                <div class="flex-1"><p class="text-sm font-semibold">Exotic Tint Qatar</p><p class="text-[11px] text-white/75">online</p></div>
+                <div class="flex-1"><p class="text-sm font-semibold">Exotic Tint Qatar</p><p class="text-[11px] text-white/75" data-status data-typing-label="typing…" data-online-label="online">online</p></div>
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.910a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               </div>
-              <div class="space-y-2.5 p-4 [background-image:radial-gradient(rgba(0,0,0,.04)_1px,transparent_1px)] [background-size:14px_14px]">
+              <div class="space-y-2.5 p-4 [background-image:radial-gradient(rgba(0,0,0,.04)_1px,transparent_1px)] [background-size:14px_14px]" data-chat>
                 <p class="mx-auto w-max rounded-lg bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-muted">TODAY</p>
-                <div class="flex justify-end"><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-ee-md bg-[#d9fdd3] text-ink">Hi! I need tint for my car and villa windows 🚙🏡<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:02 ✓✓</span></div></div>
-                <div class="flex justify-start"><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-es-md bg-white text-ink">Welcome to Exotic Tint Qatar! Send us a photo and we’ll recommend the best film 👌<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:03</span></div></div>
-                <div class="flex justify-end"><div class="h-24 w-36 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/residential.webp" alt="" class="h-full w-full object-cover" loading="lazy"></div></div>
-                <div class="flex justify-start"><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-es-md bg-white text-ink">Super nano ceramic is perfect ✅ We can install tomorrow at 10 AM in Lusail.<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:05</span></div></div>
-                <div class="flex justify-end"><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-ee-md bg-[#d9fdd3] text-ink">Booked! Thank you 🙏<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:05 ✓✓</span></div></div>
+                <div class="flex justify-end" data-chat-msg><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-ee-md bg-[#d9fdd3] text-ink">Hi! I need tint for my car and villa windows 🚙🏡<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:02 ✓✓</span></div></div>
+                <div class="flex justify-start" data-chat-msg><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-es-md bg-white text-ink">Welcome to Exotic Tint Qatar! Send us a photo and we’ll recommend the best film 👌<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:03</span></div></div>
+                <div class="flex justify-end" data-chat-msg><div class="h-24 w-36 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/residential.webp" alt="" class="h-full w-full object-cover" loading="lazy"></div></div>
+                <div class="flex justify-start" data-chat-msg><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-es-md bg-white text-ink">Super nano ceramic is perfect ✅ We can install tomorrow at 10 AM in Lusail.<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:05</span></div></div>
+                <div class="flex justify-end" data-chat-msg><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm rounded-ee-md bg-[#d9fdd3] text-ink">Booked! Thank you 🙏<span class="ms-2 inline-block align-bottom text-[10px] text-muted">10:05 ✓✓</span></div></div>
+                <div class="typing hidden w-max rounded-2xl rounded-es-md bg-white px-4 py-3 shadow-sm" data-typing><span></span><span></span><span></span></div>
               </div>
               <div class="flex items-center gap-2 bg-[#efe7dd] px-3 pb-4"><span class="flex-1 rounded-full bg-white px-4 py-2 text-xs text-muted">Message</span><span class="grid h-9 w-9 place-items-center rounded-full bg-[#00A884] text-white"><svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
             </div>
@@ -403,8 +408,8 @@
   </div>
       <a href="https://www.instagram.com/exotic_tint_qatar/" target="_blank" rel="noopener" class="btn btn-white w-max" data-reveal style="--d:100ms"><span class="grid h-7 w-7 place-items-center rounded-lg text-white" style="background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg></span>@exotic_tint_qatar</a>
     </div>
-    <div class="mt-10 grid auto-rows-[200px] grid-cols-2 gap-4 lg:auto-rows-[230px] lg:grid-cols-4">
-      <a href="/service/automotive-window-tinting/" class="group relative overflow-hidden rounded-[22px] col-span-2 row-span-2" data-reveal style="--d:0ms">
+    <div class="mt-10 grid auto-rows-[200px] grid-cols-2 gap-4 lg:auto-rows-[230px] lg:grid-cols-4" data-assemble="scrub">
+      <a href="/service/automotive-window-tinting/" class="group relative overflow-hidden rounded-[22px] shadow-card col-span-2 row-span-2" data-a="far-left">
       <img src="/assets/img/automotive.webp" alt="Automotive Window Tinting" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -412,7 +417,7 @@
         <span class="grid h-10 w-10 shrink-0 translate-y-2 place-items-center rounded-full bg-grad text-ink opacity-0 shadow-gold transition group-hover:translate-y-0 group-hover:opacity-100"><svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-      <a href="/service/customized-cut-frosted-film/" class="group relative overflow-hidden rounded-[22px] " data-reveal style="--d:0ms">
+      <a href="/service/customized-cut-frosted-film/" class="group relative overflow-hidden rounded-[22px] shadow-card " data-a="far-top">
       <img src="/assets/img/frosted.webp" alt="Customized Cut Frosted Film" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -420,7 +425,7 @@
         <span class="grid h-10 w-10 shrink-0 translate-y-2 place-items-center rounded-full bg-grad text-ink opacity-0 shadow-gold transition group-hover:translate-y-0 group-hover:opacity-100"><svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-      <a href="/service/marble-protection-film/" class="group relative overflow-hidden rounded-[22px] " data-reveal style="--d:0ms">
+      <a href="/service/marble-protection-film/" class="group relative overflow-hidden rounded-[22px] shadow-card " data-a="far-right">
       <img src="/assets/img/marble.webp" alt="Marble Protection Film" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -428,7 +433,7 @@
         <span class="grid h-10 w-10 shrink-0 translate-y-2 place-items-center rounded-full bg-grad text-ink opacity-0 shadow-gold transition group-hover:translate-y-0 group-hover:opacity-100"><svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-      <a href="/service/commercial-window-tinting-services/" class="group relative overflow-hidden rounded-[22px] col-span-2" data-reveal style="--d:0ms">
+      <a href="/service/commercial-window-tinting-services/" class="group relative overflow-hidden rounded-[22px] shadow-card col-span-2" data-a="far-right">
       <img src="/assets/img/commercial.webp" alt="Commercial Window Tinting" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -436,7 +441,7 @@
         <span class="grid h-10 w-10 shrink-0 translate-y-2 place-items-center rounded-full bg-grad text-ink opacity-0 shadow-gold transition group-hover:translate-y-0 group-hover:opacity-100"><svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-      <a href="/service/fabric-nano-coating-service/" class="group relative overflow-hidden rounded-[22px] " data-reveal style="--d:0ms">
+      <a href="/service/fabric-nano-coating-service/" class="group relative overflow-hidden rounded-[22px] shadow-card " data-a="far-bottom">
       <img src="/assets/img/nano.webp" alt="Fabric Nano Coating" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -444,12 +449,12 @@
         <span class="grid h-10 w-10 shrink-0 translate-y-2 place-items-center rounded-full bg-grad text-ink opacity-0 shadow-gold transition group-hover:translate-y-0 group-hover:opacity-100"><svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-      <a href="https://www.instagram.com/exotic_tint_qatar/" target="_blank" rel="noopener" class="group relative flex flex-col justify-between overflow-hidden rounded-[22px] p-5 text-white" style="background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 50%,#6228d7 100%)" data-reveal style="--d:0ms">
+      <a href="https://www.instagram.com/exotic_tint_qatar/" target="_blank" rel="noopener" class="group relative flex flex-col justify-between overflow-hidden rounded-[22px] p-5 text-white" style="background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 50%,#6228d7 100%)" data-a="far-bottom">
         <img src="/assets/img/3d/camera.webp" alt="" class="absolute -bottom-3 -end-3 h-24 w-24 opacity-90 drop-shadow-xl transition duration-500 group-hover:rotate-12" loading="lazy" width="200" height="200">
         <span class="grid h-11 w-11 place-items-center rounded-xl bg-white/20 backdrop-blur"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg></span>
         <div><p class="font-head text-xl font-extrabold leading-tight">See more on Instagram</p><p class="mt-1 text-sm text-white/85">Follow for daily work</p></div>
       </a>
-      <a href="/service/residential-window-tinting-services/" class="group relative overflow-hidden rounded-[22px] col-span-2" data-reveal style="--d:0ms">
+      <a href="/service/residential-window-tinting-services/" class="group relative overflow-hidden rounded-[22px] shadow-card col-span-2" data-a="far-left">
       <img src="/assets/img/residential.webp" alt="Residential Window Tinting" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -513,44 +518,102 @@
   </div>
 </section>
 
-<section class="pb-20 lg:pb-28">
+<section class="relative overflow-hidden pb-20 lg:pb-28" data-assemble>
   <div class="container-site">
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-      <div class="max-w-2xl" data-reveal style="--d:0ms">
-    <span class="eyebrow  ">Client stories</span>
-    <h2 class="mt-4 text-balance font-head text-[1.85rem] font-extrabold leading-[1.12] min-[400px]:text-[2.1rem] sm:text-[2.6rem] lg:text-[2.9rem] text-ink">Loved by clients <span class="text-grad">across Qatar</span></h2>
-    
-  </div>
-      <span class="inline-flex w-max items-center gap-3 rounded-full border border-line bg-white px-5 py-2.5 shadow-card" data-reveal style="--d:100ms"><span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span> <b class="text-ink">5.0</b><span class="text-sm text-muted">client rating</span></span>
-    </div>
-    <div class="relative mt-10 overflow-hidden rounded-[28px] border border-line bg-gradient-to-br from-tint-2 via-white to-tint p-7 shadow-glow sm:p-12" data-testimonials='[{&quot;text&quot;:&quot;I used their car window tinting service, and the heat-rejection film keeps my car cool. Highly recommend Exotic Tint Qatar!&quot;,&quot;name&quot;:&quot;Harold Harrison&quot;,&quot;role&quot;:&quot;Car owner&quot;,&quot;service&quot;:&quot;Automotive tint&quot;},{&quot;text&quot;:&quot;Exotic Tint Qatar provided excellent commercial window tinting in Doha. The frosted window film designs are perfect for our office, and the heat reduction is amazing!&quot;,&quot;name&quot;:&quot;Miranda Snyder&quot;,&quot;role&quot;:&quot;Office manager&quot;,&quot;service&quot;:&quot;Commercial &amp; frosted&quot;},{&quot;text&quot;:&quot;Their nano coating for sofa and marble protection services are incredible. My furniture and surfaces look brand new.&quot;,&quot;name&quot;:&quot;Debra Reyes&quot;,&quot;role&quot;:&quot;Homeowner&quot;,&quot;service&quot;:&quot;Nano coating &amp; marble&quot;},{&quot;text&quot;:&quot;Cooler offices and lower bills — great service from start to finish. The team was fast, clean and professional.&quot;,&quot;name&quot;:&quot;Omar S.&quot;,&quot;role&quot;:&quot;Office manager&quot;,&quot;service&quot;:&quot;Commercial tint&quot;}]' data-reveal style="--d:150ms">
-      <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full border-[40px] border-gold-100/70"></div>
-      <div class="relative grid items-center gap-12 lg:grid-cols-12">
-        <div class="lg:col-span-7">
-          <span class="ico !h-14 !w-14 !rounded-2xl"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .01-1 1.03V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg></span>
-          <div data-t-body>
-            <blockquote class="mt-7 min-h-[7.5rem] font-head text-[1.45rem] font-semibold leading-snug text-ink sm:text-[1.75rem]" data-t-text>I used their car window tinting service, and the heat-rejection film keeps my car cool. Highly recommend Exotic Tint Qatar!</blockquote>
-            <div class="my-7 border-t border-dashed border-[#e7d7b8]"></div>
-            <div class="flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <p class="font-head text-xl font-bold text-ink" data-t-name>Harold Harrison</p>
-                <p class="text-muted" data-t-role>Car owner</p>
-                <span class="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#f3d7a6] bg-white px-3 py-1 text-xs font-bold text-gold-700"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span data-t-service>Automotive tint</span></span>
+    <div class="relative overflow-hidden rounded-[28px] border border-line bg-gradient-to-br from-tint-2 via-white to-tint p-6 shadow-glow sm:p-10 lg:p-14">
+      <div class="aurora soft" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="relative grid gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5" data-a="left">
+          <span class="eyebrow">Client stories</span>
+          <h2 class="mt-4 text-balance font-head text-[1.85rem] font-extrabold leading-[1.12] text-ink min-[400px]:text-[2.1rem] sm:text-[2.6rem]">What our clients <span class="text-grad">tell us</span></h2>
+          <p class="mt-4 text-[1.05rem] leading-relaxed text-muted">Real words from drivers, homeowners and businesses we’ve worked with across Qatar.</p>
+          <div class="mt-8 rounded-[22px] border border-line bg-white p-5 shadow-card">
+            <div class="flex items-center gap-4">
+              <img src="/assets/img/logo-original.webp" alt="" class="h-14 w-auto">
+              <div><p class="font-head text-lg font-bold text-ink">Exotic Tint Qatar</p><p class="flex items-center gap-2 text-sm text-muted"><span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span> Rated by our clients</p></div>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-2 border-t border-dashed border-line pt-5 text-center">
+              <div><p class="font-head text-xl font-extrabold text-ink">6</p><p class="text-[11px] text-muted">Services</p></div>
+              <div><p class="font-head text-xl font-extrabold text-ink">8+</p><p class="text-[11px] text-muted">Areas</p></div>
+              <div><p class="font-head text-xl font-extrabold text-ink" dir="ltr">7/7</p><p class="text-[11px] text-muted">Days open</p></div>
+            </div>
+          </div>
+          <p class="mt-8 text-sm font-semibold text-ink">Find us &amp; leave a review</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <a href="https://www.facebook.com/people/Exotics-Window-Tintin/61559300550958/" target="_blank" rel="noopener" class="flex items-center gap-2.5 rounded-2xl border border-line bg-white px-3.5 py-2.5 text-sm font-bold text-ink shadow-card transition hover:-translate-y-0.5"><span class="grid h-8 w-8 place-items-center rounded-lg text-white" style="background:#1877F2"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.3H7.6V14h2.7v8h3.2z"/></svg></span>Facebook</a>
+            <a href="https://www.instagram.com/exotic_tint_qatar/" target="_blank" rel="noopener" class="flex items-center gap-2.5 rounded-2xl border border-line bg-white px-3.5 py-2.5 text-sm font-bold text-ink shadow-card transition hover:-translate-y-0.5"><span class="grid h-8 w-8 place-items-center rounded-lg text-white" style="background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg></span>Instagram</a>
+            <a href="https://www.tiktok.com/@exotic_window_tinting_qa" target="_blank" rel="noopener" class="flex items-center gap-2.5 rounded-2xl border border-line bg-white px-3.5 py-2.5 text-sm font-bold text-ink shadow-card transition hover:-translate-y-0.5"><span class="grid h-8 w-8 place-items-center rounded-lg text-white" style="background:#000"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.8 5.8 0 1 0 5 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.3-1.6z"/></svg></span>TikTok</a>
+          </div>
+        </div>
+        <div class="lg:col-span-7" data-a="right">
+          <div class="glass-card overflow-hidden rounded-[26px]">
+            <div class="flex items-center justify-between gap-3 border-b border-white/70 bg-white/60 px-5 py-4">
+              <div class="flex items-center gap-3">
+                <span class="relative grid h-10 w-10 place-items-center rounded-full bg-grad text-ink"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="absolute -end-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span></span>
+                <div><p class="font-head font-bold text-ink">Client reviews</p><p class="text-xs text-muted" data-review-status data-typing-label="new review…">4 reviews</p></div>
               </div>
-              <div class="flex gap-3">
-                <button type="button" class="grid h-12 w-12 place-items-center rounded-full border border-line bg-white text-ink shadow-card transition hover:-translate-y-0.5" data-t-prev aria-label="Previous"><svg class="h-5 w-5 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
-                <button type="button" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold transition hover:-translate-y-0.5" data-t-next aria-label="Next"><svg class="h-5 w-5 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-              </div>
+              <a href="/reviews/" class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-ink shadow-card hover:text-gold-700">See all <svg class="h-3.5 w-3.5 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="space-y-4 p-4 sm:p-6" data-reviews>
+              
+        <div class="flex items-end gap-2.5 " data-review>
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full font-head text-xs font-extrabold text-white shadow-md" style="background:#E9A63B">HH</span>
+          <div class="max-w-[30rem] rounded-2xl rounded-es-md border border-white/70 bg-white/90 p-4 shadow-card backdrop-blur">
+            <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <p class="font-head text-[0.95rem] font-bold text-ink">Harold Harrison <span class="font-sans text-xs font-medium text-muted">· Car owner</span></p>
+              <span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span>
+            </div>
+            <p class="mt-2 text-[0.97rem] leading-relaxed text-ink-2">I used their car window tinting service, and the heat-rejection film keeps my car cool. Highly recommend Exotic Tint Qatar!</p>
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <span class="rounded-full bg-tint px-2.5 py-0.5 text-[11px] font-bold text-gold-700">Automotive tint</span>
+              <span class="flex items-center gap-1 text-[11px] font-semibold text-emerald-600"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Client review</span>
             </div>
           </div>
         </div>
-        <div class="relative mx-auto w-full max-w-sm lg:col-span-5">
-          <div class="absolute inset-[-8%] rounded-full bg-gradient-to-br from-gold-200 via-gold-300 to-gold-500 opacity-80"></div>
-          <div class="arch relative aspect-[4/5]"><img src="/assets/img/residential.webp" alt="A tinted villa in Qatar" class="h-full w-full object-cover" loading="lazy"></div>
-          <div class="float-chip absolute end-[-4%] top-[10%] px-3 py-2"><span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span></div>
-          <div class="float-chip floaty absolute bottom-[12%] start-[-6%] flex items-center gap-3 p-3 pe-5">
-            <span class="grid h-8 w-8 place-items-center rounded-full bg-emerald-50 text-emerald-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <span><span class="block text-xs text-muted">Verified</span><span class="block font-head font-bold text-ink">Exotic Tint client</span></span>
+        <div class="flex items-end gap-2.5 sm:ps-10" data-review>
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full font-head text-xs font-extrabold text-white shadow-md" style="background:#2563EB">MS</span>
+          <div class="max-w-[30rem] rounded-2xl rounded-es-md border border-white/70 bg-white/90 p-4 shadow-card backdrop-blur">
+            <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <p class="font-head text-[0.95rem] font-bold text-ink">Miranda Snyder <span class="font-sans text-xs font-medium text-muted">· Office manager</span></p>
+              <span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span>
+            </div>
+            <p class="mt-2 text-[0.97rem] leading-relaxed text-ink-2">Exotic Tint Qatar provided excellent commercial window tinting in Doha. The frosted window film designs are perfect for our office, and the heat reduction is amazing!</p>
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <span class="rounded-full bg-tint px-2.5 py-0.5 text-[11px] font-bold text-gold-700">Commercial & frosted</span>
+              <span class="flex items-center gap-1 text-[11px] font-semibold text-emerald-600"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Client review</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-end gap-2.5 " data-review>
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full font-head text-xs font-extrabold text-white shadow-md" style="background:#0F766E">DR</span>
+          <div class="max-w-[30rem] rounded-2xl rounded-es-md border border-white/70 bg-white/90 p-4 shadow-card backdrop-blur">
+            <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <p class="font-head text-[0.95rem] font-bold text-ink">Debra Reyes <span class="font-sans text-xs font-medium text-muted">· Homeowner</span></p>
+              <span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span>
+            </div>
+            <p class="mt-2 text-[0.97rem] leading-relaxed text-ink-2">Their nano coating for sofa and marble protection services are incredible. My furniture and surfaces look brand new.</p>
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <span class="rounded-full bg-tint px-2.5 py-0.5 text-[11px] font-bold text-gold-700">Nano coating & marble</span>
+              <span class="flex items-center gap-1 text-[11px] font-semibold text-emerald-600"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Client review</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-end gap-2.5 sm:ps-10" data-review>
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full font-head text-xs font-extrabold text-white shadow-md" style="background:#6D28D9">OS</span>
+          <div class="max-w-[30rem] rounded-2xl rounded-es-md border border-white/70 bg-white/90 p-4 shadow-card backdrop-blur">
+            <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <p class="font-head text-[0.95rem] font-bold text-ink">Omar S. <span class="font-sans text-xs font-medium text-muted">· Office manager</span></p>
+              <span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span>
+            </div>
+            <p class="mt-2 text-[0.97rem] leading-relaxed text-ink-2">Cooler offices and lower bills — great service from start to finish. The team was fast, clean and professional.</p>
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <span class="rounded-full bg-tint px-2.5 py-0.5 text-[11px] font-bold text-gold-700">Commercial tint</span>
+              <span class="flex items-center gap-1 text-[11px] font-semibold text-emerald-600"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Client review</span>
+            </div>
+          </div>
+        </div>
+              <div class="typing hidden w-max rounded-2xl rounded-es-md bg-white px-4 py-3 shadow-sm ms-11" data-typing><span></span><span></span><span></span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -603,8 +666,8 @@
     <h2 class="mt-4 text-balance font-head text-[1.85rem] font-extrabold leading-[1.12] min-[400px]:text-[2.1rem] sm:text-[2.6rem] lg:text-[2.9rem] text-ink">Book your tint <span class="text-grad">in 60 seconds</span></h2>
     <p class="mt-4 text-[1.08rem] leading-relaxed text-muted">Fill in a few details — your request goes straight to our team on WhatsApp.</p>
   </div>
-    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-12" data-reveal style="--d:120ms">
-      <form class="relative bg-white p-6 sm:p-10 lg:col-span-7" data-quote-form novalidate
+    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-12" data-assemble>
+      <form class="relative bg-white p-6 sm:p-10 lg:col-span-7" data-a="left" data-quote-form novalidate
         data-msg-intro="Hello Exotic Tint Qatar! I would like a free quote."
         data-l-name="Name" data-l-phone="Phone" data-l-service="Service" data-l-area="Area" data-l-message="Details" data-wa="97431608423">
         <div class="pointer-events-none absolute inset-0 dots opacity-30 [mask-image:linear-gradient(180deg,#000,transparent_50%)]"></div>
@@ -618,7 +681,7 @@
         <p class="relative mt-4 hidden items-center gap-2 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-600" data-form-error><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> Please add your name and phone number.</p>
         <button type="submit" class="btn btn-primary relative mt-6 w-full !py-4"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.81-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47 2.53 0 4.9.99 6.7 2.78a9.4 9.4 0 0 1 2.77 6.7c0 5.22-4.25 9.46-9.48 9.46zm8.06-17.53A11.33 11.33 0 0 0 12.04.6C5.76.6.65 5.7.65 11.98c0 2 .52 3.96 1.52 5.69L.55 23.4l5.86-1.54a11.4 11.4 0 0 0 5.62 1.43h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg> Send request on WhatsApp</button>
       </form>
-      <div class="relative p-6 sm:p-10 navy-bg lg:col-span-5">
+      <div class="relative p-6 sm:p-10 navy-bg lg:col-span-5" data-a="right">
         <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
         <div class="relative">
           <p class="flex items-center gap-2 text-white/80">Prefer to talk? <span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-bold uppercase text-emerald-300">7 days a week</span></p>
@@ -637,57 +700,81 @@
 </section>
 </main>
 
-<footer class="px-2.5 pb-2.5 sm:px-3 sm:pb-3">
-  <div class="relative overflow-hidden rounded-[28px] navy-bg">
-    <div class="pointer-events-none absolute inset-0 grid-lines-dark opacity-60"></div>
-    <div class="container-site relative pb-8 pt-16">
-      <div class="grid gap-12 lg:grid-cols-12">
-        <div class="grid gap-10 sm:grid-cols-3 lg:col-span-7">
-          
-    <div>
-      <h3 class="flex items-center gap-2 font-head text-lg font-bold text-white"><span class="h-0.5 w-3 rounded bg-grad"></span>Quick links</h3>
-      <ul class="mt-5 space-y-3"><li><a href="/" class="text-white/65 transition hover:text-gold-300">Home</a></li><li><a href="/about/" class="text-white/65 transition hover:text-gold-300">About</a></li><li><a href="/service/" class="text-white/65 transition hover:text-gold-300">Services</a></li><li><a href="/reviews/" class="text-white/65 transition hover:text-gold-300">Reviews</a></li><li><a href="/blogs/" class="text-white/65 transition hover:text-gold-300">Blog</a></li><li><a href="/contact/" class="text-white/65 transition hover:text-gold-300">Contact</a></li></ul>
+<footer class="relative mt-6 overflow-hidden bg-ink text-white" data-footer>
+  <div class="pointer-events-none absolute inset-0 grid-lines-dark opacity-40"></div>
+  <div class="pointer-events-none absolute -top-32 start-0 h-72 w-[40rem] rounded-full bg-gold-500/15 blur-[110px]"></div>
+  <div class="f-topline pointer-events-none absolute inset-x-0 top-0 h-px"></div>
+
+  <div class="container-site relative">
+    <!-- Let's talk -->
+    <div class="flex flex-col gap-7 pb-8 pt-12 lg:flex-row lg:items-end lg:justify-between lg:pb-10 lg:pt-14">
+      <div>
+        <p class="text-[0.7rem] font-extrabold uppercase tracking-[0.3em] text-gold-400"><span class="reveal-wrap"><span class="reveal-content" style="--d:0ms">Premium tint &amp; protection · Qatar</span></span></p>
+        <p class="mt-2 font-head text-[2.8rem] font-black uppercase leading-none tracking-tight sm:text-6xl lg:text-7xl" aria-label="Let’s talk"><span aria-hidden="true"><span class="wavy-char" style="--i:0">L</span><span class="wavy-char" style="--i:1">e</span><span class="wavy-char" style="--i:2">t</span><span class="wavy-char" style="--i:3">’</span><span class="wavy-char" style="--i:4">s</span><span class="inline-block w-[0.28em]"></span><span class="wavy-char" style="--i:5">t</span><span class="wavy-char" style="--i:6">a</span><span class="wavy-char" style="--i:7">l</span><span class="wavy-char" style="--i:8">k</span></span></p>
+        <p class="mt-4 max-w-2xl font-head text-xl font-medium leading-snug text-white sm:text-2xl md:text-[2rem]"><span class="reveal-wrap"><span class="reveal-content" style="--d:150ms">Cooler cars, brighter homes,</span></span> <span class="reveal-wrap"><span class="reveal-content" style="--d:300ms"><span class="premium-text-shine font-extrabold">protected surfaces.</span></span></span></p>
+      </div>
+      <div class="f-up flex flex-col items-start gap-2.5 lg:items-end" style="--d:400ms">
+        <a href="https://wa.me/97431608423?text=Hello%20Exotic%20Tint%20Qatar%2C%20I%20would%20like%20a%20free%20quote." target="_blank" rel="noopener" class="group inline-flex items-center gap-6 bg-white px-6 py-4 font-head text-lg font-bold text-ink transition hover:bg-gold-300">Get a free quote <span class="transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1"><svg class="h-5 w-5 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+        <p class="text-sm text-white/45">Reply within minutes on WhatsApp.</p>
+      </div>
     </div>
-          
-    <div>
-      <h3 class="flex items-center gap-2 font-head text-lg font-bold text-white"><span class="h-0.5 w-3 rounded bg-grad"></span>Tinting</h3>
-      <ul class="mt-5 space-y-3"><li><a href="/service/automotive-window-tinting/" class="text-white/65 transition hover:text-gold-300">Automotive Window Tinting</a></li><li><a href="/service/residential-window-tinting-services/" class="text-white/65 transition hover:text-gold-300">Residential Window Tinting</a></li><li><a href="/service/commercial-window-tinting-services/" class="text-white/65 transition hover:text-gold-300">Commercial Window Tinting</a></li></ul>
-    </div>
-          
-    <div>
-      <h3 class="flex items-center gap-2 font-head text-lg font-bold text-white"><span class="h-0.5 w-3 rounded bg-grad"></span>Protection</h3>
-      <ul class="mt-5 space-y-3"><li><a href="/service/customized-cut-frosted-film/" class="text-white/65 transition hover:text-gold-300">Customized Cut Frosted Film</a></li><li><a href="/service/marble-protection-film/" class="text-white/65 transition hover:text-gold-300">Marble Protection Film</a></li><li><a href="/service/fabric-nano-coating-service/" class="text-white/65 transition hover:text-gold-300">Fabric Nano Coating</a></li></ul>
-    </div>
-        </div>
-        <div class="rounded-[22px] border border-white/10 bg-white/[0.05] p-7 lg:col-span-5">
-          <h3 class="flex items-center gap-2 font-head text-lg font-bold text-white"><span class="h-0.5 w-3 rounded bg-grad"></span>Get in touch</h3>
-          <div class="mt-5 flex flex-wrap gap-x-6 gap-y-3">
-            <a href="tel:+97431608423" class="flex items-center gap-3 font-semibold text-white hover:text-gold-300"><span class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-gold-300"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.910a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span dir="ltr">+974 3160 8423</span></a>
-            <a href="mailto:contact@exotictintqatar.com" class="flex items-center gap-3 font-semibold text-white hover:text-gold-300"><span class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-gold-300"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></span>contact@exotictintqatar.com</a>
-          </div>
-          <form class="mt-6 flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] p-1.5" data-callback data-wa="97431608423" data-msg="Hello Exotic Tint Qatar, please call me back on:">
-            <label for="cb-phone" class="sr-only">Your phone number</label>
-            <input id="cb-phone" name="phone" type="tel" required placeholder="Your phone number" class="min-w-0 flex-1 bg-transparent px-4 text-white placeholder-white/45 focus:outline-none">
-            <button class="btn btn-primary !px-5 !py-2.5 text-sm">Call me back</button>
-          </form>
-          <p class="mt-6 font-semibold text-white">Business hours</p>
-          <p class="mt-1 text-sm text-white/65">8:00 AM – 6:00 PM · 7 days a week</p>
+
+    <!-- columns -->
+    <div class="grid grid-cols-2 border-t border-white/10 lg:grid-cols-4">
+      <div class="f-up py-8 lg:py-10 col-span-2 border-b border-white/10 pe-6 md:col-span-1 lg:border-b-0 lg:pe-8">
+        <h3 class="text-[0.7rem] font-extrabold uppercase tracking-[0.22em] text-white/40">Contact</h3>
+        <a href="/" class="mt-4 inline-block" aria-label="Exotic Tint Qatar"><img src="/assets/img/logo-original.webp" alt="Exotic Tint Qatar" class="h-[62px] w-auto" width="106" height="120"></a>
+        <p class="mt-3 font-head text-lg font-bold">Doha, Qatar</p>
+        <p class="text-sm text-white/50">On-site service across Qatar</p>
+        <a href="mailto:contact@exotictintqatar.com" class="mt-3 block break-all font-semibold text-white transition hover:text-gold-300">contact@exotictintqatar.com</a>
+        <a href="tel:+97431608423" class="mt-1 block text-sm font-bold text-white/60 transition hover:text-gold-300" dir="ltr">+974 3160 8423</a>
+      </div>
+      <div class="f-up py-8 lg:py-10 border-white/10 pe-4 md:border-b md:border-s md:ps-8 lg:border-b-0 lg:px-8">
+        <h3 class="text-[0.7rem] font-extrabold uppercase tracking-[0.22em] text-white/40">Services</h3>
+        <ul class="mt-5 space-y-2.5"><li><a href="/service/automotive-window-tinting/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Automotive Window Tinting</a></li><li><a href="/service/residential-window-tinting-services/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Residential Window Tinting</a></li><li><a href="/service/commercial-window-tinting-services/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Commercial Window Tinting</a></li><li><a href="/service/customized-cut-frosted-film/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Customized Cut Frosted Film</a></li><li><a href="/service/marble-protection-film/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Marble Protection Film</a></li><li><a href="/service/fabric-nano-coating-service/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Fabric Nano Coating</a></li></ul>
+      </div>
+      <div class="f-up py-8 lg:py-10 border-s border-white/10 ps-5 md:border-s-0 md:ps-0 lg:border-s lg:px-8">
+        <h3 class="text-[0.7rem] font-extrabold uppercase tracking-[0.22em] text-white/40">Company</h3>
+        <ul class="mt-5 space-y-2.5"><li><a href="/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Home</a></li><li><a href="/about/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>About</a></li><li><a href="/reviews/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Reviews</a></li><li><a href="/blogs/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Blog</a></li><li><a href="/contact/" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>Contact</a></li></ul>
+      </div>
+      <div class="f-up py-8 lg:py-10 col-span-2 border-t border-white/10 md:col-span-1 md:border-s md:border-t-0 md:ps-8">
+        <h3 class="text-[0.7rem] font-extrabold uppercase tracking-[0.22em] text-white/40">Follow us</h3>
+        <div class="mt-5 grid grid-cols-2 gap-2 md:grid-cols-1">
+          <a href="https://www.instagram.com/exotic_tint_qatar/" target="_blank" rel="noopener" class="group relative flex items-center justify-between overflow-hidden border border-white/15 px-4 py-2.5 text-sm font-bold text-white transition hover:border-transparent" style="--b:linear-gradient(90deg,#f9ce34,#ee2a7b,#6228d7)">
+      <span class="absolute inset-0 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 rtl:origin-right" style="background:var(--b)"></span>
+      <span class="relative">Instagram</span><span class="relative text-white/60 transition group-hover:text-white"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg></span>
+    </a>
+          <a href="https://www.facebook.com/people/Exotics-Window-Tintin/61559300550958/" target="_blank" rel="noopener" class="group relative flex items-center justify-between overflow-hidden border border-white/15 px-4 py-2.5 text-sm font-bold text-white transition hover:border-transparent" style="--b:#1877F2">
+      <span class="absolute inset-0 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 rtl:origin-right" style="background:var(--b)"></span>
+      <span class="relative">Facebook</span><span class="relative text-white/60 transition group-hover:text-white"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.3H7.6V14h2.7v8h3.2z"/></svg></span>
+    </a>
+          <a href="https://www.tiktok.com/@exotic_window_tinting_qa" target="_blank" rel="noopener" class="group relative flex items-center justify-between overflow-hidden border border-white/15 px-4 py-2.5 text-sm font-bold text-white transition hover:border-transparent" style="--b:#111">
+      <span class="absolute inset-0 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 rtl:origin-right" style="background:var(--b)"></span>
+      <span class="relative">TikTok</span><span class="relative text-white/60 transition group-hover:text-white"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.8 5.8 0 1 0 5 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.3-1.6z"/></svg></span>
+    </a>
+          <a href="https://wa.me/97431608423" target="_blank" rel="noopener" class="group relative flex items-center justify-between overflow-hidden border border-white/15 px-4 py-2.5 text-sm font-bold text-white transition hover:border-transparent" style="--b:#1fa855">
+      <span class="absolute inset-0 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 rtl:origin-right" style="background:var(--b)"></span>
+      <span class="relative">WhatsApp</span><span class="relative text-white/60 transition group-hover:text-white"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.81-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47 2.53 0 4.9.99 6.7 2.78a9.4 9.4 0 0 1 2.77 6.7c0 5.22-4.25 9.46-9.48 9.46zm8.06-17.53A11.33 11.33 0 0 0 12.04.6C5.76.6.65 5.7.65 11.98c0 2 .52 3.96 1.52 5.69L.55 23.4l5.86-1.54a11.4 11.4 0 0 0 5.62 1.43h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg></span>
+    </a>
         </div>
       </div>
-      <div class="mt-14 flex flex-col gap-6 border-t border-white/10 pt-8 md:flex-row md:items-end md:justify-between">
-        <div>
-          <a href="/" aria-label="Exotic Tint Qatar" class="inline-block"><img src="/assets/img/logo-original.webp" alt="Exotic Tint Qatar" class="h-24 w-auto" width="106" height="120"></a>
-          <p class="mt-4 text-sm text-white/55">© <span data-year>2026</span> Exotic Tint Qatar — Premium Tint & Protective Films. All rights reserved.</p>
-        </div>
-        <div class="flex flex-col gap-4 md:items-end">
-          <div class="flex gap-2.5">
-            <a href="https://www.instagram.com/exotic_tint_qatar/" target="_blank" rel="noopener" aria-label="Instagram" class="grid h-11 w-11 place-items-center rounded-full text-white transition hover:-translate-y-0.5" style="background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg></a>
-            <a href="https://www.facebook.com/people/Exotics-Window-Tintin/61559300550958/" target="_blank" rel="noopener" aria-label="Facebook" class="grid h-11 w-11 place-items-center rounded-full bg-[#1877F2] text-white transition hover:-translate-y-0.5"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.3H7.6V14h2.7v8h3.2z"/></svg></a>
-            <a href="https://www.tiktok.com/@exotic_window_tinting_qa" target="_blank" rel="noopener" aria-label="TikTok" class="grid h-11 w-11 place-items-center rounded-full bg-black text-white ring-1 ring-white/20 transition hover:-translate-y-0.5"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.8 5.8 0 1 0 5 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.3-1.6z"/></svg></a>
-            <a href="https://wa.me/97431608423" target="_blank" rel="noopener" aria-label="WhatsApp" class="grid h-11 w-11 place-items-center rounded-full bg-[#25D366] text-white transition hover:-translate-y-0.5"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.81-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47 2.53 0 4.9.99 6.7 2.78a9.4 9.4 0 0 1 2.77 6.7c0 5.22-4.25 9.46-9.48 9.46zm8.06-17.53A11.33 11.33 0 0 0 12.04.6C5.76.6.65 5.7.65 11.98c0 2 .52 3.96 1.52 5.69L.55 23.4l5.86-1.54a11.4 11.4 0 0 0 5.62 1.43h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg></a>
-          </div>
-          <p class="flex items-center gap-2 text-sm text-white/65"><svg class="h-4 w-4 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Doha, Qatar · On-site service across Qatar</p>
-        </div>
+    </div>
+  </div>
+
+  <!-- bottom bar over a giant faint wordmark -->
+  <div class="relative border-t border-white/10">
+    <p class="f-wordmark pointer-events-none absolute -bottom-[0.18em] left-1/2 select-none whitespace-nowrap text-center font-head text-[17vw] font-black uppercase leading-none tracking-tight lg:text-[11rem] " aria-hidden="true">Exotic Tint</p>
+    <div class="container-site relative flex flex-col items-center justify-between gap-4 pb-24 pt-6 text-sm md:flex-row md:py-6">
+      <p class="text-center text-white/45 md:text-start">© <span data-year>2026</span> Exotic Tint Qatar. All rights reserved.</p>
+      <div class="flex flex-wrap items-center justify-center gap-2.5">
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-white/80" data-open-status data-open="Open now" data-closed="Closed · opens 8 AM">
+          <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" data-open-ping></span><span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" data-open-dot></span></span><span data-open-label>Open daily</span>
+        </span>
+        <a href="/ar/" hreflang="ar" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-2 font-semibold text-white/80 transition hover:border-gold-400/50 hover:text-white font-arabic"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> العربية</a>
+        <button type="button" class="relative grid h-10 w-10 place-items-center rounded-full bg-white/[0.06] text-white transition hover:bg-white/[0.12]" data-to-top aria-label="Back to top">
+          <svg class="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/><circle cx="22" cy="22" r="20" fill="none" stroke="#E9A63B" stroke-width="2" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-top-ring/></svg>
+          <svg class="relative h-4 w-4 -rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -696,6 +783,10 @@
 <a href="https://wa.me/97431608423?text=Hello%20Exotic%20Tint%20Qatar%2C%20I%20would%20like%20a%20free%20quote." target="_blank" rel="noopener" aria-label="WhatsApp us" class="fixed bottom-5 end-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_14px_30px_-8px_rgba(37,211,102,.7)] transition hover:scale-105">
   <span class="ping-soft absolute inset-0 rounded-full bg-[#25D366]"></span><svg class="relative h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.81-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47 2.53 0 4.9.99 6.7 2.78a9.4 9.4 0 0 1 2.77 6.7c0 5.22-4.25 9.46-9.48 9.46zm8.06-17.53A11.33 11.33 0 0 0 12.04.6C5.76.6.65 5.7.65 11.98c0 2 .52 3.96 1.52 5.69L.55 23.4l5.86-1.54a11.4 11.4 0 0 0 5.62 1.43h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg>
 </a>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
+<script src="/assets/js/motion.js" defer></script>
 </body>
 </html>

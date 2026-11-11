@@ -74,6 +74,9 @@ const starsRow = (cls = 'h-4 w-4') =>
   `<span class="inline-flex gap-0.5 text-gold-500" aria-label="5/5">${('<svg class="' + cls + '" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + P.star + '</svg>').repeat(5)}</span>`;
 const arrow = (cls = 'h-4 w-4') => icon('arrow', cls + ' rtl:-scale-x-100', 2.2);
 
+// Drifting colour blobs behind glass surfaces (animated by GSAP)
+const aurora = (tone = '') => `<div class="aurora ${tone}" aria-hidden="true"><span></span><span></span><span></span></div>`;
+
 /* Per-service visual identity (pastel card + accent + 3D emoji) */
 const SV = {
   'automotive-window-tinting': { emoji: 'car', bg: 'linear-gradient(160deg,#FFF0D6 0%,#FFFAF1 100%)', acc: 'linear-gradient(135deg,#F6C766,#C47F1E)', on: '#12233D', color: '#C47F1E', badge: ['Up to 60% less heat', 'حرارة أقل حتى ٦٠٪'] },
@@ -129,7 +132,8 @@ function head(page, meta) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Urbanist:wght@500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
+${page.key === 'home' ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
 ${meta.jsonld ? `<script type="application/ld+json">${JSON.stringify(meta.jsonld)}</script>` : ''}
 </head>`;
 }
@@ -222,52 +226,92 @@ function header(page) {
 </aside>`;
 }
 
+// Footer "Let's talk": each letter waves (Arabic waves per word so the script stays joined)
+function wavy(text) {
+  const parts = L === 'ar' ? text.split(/(\s+)/) : [...text];
+  let i = 0;
+  return parts
+    .map((ch) => (/^\s+$/.test(ch) ? '<span class="inline-block w-[0.28em]"></span>' : `<span class="wavy-char" style="--i:${i++}">${ch}</span>`))
+    .join('');
+}
+// Line that slides up out of a mask when the footer comes into view
+const reveal2 = (html, d = 0) => `<span class="reveal-wrap"><span class="reveal-content" style="--d:${d}ms">${html}</span></span>`;
+
 function footer() {
-  const col = (title, links) => `
-    <div>
-      <h3 class="flex items-center gap-2 font-head text-lg font-bold text-white"><span class="h-0.5 w-3 rounded bg-grad"></span>${title}</h3>
-      <ul class="mt-5 space-y-3">${links.map(([label, link]) => `<li><a href="${link}" class="text-white/65 transition hover:text-gold-300">${label}</a></li>`).join('')}</ul>
-    </div>`;
+  const other = L === 'en' ? 'ar' : 'en';
+  const head = (txt) => `<h3 class="text-[0.7rem] font-extrabold uppercase tracking-[0.22em] text-white/40">${txt}</h3>`;
+  const link = ([label, url]) =>
+    `<li><a href="${url}" class="group inline-flex items-center text-[0.93rem] text-white/75 transition hover:text-white"><span class="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:me-2 group-hover:w-3"></span>${label}</a></li>`;
+  const follow = (url, label, ic, bg) =>
+    `<a href="${url}" target="_blank" rel="noopener" class="group relative flex items-center justify-between overflow-hidden border border-white/15 px-4 py-2.5 text-sm font-bold text-white transition hover:border-transparent" style="--b:${bg}">
+      <span class="absolute inset-0 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 rtl:origin-right" style="background:var(--b)"></span>
+      <span class="relative">${label}</span><span class="relative text-white/60 transition group-hover:text-white">${ic}</span>
+    </a>`;
+  const colCls = 'f-up py-8 lg:py-10';
   return `
-<footer class="px-2.5 pb-2.5 sm:px-3 sm:pb-3">
-  <div class="relative overflow-hidden rounded-[28px] navy-bg">
-    <div class="pointer-events-none absolute inset-0 grid-lines-dark opacity-60"></div>
-    <div class="container-site relative pb-8 pt-16">
-      <div class="grid gap-12 lg:grid-cols-12">
-        <div class="grid gap-10 sm:grid-cols-3 lg:col-span-7">
-          ${col(t(C.ui.quickLinks), [[t(C.ui.nav.home), href()], [t(C.ui.nav.about), href('about/')], [t(C.ui.nav.services), href('service/')], [tr('Reviews', 'التقييمات'), href('reviews/')], [tr('Blog', 'المدونة'), href('blogs/')], [t(C.ui.nav.contact), href('contact/')]])}
-          ${col(tr('Tinting', 'التظليل'), C.services.slice(0, 3).map((s) => [t(s.title), href('service/' + s.slug + '/')]))}
-          ${col(tr('Protection', 'الحماية'), C.services.slice(3).map((s) => [t(s.title), href('service/' + s.slug + '/')]))}
-        </div>
-        <div class="rounded-[22px] border border-white/10 bg-white/[0.05] p-7 lg:col-span-5">
-          <h3 class="flex items-center gap-2 font-head text-lg font-bold text-white"><span class="h-0.5 w-3 rounded bg-grad"></span>${t(C.ui.getInTouch)}</h3>
-          <div class="mt-5 flex flex-wrap gap-x-6 gap-y-3">
-            <a href="tel:${C.site.phoneRaw}" class="flex items-center gap-3 font-semibold text-white hover:text-gold-300"><span class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-gold-300">${icon('phone', 'h-4 w-4')}</span><span dir="ltr">${C.site.phone}</span></a>
-            <a href="mailto:${C.site.email}" class="flex items-center gap-3 font-semibold text-white hover:text-gold-300"><span class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-gold-300">${icon('mail', 'h-4 w-4')}</span>${C.site.email}</a>
-          </div>
-          <form class="mt-6 flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] p-1.5" data-callback data-wa="${C.site.whatsapp}" data-msg="${esc(tr('Hello Exotic Tint Qatar, please call me back on:', 'مرحباً إكزوتك تينت قطر، يرجى الاتصال بي على الرقم:'))}">
-            <label for="cb-phone" class="sr-only">${tr('Your phone number', 'رقم هاتفك')}</label>
-            <input id="cb-phone" name="phone" type="tel" required placeholder="${tr('Your phone number', 'رقم هاتفك')}" class="min-w-0 flex-1 bg-transparent px-4 text-white placeholder-white/45 focus:outline-none">
-            <button class="btn btn-primary !px-5 !py-2.5 text-sm">${tr('Call me back', 'اتصلوا بي')}</button>
-          </form>
-          <p class="mt-6 font-semibold text-white">${t(C.ui.hoursLabel)}</p>
-          <p class="mt-1 text-sm text-white/65">${t(C.site.hours)}</p>
+<footer class="relative mt-6 overflow-hidden bg-ink text-white" data-footer>
+  <div class="pointer-events-none absolute inset-0 grid-lines-dark opacity-40"></div>
+  <div class="pointer-events-none absolute -top-32 start-0 h-72 w-[40rem] rounded-full bg-gold-500/15 blur-[110px]"></div>
+  <div class="f-topline pointer-events-none absolute inset-x-0 top-0 h-px"></div>
+
+  <div class="container-site relative">
+    <!-- Let's talk -->
+    <div class="flex flex-col gap-7 pb-8 pt-12 lg:flex-row lg:items-end lg:justify-between lg:pb-10 lg:pt-14">
+      <div>
+        <p class="text-[0.7rem] font-extrabold uppercase tracking-[0.3em] text-gold-400">${reveal2(tr('Premium tint &amp; protection · Qatar', 'تظليل وحماية فاخرة · قطر'))}</p>
+        <p class="mt-2 font-head text-[2.8rem] font-black uppercase leading-none tracking-tight sm:text-6xl lg:text-7xl" aria-label="${tr('Let’s talk', 'لنتحدث')}"><span aria-hidden="true">${wavy(tr('Let’s talk', 'لنتحدث'))}</span></p>
+        <p class="mt-4 max-w-2xl font-head text-xl font-medium leading-snug text-white sm:text-2xl md:text-[2rem]">${reveal2(tr('Cooler cars, brighter homes,', 'سيارات أبرد، منازل أكثر إشراقاً،'), 150)} ${reveal2('<span class="premium-text-shine font-extrabold">' + tr('protected surfaces.', 'وأسطح محمية.') + '</span>', 300)}</p>
+      </div>
+      <div class="f-up flex flex-col items-start gap-2.5 lg:items-end" style="--d:400ms">
+        <a href="${waHello()}" target="_blank" rel="noopener" class="group inline-flex items-center gap-6 bg-white px-6 py-4 font-head text-lg font-bold text-ink transition hover:bg-gold-300">${tr('Get a free quote', 'احصل على عرض سعر مجاني')} <span class="transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1">${arrow('h-5 w-5')}</span></a>
+        <p class="text-sm text-white/45">${tr('Reply within minutes on WhatsApp.', 'نرد خلال دقائق عبر واتساب.')}</p>
+      </div>
+    </div>
+
+    <!-- columns -->
+    <div class="grid grid-cols-2 border-t border-white/10 lg:grid-cols-4">
+      <div class="${colCls} col-span-2 border-b border-white/10 pe-6 md:col-span-1 lg:border-b-0 lg:pe-8">
+        ${head(tr('Contact', 'التواصل'))}
+        <a href="${href()}" class="mt-4 inline-block" aria-label="${esc(t(C.site.name))}">${logo()}</a>
+        <p class="mt-3 font-head text-lg font-bold">${t(C.site.address)}</p>
+        <p class="text-sm text-white/50">${tr('On-site service across Qatar', 'خدمة في الموقع في كل قطر')}</p>
+        <a href="mailto:${C.site.email}" class="mt-3 block break-all font-semibold text-white transition hover:text-gold-300">${C.site.email}</a>
+        <a href="tel:${C.site.phoneRaw}" class="mt-1 block text-sm font-bold text-white/60 transition hover:text-gold-300" dir="ltr">${C.site.phone}</a>
+      </div>
+      <div class="${colCls} border-white/10 pe-4 md:border-b md:border-s md:ps-8 lg:border-b-0 lg:px-8">
+        ${head(t(C.ui.nav.services))}
+        <ul class="mt-5 space-y-2.5">${C.services.map((s) => link([t(s.title), href('service/' + s.slug + '/')])).join('')}</ul>
+      </div>
+      <div class="${colCls} border-s border-white/10 ps-5 md:border-s-0 md:ps-0 lg:border-s lg:px-8">
+        ${head(tr('Company', 'الشركة'))}
+        <ul class="mt-5 space-y-2.5">${[[t(C.ui.nav.home), href()], [t(C.ui.nav.about), href('about/')], [tr('Reviews', 'التقييمات'), href('reviews/')], [tr('Blog', 'المدونة'), href('blogs/')], [t(C.ui.nav.contact), href('contact/')]].map(link).join('')}</ul>
+      </div>
+      <div class="${colCls} col-span-2 border-t border-white/10 md:col-span-1 md:border-s md:border-t-0 md:ps-8">
+        ${head(tr('Follow us', 'تابعنا'))}
+        <div class="mt-5 grid grid-cols-2 gap-2 md:grid-cols-1">
+          ${follow(C.site.instagram, 'Instagram', icon('instagram', 'h-4 w-4'), 'linear-gradient(90deg,#f9ce34,#ee2a7b,#6228d7)')}
+          ${follow(C.site.facebook, 'Facebook', fbIcon('h-4 w-4'), '#1877F2')}
+          ${follow(C.site.tiktok, 'TikTok', ttIcon('h-4 w-4'), '#111')}
+          ${follow('https://wa.me/' + C.site.whatsapp, 'WhatsApp', waIcon('h-4 w-4'), '#1fa855')}
         </div>
       </div>
-      <div class="mt-14 flex flex-col gap-6 border-t border-white/10 pt-8 md:flex-row md:items-end md:justify-between">
-        <div>
-          <a href="${href()}" aria-label="${esc(t(C.site.name))}" class="inline-block">${logo('lg')}</a>
-          <p class="mt-4 text-sm text-white/55">© <span data-year>2026</span> ${t(C.site.name)} — ${t(C.site.tagline)}. ${t(C.ui.rights)}</p>
-        </div>
-        <div class="flex flex-col gap-4 md:items-end">
-          <div class="flex gap-2.5">
-            <a href="${C.site.instagram}" target="_blank" rel="noopener" aria-label="Instagram" class="grid h-11 w-11 place-items-center rounded-full text-white transition hover:-translate-y-0.5" style="background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)">${icon('instagram', 'h-5 w-5')}</a>
-            <a href="${C.site.facebook}" target="_blank" rel="noopener" aria-label="Facebook" class="grid h-11 w-11 place-items-center rounded-full bg-[#1877F2] text-white transition hover:-translate-y-0.5">${fbIcon('h-5 w-5')}</a>
-            <a href="${C.site.tiktok}" target="_blank" rel="noopener" aria-label="TikTok" class="grid h-11 w-11 place-items-center rounded-full bg-black text-white ring-1 ring-white/20 transition hover:-translate-y-0.5">${ttIcon('h-5 w-5')}</a>
-            <a href="https://wa.me/${C.site.whatsapp}" target="_blank" rel="noopener" aria-label="WhatsApp" class="grid h-11 w-11 place-items-center rounded-full bg-[#25D366] text-white transition hover:-translate-y-0.5">${waIcon('h-5 w-5')}</a>
-          </div>
-          <p class="flex items-center gap-2 text-sm text-white/65">${icon('pin', 'h-4 w-4 text-gold-400')} ${t(C.site.address)} · ${tr('On-site service across Qatar', 'خدمة في الموقع في جميع أنحاء قطر')}</p>
-        </div>
+    </div>
+  </div>
+
+  <!-- bottom bar over a giant faint wordmark -->
+  <div class="relative border-t border-white/10">
+    <p class="f-wordmark pointer-events-none absolute -bottom-[0.18em] left-1/2 select-none whitespace-nowrap text-center font-head text-[17vw] font-black uppercase leading-none tracking-tight lg:text-[11rem] ${L === 'ar' ? 'font-arabic' : ''}" aria-hidden="true">${tr('Exotic Tint', 'إكزوتك تينت')}</p>
+    <div class="container-site relative flex flex-col items-center justify-between gap-4 pb-24 pt-6 text-sm md:flex-row md:py-6">
+      <p class="text-center text-white/45 md:text-start">© <span data-year>2026</span> ${t(C.site.name)}. ${t(C.ui.rights)}</p>
+      <div class="flex flex-wrap items-center justify-center gap-2.5">
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-white/80" data-open-status data-open="${tr('Open now', 'مفتوح الآن')}" data-closed="${tr('Closed · opens 8 AM', 'مغلق · نفتح ٨ ص')}">
+          <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" data-open-ping></span><span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" data-open-dot></span></span><span data-open-label>${tr('Open daily', 'مفتوح يومياً')}</span>
+        </span>
+        <a href="${base(other)}" hreflang="${other}" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-2 font-semibold text-white/80 transition hover:border-gold-400/50 hover:text-white ${other === 'ar' ? 'font-arabic' : ''}">${icon('globe', 'h-4 w-4')} ${t(C.ui.langSwitch)}</a>
+        <button type="button" class="relative grid h-10 w-10 place-items-center rounded-full bg-white/[0.06] text-white transition hover:bg-white/[0.12]" data-to-top aria-label="${tr('Back to top', 'العودة للأعلى')}">
+          <svg class="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/><circle cx="22" cy="22" r="20" fill="none" stroke="#E9A63B" stroke-width="2" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-top-ring/></svg>
+          ${icon('arrow', 'relative h-4 w-4 -rotate-90', 2.4)}
+        </button>
       </div>
     </div>
   </div>
@@ -276,7 +320,11 @@ function footer() {
 <a href="${waHello()}" target="_blank" rel="noopener" aria-label="${t(C.ui.whatsapp)}" class="fixed bottom-5 end-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_14px_30px_-8px_rgba(37,211,102,.7)] transition hover:scale-105">
   <span class="ping-soft absolute inset-0 rounded-full bg-[#25D366]"></span>${waIcon('relative h-7 w-7')}
 </a>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
+<script src="/assets/js/motion.js" defer></script>
 </body>
 </html>`;
 }
@@ -287,7 +335,7 @@ ${header(page)}
 <main id="main">
 ${body}
 </main>
-${footer()}`;
+${page.key === 'home' ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n</body>') : footer()}`;
 
 /* --------------------------------------------------------------- sections */
 function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
@@ -300,55 +348,71 @@ function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
 
 function archVisual({ image, alt, top, bottom }) {
   return `
-  <div class="relative mx-auto w-full max-w-[440px] py-6" ${reveal(150)}>
-    <div class="orbit inset-[-6%] hidden sm:block"></div>
-    <div class="orbit inset-[-16%] hidden opacity-60 sm:block"></div>
-    <span class="absolute start-[2%] top-[12%] text-2xl text-gold-500">✦</span>
-    <span class="absolute bottom-[18%] end-[-2%] h-3 w-3 rounded-full bg-gold-400"></span>
-    <div class="arch relative aspect-[4/5]">
-      <img src="/assets/img/${image}.webp" alt="${esc(alt)}" class="h-full w-full object-cover" fetchpriority="high">
+  <div class="relative mx-auto w-full max-w-[440px] py-6" data-parallax>
+    <div class="orbit orbit-spin inset-[-6%] hidden sm:block" data-a="orbit"></div>
+    <div class="orbit orbit-spin-rev inset-[-16%] hidden opacity-60 sm:block" data-a="orbit"></div>
+    <span class="absolute start-[2%] top-[12%] text-2xl text-gold-500" data-a="pop" data-depth="18">✦</span>
+    <span class="absolute bottom-[18%] end-[-2%] h-3 w-3 rounded-full bg-gold-400" data-a="pop" data-depth="-14"></span>
+    <div class="arch relative aspect-[4/5]" data-a="arch">
+      <img src="/assets/img/${image}.webp" alt="${esc(alt)}" class="h-full w-full object-cover" fetchpriority="high" data-arch-img>
     </div>
-    ${top ? `<div class="float-chip floaty absolute end-[-2%] top-[14%] flex items-center gap-3 p-3 pe-5 xl:end-[-10%]">${top}</div>` : ''}
-    ${bottom ? `<div class="float-chip floaty-2 absolute bottom-[14%] start-[-2%] flex items-center gap-3 p-3 pe-5 xl:start-[-10%]">${bottom}</div>` : ''}
+    ${top ? `<div class="absolute end-[-2%] top-[14%] z-10 xl:end-[-10%]" data-a="fly-tr" data-depth="26"><div class="float-chip floaty flex items-center gap-3 p-3 pe-5">${top}</div></div>` : ''}
+    ${bottom ? `<div class="absolute bottom-[14%] start-[-2%] z-10 xl:start-[-10%]" data-a="fly-bl" data-depth="-22"><div class="float-chip floaty-2 flex items-center gap-3 p-3 pe-5">${bottom}</div></div>` : ''}
   </div>`;
 }
 
 function hero() {
   return `
 <section class="px-2.5 sm:px-3">
-  <div class="hero-bg relative overflow-hidden rounded-[28px]">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    ${aurora()}
     <div class="pointer-events-none absolute inset-0 grid-lines"></div>
-    <div class="container-site relative grid items-center gap-12 pb-44 pt-12 lg:grid-cols-2 lg:pt-16">
-      <div>
-        <span class="chip" ${reveal()}><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('sun', 'h-4 w-4', 2.2)}</span>${tr('Window tint & protection · Qatar', 'تظليل وحماية · قطر')}</span>
-        <h1 class="mt-6 font-head text-[2.3rem] font-extrabold leading-[1.06] text-ink min-[400px]:text-[2.7rem] sm:text-6xl lg:text-[3.3rem] xl:text-[4.1rem]" ${reveal(80)}>
-          ${tr('Beat Qatar’s heat.', 'تغلّب على حرارة قطر.')}<br>${tr('Tinted to', 'بتظليل')} <span class="text-grad">${tr('perfection.', 'مثالي.')}</span>
+    <div class="container-site relative grid items-center gap-6 pb-40 pt-10 lg:grid-cols-12 lg:gap-4 lg:pt-6">
+      <!-- copy (kept short) -->
+      <div class="lg:col-span-5">
+        <span class="chip" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('sun', 'h-4 w-4', 2.2)}</span>${tr('Window tint · Qatar', 'تظليل النوافذ · قطر')}</span>
+        <h1 class="mt-6 font-head text-[2.6rem] font-extrabold leading-[1.02] text-ink min-[400px]:text-[3rem] sm:text-[4rem] lg:text-[3.6rem] xl:text-[4.6rem]">
+          <span class="block" data-split>${tr('Stay cool.', 'برودة دائمة.')}</span>
+          <span class="block text-grad" data-a="up">${tr('Stay protected.', 'حماية تامة.')}</span>
         </h1>
-        <p class="mt-5 max-w-lg text-[1.12rem] leading-relaxed text-muted" ${reveal(140)}>${tr(
-          'Premium window tinting and protective films for cars, homes and offices — installed on-site anywhere in Qatar, 7 days a week.',
-          'تظليل نوافذ وأفلام حماية فاخرة للسيارات والمنازل والمكاتب — نركّبها في موقعك في أي مكان في قطر، ٧ أيام في الأسبوع.'
-        )}</p>
-        <div class="mt-8 flex flex-wrap gap-3" ${reveal(200)}>
+        <p class="mt-5 max-w-md text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Premium window film for cars, villas and offices — installed on-site across Qatar.', 'أفلام نوافذ فاخرة للسيارات والفلل والمكاتب — نركّبها في موقعك في أنحاء قطر.')}</p>
+        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
-          <a href="tel:${C.site.phoneRaw}" class="btn btn-white"><span class="grid h-7 w-7 place-items-center rounded-lg bg-tint text-gold-700">${icon('phone', 'h-4 w-4')}</span><span dir="ltr">${C.site.phone}</span></a>
-        </div>
-        <div class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[0.95rem]" ${reveal(260)}>
-          <span class="hero-check"><span>${icon('check', 'h-3 w-3', 3)}</span>${tr('99% UV blocked', 'حجب ٩٩٪ من الأشعة')}</span>
-          <span class="hero-check"><span>${icon('check', 'h-3 w-3', 3)}</span>${tr('We come to you', 'نأتي إليك')}</span>
-          <span class="hero-check"><span>${icon('check', 'h-3 w-3', 3)}</span>${tr('Flat-rate pricing', 'أسعار ثابتة')}</span>
+          <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
         </div>
       </div>
-      ${archVisual({
-        image: 'automotive',
-        alt: tr('Professionally tinted car windows', 'زجاج سيارة مظلل باحترافية'),
-        top: `<span class="ico">${icon('thermo', 'h-5 w-5', 2.2)}</span><span><span class="block text-xs text-muted">${tr('Heat rejection', 'العزل الحراري')}</span><span class="block font-head text-lg font-extrabold text-ink">${tr('Up to 60%', 'حتى ٦٠٪')}</span></span>`,
-        bottom: `<span class="grid h-9 w-9 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('check', 'h-4 w-4', 3)}</span><span><span class="block text-xs text-muted">${tr('Installed on-site', 'تم التركيب في الموقع')}</span><span class="block font-head text-base font-extrabold text-ink">${tr('Lusail · Today', 'لوسيل · اليوم')}</span></span>`,
-      })}
+
+      <!-- 3D room -->
+      <div class="relative lg:col-span-7" data-a="up">
+        <div class="room3d relative aspect-[4/5] w-full sm:aspect-[5/4] lg:aspect-[11/10]" data-room>
+          <div class="pointer-events-none absolute inset-[12%] rounded-full bg-gold-300/30 blur-[80px]"></div>
+          <canvas class="relative h-full w-full" aria-label="${tr('3D living room showing window film blocking the sun', 'غرفة ثلاثية الأبعاد توضح حجب فيلم النوافذ للشمس')}" role="img"></canvas>
+          <img src="/assets/img/residential.webp" alt="" class="room-fallback-img absolute inset-[8%] hidden h-[84%] w-[84%] rounded-[28px] object-cover shadow-float">
+
+          <!-- glass HUD -->
+          <div class="room-hud absolute end-0 top-0 w-[9.5rem] rounded-2xl p-3 sm:top-[6%] sm:w-52 sm:p-4" data-r-card>
+            <p class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted">${icon('thermo', 'h-3.5 w-3.5 text-gold-600', 2.2)} ${tr('Room temperature', 'حرارة الغرفة')}</p>
+            <p class="mt-1 font-head text-3xl font-extrabold leading-none text-ink sm:text-[2.6rem]"><span data-r-temp>46</span><span class="text-xl text-muted">°C</span></p>
+            <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-line"><div class="room-tbar h-full rounded-full" data-r-bar style="width:90%"></div></div>
+            <p class="mt-2 hidden text-[11px] font-semibold text-muted sm:block" data-r-state data-on="${tr('With Exotic Tint film', 'مع فيلم إكزوتك تينت')}" data-off="${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}">${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}</p>
+          </div>
+          <div class="room-hud absolute bottom-[14%] start-0 flex items-center gap-2.5 rounded-2xl p-2.5 pe-3.5 sm:bottom-auto sm:top-[44%] sm:gap-3 sm:p-3 sm:pe-4" data-r-card>
+            <svg class="h-10 w-10 -rotate-90 sm:h-12 sm:w-12" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#ruv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-r-ring/><defs><linearGradient id="ruv"><stop stop-color="#F6C766"/><stop offset="1" stop-color="#C47F1E"/></linearGradient></defs></svg>
+            <div><p class="text-[11px] font-bold uppercase tracking-wider text-muted">${tr('UV blocked', 'حجب الأشعة')}</p><p class="font-head text-2xl font-extrabold text-ink"><span data-r-uv>0</span>%</p></div>
+          </div>
+          <div class="absolute inset-x-0 bottom-[3%] flex justify-center">
+            <div class="room-hud inline-flex rounded-full p-1.5" role="group" aria-label="${tr('Window film', 'فيلم النوافذ')}">
+              <button type="button" class="room-btn" data-r-mode="off" aria-pressed="true">${icon('sun', 'h-4 w-4', 2.2)} ${tr('Without film', 'بدون فيلم')}</button>
+              <button type="button" class="room-btn" data-r-mode="on" aria-pressed="false">${icon('shield', 'h-4 w-4', 2.2)} ${tr('With Exotic Tint', 'مع إكزوتك تينت')}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="absolute inset-x-0 bottom-0">
       <div class="container-site">
-        <div class="rounded-t-[28px] bg-white px-4 pb-6 pt-6 sm:px-8">
+        <div class="rounded-t-[28px] bg-white px-4 pb-6 pt-6 sm:px-8" data-a="rise">
           <p class="flex items-center justify-center gap-4 text-center text-sm text-muted"><span class="hidden h-px w-20 bg-line sm:block"></span><span>${tr('Serving <b class="text-ink">drivers, homes &amp; businesses</b> across Qatar', 'نخدم <b class="text-ink">السائقين والمنازل والشركات</b> في جميع أنحاء قطر')}</span><span class="hidden h-px w-20 bg-line sm:block"></span></p>
           <div class="marquee mt-5 overflow-hidden" dir="ltr">
             <div class="marquee-track">
@@ -366,42 +430,83 @@ function hero() {
 
 function serviceCard(s, { grid = false } = {}) {
   const v = SV[s.slug];
+  const i = C.services.indexOf(s);
   return `
-<a href="${href('service/' + s.slug + '/')}" class="svc-card flex min-h-[290px] flex-col ${grid ? 'h-full' : 'w-[290px] shrink-0 snap-start sm:w-[300px]'}" style="background:${v.bg};color:${v.color}">
-  <div class="flex items-center gap-3">
-    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl shadow-md" style="background:${v.acc};color:${v.on}">${icon(s.icon, 'h-5 w-5', 2.1)}</span>
-    <h3 class="font-head text-[1.22rem] font-bold leading-tight text-ink">${t(s.title)}</h3>
+<a href="${href('service/' + s.slug + '/')}" class="svc2 group flex flex-col overflow-hidden rounded-[26px] border border-line bg-white p-2 shadow-card transition duration-500 hover:-translate-y-1.5 hover:border-transparent hover:shadow-soft ${grid ? 'h-full' : 'w-[290px] shrink-0 snap-start sm:w-[320px]'}">
+  <div class="relative aspect-[4/3] overflow-hidden rounded-[20px]">
+    <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent"></div>
+    <span class="glass-hud absolute start-3 top-3 grid h-10 w-10 place-items-center rounded-xl text-white">${icon(s.icon, 'h-5 w-5', 2)}</span>
+    <span class="absolute end-3 top-3 rounded-full bg-white/90 px-2.5 py-1 font-head text-xs font-extrabold text-ink backdrop-blur">${num(pad(i + 1))}</span>
+    <span class="absolute bottom-3 start-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-ink shadow-sm"><span class="h-1.5 w-1.5 rounded-full bg-gold-500"></span>${t(v.badge)}</span>
   </div>
-  <span class="mt-4 inline-flex w-max rounded-full bg-white px-3 py-1 text-xs font-bold shadow-sm" style="color:${v.color}">${t(v.badge)}</span>
-  <p class="mt-3 line-clamp-3 max-w-[15rem] text-[0.95rem] leading-snug text-muted">${t(s.summary)}</p>
-  <div class="relative z-10 mt-auto flex items-end justify-between pt-4">
-    <span class="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold shadow-md" style="background:${v.acc};color:${v.on}">${t(C.ui.learnMore)} ${arrow('h-3.5 w-3.5')}</span>
-    ${img3d(v.emoji, 'emoji -mb-3 -me-2 h-28 w-28 drop-shadow-xl')}
+  <div class="flex flex-1 flex-col px-4 pb-4 pt-5">
+    <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-gold-700">${t(s.short)}</p>
+    <h3 class="mt-1.5 font-head text-[1.3rem] font-bold leading-snug text-ink">${t(s.title)}</h3>
+    <p class="mb-5 mt-2 line-clamp-2 text-[0.95rem] leading-relaxed text-muted">${t(s.summary)}</p>
+    <div class="mt-auto flex items-center justify-between border-t border-dashed border-line pt-4">
+      <span class="text-sm font-bold text-ink transition group-hover:text-gold-700">${t(C.ui.learnMore)}</span>
+      <span class="grid h-10 w-10 place-items-center rounded-full bg-[#f2f4f7] text-ink transition duration-300 group-hover:bg-grad group-hover:shadow-gold">${arrow('h-4 w-4')}</span>
+    </div>
   </div>
 </a>`;
 }
 
 function servicesSlider() {
+  const panel = (s, i) => {
+    const v = SV[s.slug];
+    return `
+      <article class="xp-panel ${i === 0 ? 'is-active' : ''}" data-xp-panel tabindex="0" aria-label="${esc(t(s.title))}">
+        <img src="/assets/img/${s.img}.webp" alt="" class="xp-img absolute inset-0 h-full w-full object-cover" loading="lazy">
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/5"></div>
+
+        <!-- collapsed -->
+        <div class="xp-closed pointer-events-none absolute inset-0 flex flex-col items-center justify-between py-6 text-white">
+          <span class="font-head text-sm font-extrabold text-white/80">${num(pad(i + 1))}</span>
+          <span class="xp-vtitle font-head text-lg font-bold">${t(s.title)}</span>
+          <span class="glass-hud grid h-11 w-11 place-items-center rounded-xl">${icon(s.icon, 'h-5 w-5', 2)}</span>
+        </div>
+
+        <!-- expanded -->
+        <div class="xp-open absolute inset-0 flex flex-col justify-between p-6 text-white sm:p-8">
+          <div class="flex items-start justify-between gap-3">
+            <span class="glass-hud inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold">${icon(s.icon, 'h-4 w-4', 2.2)} ${t(s.short)}</span>
+            <span class="font-head text-5xl font-extrabold leading-none text-white/25">${num(pad(i + 1))}</span>
+          </div>
+          <div class="max-w-xl">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-grad px-3 py-1 text-xs font-extrabold text-ink"><span class="h-1.5 w-1.5 rounded-full bg-ink"></span>${t(v.badge)}</span>
+            <h3 class="mt-4 font-head text-[1.9rem] font-extrabold leading-[1.1] sm:text-[2.6rem]">${t(s.title)}</h3>
+            <p class="mt-3 max-w-lg text-[1.02rem] leading-relaxed text-white/80">${t(s.summary)}</p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a href="${href('service/' + s.slug + '/')}" class="btn btn-primary !py-3 text-sm">${t(C.ui.learnMore)} ${arrow()}</a>
+              <a href="${waLink(tr('Hello, I would like a quote for ', 'مرحباً، أرغب في عرض سعر لخدمة ') + t(s.title))}" target="_blank" rel="noopener" class="btn btn-glass !py-3 text-sm">${waIcon('h-4 w-4')} ${tr('Free quote', 'عرض مجاني')}</a>
+            </div>
+            <div class="mt-7 hidden h-[3px] overflow-hidden rounded-full bg-white/20 lg:block"><span class="xp-bar block h-full rounded-full bg-grad"></span></div>
+          </div>
+        </div>
+      </article>`;
+  };
   return `
-<section id="services" class="relative pb-20 pt-4 lg:pb-28">
-  <div class="pointer-events-none absolute inset-x-0 top-10 mx-auto h-72 max-w-4xl rounded-full bg-gold-100/60 blur-3xl"></div>
-  <div class="container-site relative">
-    ${sectionHead({
-      eyebrow: tr('Our services', 'خدماتنا'),
-      title: tr('Find the right film for <span class="text-grad">your space</span>', 'اختر الفيلم المناسب <span class="text-grad">لمساحتك</span>'),
-      text: tr('From daily drivers to marble kitchens — six specialist services, installed on-site by our team.', 'من السيارات اليومية إلى مطابخ الرخام — ست خدمات متخصصة يركّبها فريقنا في موقعك.'),
-      center: true,
-    })}
-    <div class="no-scrollbar -mx-4 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 pt-2" data-slider>
-      ${C.services.map((s) => serviceCard(s)).join('')}
-    </div>
-    <div class="mt-2 flex flex-wrap items-center justify-between gap-4">
-      <p class="inline-flex items-center gap-3 rounded-full border border-line bg-white px-4 py-2.5 text-[0.95rem] font-medium text-ink shadow-card"><span class="grid h-7 w-7 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('shield', 'h-4 w-4', 2.2)}</span>${tr('Every estimate is free — no hidden fees.', 'كل التقديرات مجانية — دون رسوم خفية.')}</p>
-      <div class="flex items-center gap-4">
-        <div class="hidden h-1 w-36 overflow-hidden rounded-full bg-line sm:block"><div class="h-full w-1/3 rounded-full bg-grad transition-all duration-300" data-slider-bar></div></div>
-        <button type="button" class="grid h-12 w-12 place-items-center rounded-full border border-line bg-white text-ink shadow-card transition hover:-translate-y-0.5" data-slider-prev aria-label="${tr('Previous', 'السابق')}">${icon('arrowLeft', 'h-5 w-5 rtl:-scale-x-100', 2.2)}</button>
-        <button type="button" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold transition hover:-translate-y-0.5" data-slider-next aria-label="${tr('Next', 'التالي')}">${arrow('h-5 w-5')}</button>
+<section id="services" class="relative pb-20 lg:pb-28" data-assemble>
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+      ${sectionHead({
+        eyebrow: tr('Our services', 'خدماتنا'),
+        title: tr('Find the right film for <span class="text-grad">your space</span>', 'اختر الفيلم المناسب <span class="text-grad">لمساحتك</span>'),
+        text: tr('Six specialist services for cars, homes, offices and surfaces — installed on-site by our team.', 'ست خدمات متخصصة للسيارات والمنازل والمكاتب والأسطح — يركّبها فريقنا في موقعك.'),
+      })}
+      <div class="flex items-center gap-3" data-a="right">
+        <span class="font-head text-lg font-extrabold text-ink" dir="ltr"><span data-xp-count>${tr('01', '٠١')}</span><span class="text-[#c7cdd8]"> / ${tr(pad(C.services.length), pad(C.services.length).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]))}</span></span>
+        <button type="button" class="grid h-12 w-12 place-items-center rounded-full border border-line bg-white text-ink shadow-card transition hover:-translate-y-0.5" data-xp-prev aria-label="${tr('Previous', 'السابق')}">${icon('arrowLeft', 'h-5 w-5 rtl:-scale-x-100', 2.2)}</button>
+        <button type="button" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold transition hover:-translate-y-0.5" data-xp-next aria-label="${tr('Next', 'التالي')}">${arrow('h-5 w-5')}</button>
       </div>
+    </div>
+    <div class="xp mt-12" data-xp data-a="up">
+      ${C.services.map(panel).join('')}
+    </div>
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+      <p class="inline-flex items-center gap-3 rounded-full border border-line bg-white px-5 py-3 text-[0.95rem] font-medium text-ink shadow-card"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('shield', 'h-4 w-4', 2.2)}</span>${tr('Every estimate is free — no hidden fees.', 'كل التقديرات مجانية — دون رسوم خفية.')}</p>
+      <a href="${href('service/')}" class="btn btn-white !pe-2">${t(C.ui.nav.allServices)} <span class="grid h-9 w-9 place-items-center rounded-full bg-grad text-ink">${arrow('h-4 w-4')}</span></a>
     </div>
   </div>
 </section>`;
@@ -409,7 +514,7 @@ function servicesSlider() {
 
 function howItWorks() {
   const step = (n, ic, title, text, mock, d) => `
-    <div class="relative flex flex-col rounded-[22px] border border-white/10 bg-white/[0.04] p-7 backdrop-blur" ${reveal(d)}>
+    <div class="glass-dark relative flex flex-col overflow-hidden rounded-[22px] p-7" data-a="up">
       <div class="flex items-start justify-between">
         <span class="font-head text-[2.6rem] font-extrabold leading-none text-grad">${num(pad(n))}</span>
         <span class="ico">${icon(ic, 'h-5 w-5', 2.2)}</span>
@@ -434,7 +539,7 @@ function howItWorks() {
     <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-white/15"><div class="h-full w-4/5 rounded-full bg-grad"></div></div>`;
   return `
 <section class="px-2.5 sm:px-3">
-  <div class="relative overflow-hidden rounded-[28px] navy-bg">
+  <div class="relative overflow-hidden rounded-[28px] navy-bg" data-expand data-assemble>
     <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
     <div class="container-site relative py-20 lg:py-24">
       <div class="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
@@ -556,8 +661,8 @@ function tintStudio() {
         ${scenes.map(([ic, l, img], i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-scene="${img}" class="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-ink aria-selected:shadow-gold">${icon(ic, 'h-4 w-4', 2.2)} ${l}</button>`).join('')}
       </div>
     </div>
-    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-2" data-tint-lab data-shades='${esc(JSON.stringify(shades))}' ${reveal(150)}>
-      <div class="relative bg-white p-6 sm:p-10">
+    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-2" data-tint-lab data-shades='${esc(JSON.stringify(shades))}' data-assemble>
+      <div class="relative bg-white p-6 sm:p-10" data-a="left">
         <div class="pointer-events-none absolute inset-0 dots opacity-40 [mask-image:linear-gradient(180deg,#000,transparent_60%)]"></div>
         <div class="relative">
           <div class="flex items-center justify-between gap-4">
@@ -576,7 +681,7 @@ function tintStudio() {
           <p class="mt-8 flex gap-2 rounded-2xl border border-[#f6e3bf] bg-tint p-4 text-sm text-muted">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}${tr('Visual preview only. Our ceramic films block 99% of UV. Vehicle tint must follow local regulations — we’ll advise on compliant options.', 'معاينة بصرية فقط. أفلام السيراميك لدينا تحجب ٩٩٪ من الأشعة. يجب أن يتوافق تظليل السيارات مع الأنظمة المحلية — وسننصحك بالخيارات المسموحة.')}</p>
         </div>
       </div>
-      <div class="relative p-6 sm:p-10 navy-bg">
+      <div class="relative p-6 sm:p-10 navy-bg" data-a="right">
         <div class="flex items-center gap-2 text-white/80"><span class="font-semibold">${tr('Your preview', 'المعاينة')}</span><span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-bold uppercase text-emerald-300">${tr('Live', 'مباشر')}</span></div>
         <p class="mt-2 font-head text-5xl font-extrabold text-white" dir="ltr"><span data-out="vlt2">35</span>% <span class="text-2xl text-white/60">VLT</span></p>
         <div class="relative mt-6 aspect-[16/10] overflow-hidden rounded-2xl border-4 border-white/10">
@@ -615,7 +720,7 @@ function statsStrip() {
           ([ic, n, sup, title, sub], i) => `
       <div class="flex flex-col items-center px-4 py-9 text-center ${i % 2 ? 'border-s border-dashed border-line' : ''} ${i > 1 ? 'border-t border-dashed border-line lg:border-t-0' : ''} ${i === 2 ? 'lg:border-s' : ''}">
         <span class="ico">${icon(ic, 'h-5 w-5', 2.2)}</span>
-        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr">${n}<sup class="text-2xl text-gold-600">${sup}</sup></span>
+        <span class="mt-4 font-head text-[2.6rem] font-extrabold leading-none text-ink sm:text-[3.2rem]" dir="ltr"><span data-count="${n}">${n}</span><sup class="text-2xl text-gold-600">${sup}</sup></span>
         <span class="mt-2 font-head text-lg font-bold text-ink">${title}</span>
         <span class="text-sm text-muted">${sub}</span>
       </div>`
@@ -693,49 +798,49 @@ function filmTech() {
 
 /* Why us — bento (from the original "Qatar’s Top Window Tint & Protection Experts" section) */
 function whyUs() {
+  // [emoji, title, text, metric, metric label, accent]
   const feats = [
-    ['thermometer', tr('Heat reduction', 'تقليل الحرارة'), tr('Keep spaces cool and comfortable with heat-rejection window film.', 'حافظ على برودة وراحة المكان مع أفلام العزل الحراري.'), tr('Up to 10°C cooler', 'أبرد حتى ١٠ درجات')],
-    ['shield', tr('99% UV protection', 'حماية ٩٩٪ من الأشعة'), tr('Safeguard interiors and skin from harmful rays all year.', 'احمِ التصميم الداخلي والبشرة من الأشعة الضارة طوال العام.'), tr('Ceramic films', 'أفلام السيراميك')],
-    ['locked', tr('Privacy & security', 'الخصوصية والأمان'), tr('Peace of mind for vehicles, villas and workplaces.', 'راحة بال للسيارات والفلل وأماكن العمل.'), tr('Day-time privacy', 'خصوصية نهارية')],
-    ['voltage', tr('Energy savings', 'توفير الطاقة'), tr('Lower AC load and reduce Kahramaa bills.', 'حمل أقل على التكييف وفواتير كهرماء أقل.'), tr('Up to 30% less AC', 'تكييف أقل حتى ٣٠٪')],
+    ['thermometer', tr('Heat reduction', 'تقليل الحرارة'), tr('Cooler rooms and cabins with heat-rejection film.', 'غرف وسيارات أبرد مع أفلام العزل الحراري.'), tr('−10°C', '−١٠°'), tr('cooler inside', 'أبرد من الداخل'), '#FCA5A5'],
+    ['shield', tr('UV protection', 'الحماية من الأشعة'), tr('Protects skin, furniture and interiors from fading.', 'يحمي البشرة والأثاث والتصميم الداخلي من البهتان.'), '99%', tr('UV blocked', 'حجب الأشعة'), '#93C5FD'],
+    ['locked', tr('Daytime privacy', 'خصوصية نهارية'), tr('See out clearly while keeping prying eyes out.', 'رؤية واضحة للخارج مع حجب الأنظار.'), tr('1-way', 'اتجاه واحد'), tr('mirror view', 'رؤية عاكسة'), '#F6C766'],
+    ['voltage', tr('Energy savings', 'توفير الطاقة'), tr('Less AC load and lower Kahramaa bills.', 'حمل أقل على التكييف وفواتير كهرماء أقل.'), tr('30%', '٣٠٪'), tr('less AC usage', 'استهلاك تكييف أقل'), '#6EE7B7'],
   ];
+  const card = ([emoji, title, text, metric, label, acc], i) => `
+        <div class="glass-dark group relative overflow-hidden rounded-[20px] p-4 sm:rounded-[22px] sm:p-5 transition duration-500 hover:-translate-y-1 hover:bg-white/[0.09]" data-a="up">
+          <span class="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100 rtl:origin-right" style="background:linear-gradient(90deg,${acc},transparent)"></span>
+          <div class="flex items-center justify-between gap-3">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.08] ring-1 ring-inset ring-white/10 transition duration-500 group-hover:-rotate-6 sm:h-12 sm:w-12 sm:rounded-2xl">${img3d(emoji, 'h-7 w-7 drop-shadow-lg sm:h-8 sm:w-8')}</span>
+            <div class="text-end"><p class="font-head text-[1.3rem] font-extrabold leading-none sm:text-[1.7rem]" style="color:${acc}" dir="ltr">${metric}</p><p class="mt-1 hidden text-[11px] font-semibold text-white/50 sm:block">${label}</p></div>
+          </div>
+          <h3 class="mt-3 font-head text-[0.98rem] font-bold leading-snug text-white sm:mt-4 sm:text-lg">${title}</h3>
+          <p class="mt-1 hidden text-sm leading-relaxed text-white/60 sm:block">${text}</p>
+        </div>`;
+  const stat = (n, l) => `<div class="text-center"><p class="font-head text-xl font-extrabold text-white" dir="ltr">${n}</p><p class="text-[11px] font-semibold text-white/50">${l}</p></div>`;
   return `
-<section class="py-20 lg:py-28">
+<section class="relative pb-16 pt-12 lg:pb-24 lg:pt-16" data-assemble>
   <div class="container-site">
-    <div class="grid gap-5 lg:grid-cols-12">
-      <div class="relative overflow-hidden rounded-[28px] p-8 navy-bg sm:p-10 lg:col-span-5 lg:row-span-2" ${reveal()}>
-        <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
-        <div class="relative flex h-full flex-col">
+    <div class="relative overflow-hidden rounded-[30px] navy-bg p-6 shadow-float sm:p-9 lg:p-10" data-a="up">
+      <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
+      <img src="/assets/img/residential.webp" alt="" class="pointer-events-none absolute inset-y-0 end-0 hidden h-full w-1/2 object-cover opacity-[0.13] [mask-image:linear-gradient(to_left,#000,transparent)] rtl:[mask-image:linear-gradient(to_right,#000,transparent)] lg:block" loading="lazy">
+      <div class="pointer-events-none absolute -start-20 -top-24 h-64 w-64 rounded-full bg-gold-400/25 blur-3xl"></div>
+      <div class="relative grid items-end gap-6 lg:grid-cols-12">
+        <div class="lg:col-span-7">
           <span class="eyebrow !text-gold-300">${tr('Why Exotic Tint', 'لماذا إكزوتك تينت')}</span>
-          <h2 class="mt-4 font-head text-[2rem] font-extrabold leading-[1.1] text-white sm:text-[2.5rem]">${tr('Qatar’s top window tint &amp; <span class="text-grad">protection experts</span>', 'خبراء التظليل <span class="text-grad">والحماية</span> الأوائل في قطر')}</h2>
-          <p class="mt-4 leading-relaxed text-white/70">${tr('We reduce heat, block UV rays and enhance privacy with expert installation across Doha, Lusail, Al Rayyan and beyond.', 'نقلل الحرارة ونحجب الأشعة ونعزز الخصوصية بتركيب احترافي في الدوحة ولوسيل والريان وما بعدها.')}</p>
-          <div class="relative mt-8 overflow-hidden rounded-[22px] border-4 border-white/10">
-            <img src="/assets/img/residential.webp" alt="${tr('Tinted villa windows', 'نوافذ فيلا مظللة')}" class="aspect-[16/10] w-full object-cover" loading="lazy">
-            <div class="float-chip absolute bottom-3 start-3 flex items-center gap-2 px-3 py-2 text-sm font-bold text-ink">${starsRow('h-3.5 w-3.5')} ${tr('Trusted across Qatar', 'موثوقون في كل قطر')}</div>
+          <h2 class="mt-3 font-head text-[1.8rem] font-extrabold leading-[1.12] text-white sm:text-[2.3rem]">${tr('Qatar’s top window tint &amp; <span class="text-grad">protection experts</span>', 'خبراء التظليل <span class="text-grad">والحماية</span> الأوائل في قطر')}</h2>
+          <p class="mt-3 max-w-xl text-[0.98rem] leading-relaxed text-white/65">${tr('Expert on-site installation across Doha, Lusail, Al Rayyan and beyond.', 'تركيب احترافي في موقعك في الدوحة ولوسيل والريان وما بعدها.')}</p>
+        </div>
+        <div class="flex flex-col gap-4 lg:col-span-5 lg:items-end">
+          <div class="grid w-full grid-cols-3 divide-x divide-white/10 rounded-2xl border border-white/10 bg-white/[0.05] py-3 rtl:divide-x-reverse lg:w-auto lg:min-w-[19rem]">
+            ${stat(num(C.services.length), tr('Services', 'خدمات'))}${stat(num(C.areas.length) + '+', tr('Areas', 'مناطق'))}${stat('7/7', tr('Days open', 'أيام العمل'))}
           </div>
-          <div class="mt-auto pt-8">
-            <div class="flex flex-wrap items-center justify-between gap-4 rounded-[20px] bg-white p-4 ps-5">
-              <div><p class="text-xs font-semibold uppercase tracking-wider text-muted">${tr('Call us!', 'اتصل بنا!')}</p><a href="tel:${C.site.phoneRaw}" class="font-head text-2xl font-extrabold text-ink" dir="ltr">${C.site.phone}</a></div>
-              <a href="tel:${C.site.phoneRaw}" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold" aria-label="${t(C.ui.callUs)}">${icon('phone', 'h-5 w-5', 2.2)}</a>
-            </div>
-          </div>
+          <a href="tel:${C.site.phoneRaw}" class="group flex w-full items-center justify-between gap-4 rounded-2xl bg-white p-2.5 ps-4 transition hover:bg-gold-50 lg:w-auto lg:min-w-[19rem]">
+            <span><span class="block text-[10px] font-bold uppercase tracking-wider text-muted">${tr('Call · free estimate', 'اتصل · تقدير مجاني')}</span><span class="block font-head text-lg font-extrabold text-ink" dir="ltr">${C.site.phone}</span></span>
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-grad text-ink shadow-gold transition group-hover:scale-110">${icon('phone', 'h-4 w-4', 2.2)}</span>
+          </a>
         </div>
       </div>
-      <div class="grid gap-5 sm:grid-cols-2 lg:col-span-7">
-      ${feats
-        .map(
-          ([emoji, title, text, stat], i) => `
-      <div class="group relative overflow-hidden rounded-[28px] border border-line bg-white p-7 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-soft" ${reveal(i * 80)}>
-        <div class="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-gold-100/60 transition duration-500 group-hover:scale-125"></div>
-        <div class="relative flex h-full flex-col">
-          <div class="flex items-start justify-between gap-3">${img3d(emoji, 'h-20 w-20 drop-shadow-xl transition duration-500 group-hover:-rotate-6 group-hover:scale-110')}<span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-gold-700 shadow-sm">${stat}</span></div>
-          <h3 class="mt-6 font-head text-[1.35rem] font-bold text-ink">${title}</h3>
-          <p class="mt-2 leading-relaxed text-muted">${text}</p>
-          <span class="mt-auto pt-5 font-head text-5xl font-extrabold leading-none text-gold-100">${num(pad(i + 1))}</span>
-        </div>
-      </div>`
-        )
-        .join('')}
+      <div class="relative mt-6 grid grid-cols-2 gap-3 sm:mt-8 lg:grid-cols-4">
+        ${feats.map(card).join('')}
       </div>
     </div>
   </div>
@@ -751,11 +856,11 @@ function bookFast() {
     ['bulb', tr('Advanced tint & protection', 'حلول تظليل وحماية متطورة'), tr('Privacy, UV protection and energy efficiency for cars, homes and offices.', 'خصوصية وحماية وكفاءة طاقة للسيارات والمنازل والمكاتب.')],
   ];
   const bubble = (me, text, time) =>
-    `<div class="flex ${me ? 'justify-end' : 'justify-start'}"><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm ${me ? 'rounded-ee-md bg-[#d9fdd3] text-ink' : 'rounded-es-md bg-white text-ink'}">${text}<span class="ms-2 inline-block align-bottom text-[10px] text-muted">${time}${me ? ' ✓✓' : ''}</span></div></div>`;
+    `<div class="flex ${me ? 'justify-end' : 'justify-start'}" data-chat-msg><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm ${me ? 'rounded-ee-md bg-[#d9fdd3] text-ink' : 'rounded-es-md bg-white text-ink'}">${text}<span class="ms-2 inline-block align-bottom text-[10px] text-muted">${time}${me ? ' ✓✓' : ''}</span></div></div>`;
   return `
-<section class="pb-20 lg:pb-28">
+<section class="pb-20 lg:pb-28" data-assemble>
   <div class="container-site">
-    <div class="relative overflow-hidden rounded-[28px] bg-grad p-7 shadow-glow sm:p-12" ${reveal()}>
+    <div class="relative overflow-hidden rounded-[28px] bg-grad p-7 shadow-glow sm:p-12" data-a="zoom">
       <div class="pointer-events-none absolute -end-24 -top-24 h-80 w-80 rounded-full border-[40px] border-white/15"></div>
       <div class="pointer-events-none absolute -bottom-32 start-1/3 h-72 w-72 rounded-full bg-white/10"></div>
       <div class="relative grid items-center gap-12 lg:grid-cols-2">
@@ -770,21 +875,23 @@ function bookFast() {
             <a href="tel:${C.site.phoneRaw}" class="btn btn-white">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
           </div>
         </div>
-        <div class="relative mx-auto w-full max-w-[340px]">
+        <div class="relative mx-auto w-full max-w-[340px]" data-a="right">
+          <p class="mb-3 text-center text-xs font-semibold text-ink/60">${tr('Example of how booking works', 'مثال على طريقة الحجز')}</p>
           <div class="rounded-[38px] bg-ink p-2.5 shadow-[0_40px_70px_-25px_rgba(18,35,61,.7)]">
             <div class="overflow-hidden rounded-[30px] bg-[#efe7dd]">
               <div class="flex items-center gap-3 bg-[#075E54] px-4 py-3 text-white">
                 <img src="/assets/img/logo-original.webp" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5">
-                <div class="flex-1"><p class="text-sm font-semibold">${t(C.site.name)}</p><p class="text-[11px] text-white/75">${tr('online', 'متصل الآن')}</p></div>
+                <div class="flex-1"><p class="text-sm font-semibold">${t(C.site.name)}</p><p class="text-[11px] text-white/75" data-status data-typing-label="${tr('typing…', 'يكتب…')}" data-online-label="${tr('online', 'متصل الآن')}">${tr('online', 'متصل الآن')}</p></div>
                 ${icon('phone', 'h-4 w-4')}
               </div>
-              <div class="space-y-2.5 p-4 [background-image:radial-gradient(rgba(0,0,0,.04)_1px,transparent_1px)] [background-size:14px_14px]">
+              <div class="space-y-2.5 p-4 [background-image:radial-gradient(rgba(0,0,0,.04)_1px,transparent_1px)] [background-size:14px_14px]" data-chat>
                 <p class="mx-auto w-max rounded-lg bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-muted">${tr('TODAY', 'اليوم')}</p>
                 ${bubble(true, tr('Hi! I need tint for my car and villa windows 🚙🏡', 'مرحباً! أحتاج تظليل لسيارتي ونوافذ الفيلا 🚙🏡'), '10:02')}
                 ${bubble(false, tr('Welcome to Exotic Tint Qatar! Send us a photo and we’ll recommend the best film 👌', 'أهلاً بك في إكزوتك تينت قطر! أرسل لنا صورة وسنوصي بأفضل فيلم 👌'), '10:03')}
-                <div class="flex justify-end"><div class="h-24 w-36 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/residential.webp" alt="" class="h-full w-full object-cover" loading="lazy"></div></div>
+                <div class="flex justify-end" data-chat-msg><div class="h-24 w-36 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/residential.webp" alt="" class="h-full w-full object-cover" loading="lazy"></div></div>
                 ${bubble(false, tr('Super nano ceramic is perfect ✅ We can install tomorrow at 10 AM in Lusail.', 'السوبر نانو سيراميك مثالي ✅ يمكننا التركيب غداً الساعة ١٠ صباحاً في لوسيل.'), '10:05')}
                 ${bubble(true, tr('Booked! Thank you 🙏', 'تم الحجز! شكراً لكم 🙏'), '10:05')}
+                <div class="typing hidden w-max rounded-2xl rounded-es-md bg-white px-4 py-3 shadow-sm" data-typing><span></span><span></span><span></span></div>
               </div>
               <div class="flex items-center gap-2 bg-[#efe7dd] px-3 pb-4"><span class="flex-1 rounded-full bg-white px-4 py-2 text-xs text-muted">${tr('Message', 'رسالة')}</span><span class="grid h-9 w-9 place-items-center rounded-full bg-[#00A884] text-white">${icon('arrow', 'h-4 w-4 rtl:-scale-x-100', 2.4)}</span></div>
             </div>
@@ -836,9 +943,9 @@ function promiseSection() {
 /* Our work — photo bento + Instagram */
 function gallery() {
   const svc = (slug) => C.services.find((s) => s.slug === slug);
-  const tile = (slug, cls) => {
+  const tile = (slug, cls, from) => {
     const s = svc(slug);
-    return `<a href="${href('service/' + s.slug + '/')}" class="group relative overflow-hidden rounded-[22px] ${cls}" ${reveal()}>
+    return `<a href="${href('service/' + s.slug + '/')}" class="group relative overflow-hidden rounded-[22px] shadow-card ${cls}" data-a="${from}">
       <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -854,18 +961,18 @@ function gallery() {
       ${sectionHead({ eyebrow: tr('Our work', 'أعمالنا'), title: tr('Fresh from our <span class="text-grad">installations</span>', 'من أحدث <span class="text-grad">أعمالنا</span>'), text: tr('Cars, villas, offices and surfaces — finished by our team across Qatar.', 'سيارات وفلل ومكاتب وأسطح — أنجزها فريقنا في أنحاء قطر.') })}
       <a href="${C.site.instagram}" target="_blank" rel="noopener" class="btn btn-white w-max" ${reveal(100)}><span class="grid h-7 w-7 place-items-center rounded-lg text-white" style="background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)">${icon('instagram', 'h-4 w-4')}</span>@exotic_tint_qatar</a>
     </div>
-    <div class="mt-10 grid auto-rows-[200px] grid-cols-2 gap-4 lg:auto-rows-[230px] lg:grid-cols-4">
-      ${tile('automotive-window-tinting', 'col-span-2 row-span-2')}
-      ${tile('customized-cut-frosted-film', '')}
-      ${tile('marble-protection-film', '')}
-      ${tile('commercial-window-tinting-services', 'col-span-2')}
-      ${tile('fabric-nano-coating-service', '')}
-      <a href="${C.site.instagram}" target="_blank" rel="noopener" class="group relative flex flex-col justify-between overflow-hidden rounded-[22px] p-5 text-white" style="background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 50%,#6228d7 100%)" ${reveal()}>
+    <div class="mt-10 grid auto-rows-[200px] grid-cols-2 gap-4 lg:auto-rows-[230px] lg:grid-cols-4" data-assemble="scrub">
+      ${tile('automotive-window-tinting', 'col-span-2 row-span-2', 'far-left')}
+      ${tile('customized-cut-frosted-film', '', 'far-top')}
+      ${tile('marble-protection-film', '', 'far-right')}
+      ${tile('commercial-window-tinting-services', 'col-span-2', 'far-right')}
+      ${tile('fabric-nano-coating-service', '', 'far-bottom')}
+      <a href="${C.site.instagram}" target="_blank" rel="noopener" class="group relative flex flex-col justify-between overflow-hidden rounded-[22px] p-5 text-white" style="background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 50%,#6228d7 100%)" data-a="far-bottom">
         ${img3d('camera', 'absolute -bottom-3 -end-3 h-24 w-24 opacity-90 drop-shadow-xl transition duration-500 group-hover:rotate-12')}
         <span class="grid h-11 w-11 place-items-center rounded-xl bg-white/20 backdrop-blur">${icon('instagram', 'h-5 w-5')}</span>
         <div><p class="font-head text-xl font-extrabold leading-tight">${tr('See more on Instagram', 'شاهد المزيد على إنستغرام')}</p><p class="mt-1 text-sm text-white/85">${tr('Follow for daily work', 'تابعنا لأعمالنا اليومية')}</p></div>
       </a>
-      ${tile('residential-window-tinting-services', 'col-span-2')}
+      ${tile('residential-window-tinting-services', 'col-span-2', 'far-left')}
     </div>
   </div>
 </section>`;
@@ -1053,44 +1160,66 @@ function mapSection() {
 </section>`;
 }
 
-function testimonials() {
-  const data = C.testimonials.map((r) => ({ text: t(r.text), name: r.name, role: t(r.role), service: t(r.service) }));
-  const r0 = data[0];
+/* Signature section: a clean, auto-playing tint demo (photo + sliding glass film + live readings) */
+function showcase() {
+  // Illustrative temperatures (the villa drop matches the 9°C example in the client's own article)
+  const scenes = [
+    { img: 'automotive', icon: 'car', label: tr('Car cabin', 'مقصورة السيارة'), from: 52, to: 40 },
+    { img: 'residential', icon: 'home', label: tr('Villa living room', 'غرفة معيشة الفيلا'), from: 41, to: 32 },
+    { img: 'commercial', icon: 'building', label: tr('Office workspace', 'مساحة المكتب'), from: 38, to: 30 },
+  ];
+  const deg = (n) => (L === 'ar' ? Number(n).toLocaleString('ar-EG') : n) + '°';
   return `
-<section class="pb-20 lg:pb-28">
-  <div class="container-site">
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-      ${sectionHead({ eyebrow: tr('Client stories', 'قصص العملاء'), title: tr('Loved by clients <span class="text-grad">across Qatar</span>', 'محبوب لدى العملاء <span class="text-grad">في كل قطر</span>') })}
-      <span class="inline-flex w-max items-center gap-3 rounded-full border border-line bg-white px-5 py-2.5 shadow-card" ${reveal(100)}>${starsRow()} <b class="text-ink">5.0</b><span class="text-sm text-muted">${tr('client rating', 'تقييم العملاء')}</span></span>
+<section class="relative pb-20 lg:pb-28" data-assemble>
+  <div class="container-site grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+    <div class="lg:col-span-5" data-a="left">
+      <span class="eyebrow">${tr('Tint in motion', 'التظليل أثناء العمل')}</span>
+      <h2 class="mt-4 text-balance font-head text-[1.95rem] font-extrabold leading-[1.1] text-ink sm:text-[2.6rem]">${tr('Watch the heat <span class="text-grad">disappear</span>', 'شاهد الحرارة <span class="text-grad">تختفي</span>')}</h2>
+      <p class="mt-4 max-w-md text-[1.03rem] leading-relaxed text-muted">${tr('Our film slides on, the glare fades and the room cools — with 99% of UV blocked.', 'يُركّب الفيلم، فيختفي الوهج وتبرد الغرفة — مع حجب ٩٩٪ من الأشعة فوق البنفسجية.')}</p>
+      <div class="mt-8 space-y-2.5" role="tablist">
+        ${scenes
+          .map(
+            (s, i) => `
+        <button type="button" role="tab" class="tm-tab group relative w-full overflow-hidden rounded-2xl border border-line bg-white p-3.5 text-start shadow-card transition hover:border-gold-200" aria-selected="${i === 0}" data-tm-tab="${i}">
+          <span class="flex items-center gap-3.5">
+            <span class="tm-ico grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#f2f4f7] text-ink transition">${icon(s.icon, 'h-5 w-5', 2)}</span>
+            <span class="min-w-0 flex-1"><span class="block font-head font-bold text-ink">${s.label}</span><span class="block text-xs text-muted">${tr('Illustrative', 'توضيحي')}</span></span>
+            <span class="font-head text-sm font-extrabold text-ink" dir="ltr"><span class="text-rose-500">${deg(s.from)}</span> <span class="text-muted">→</span> <span class="text-emerald-600">${deg(s.to)}</span></span>
+          </span>
+          <span class="absolute inset-x-0 bottom-0 h-[3px] bg-transparent"><span class="tm-bar block h-full bg-grad"></span></span>
+        </button>`
+          )
+          .join('')}
+      </div>
+      <a href="#quote" class="btn btn-primary mt-8">${tr('Get this result', 'احصل على هذه النتيجة')} ${arrow()}</a>
     </div>
-    <div class="relative mt-10 overflow-hidden rounded-[28px] border border-line bg-gradient-to-br from-tint-2 via-white to-tint p-7 shadow-glow sm:p-12" data-testimonials='${esc(JSON.stringify(data))}' ${reveal(150)}>
-      <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full border-[40px] border-gold-100/70"></div>
-      <div class="relative grid items-center gap-12 lg:grid-cols-12">
-        <div class="lg:col-span-7">
-          <span class="ico !h-14 !w-14 !rounded-2xl">${icon('quote', 'h-6 w-6', 2)}</span>
-          <div data-t-body>
-            <blockquote class="mt-7 min-h-[7.5rem] font-head text-[1.45rem] font-semibold leading-snug text-ink sm:text-[1.75rem]" data-t-text>${r0.text}</blockquote>
-            <div class="my-7 border-t border-dashed border-[#e7d7b8]"></div>
-            <div class="flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <p class="font-head text-xl font-bold text-ink" data-t-name>${r0.name}</p>
-                <p class="text-muted" data-t-role>${r0.role}</p>
-                <span class="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#f3d7a6] bg-white px-3 py-1 text-xs font-bold text-gold-700">${icon('user', 'h-3.5 w-3.5', 2.4)}<span data-t-service>${r0.service}</span></span>
-              </div>
-              <div class="flex gap-3">
-                <button type="button" class="grid h-12 w-12 place-items-center rounded-full border border-line bg-white text-ink shadow-card transition hover:-translate-y-0.5" data-t-prev aria-label="${tr('Previous', 'السابق')}">${icon('arrowLeft', 'h-5 w-5 rtl:-scale-x-100', 2.2)}</button>
-                <button type="button" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold transition hover:-translate-y-0.5" data-t-next aria-label="${tr('Next', 'التالي')}">${arrow('h-5 w-5')}</button>
-              </div>
-            </div>
+
+    <div class="lg:col-span-7" data-a="right">
+      <div class="relative" data-tm data-scenes='${esc(JSON.stringify(scenes.map((s) => ({ img: s.img, from: s.from, to: s.to }))))}'>
+        <div class="pointer-events-none absolute -inset-5 rounded-[40px] bg-gradient-to-br from-gold-200/60 via-transparent to-[#c7d5ee]/60 blur-2xl"></div>
+        <div class="relative aspect-[4/3] overflow-hidden rounded-[30px] border-[6px] border-white bg-ink shadow-float sm:aspect-[16/11]" dir="ltr">
+          <img src="/assets/img/${scenes[0].img}.webp" alt="${tr('Window film demonstration', 'عرض توضيحي لفيلم النوافذ')}" class="absolute inset-0 h-full w-full object-cover transition-opacity duration-500" data-tm-img loading="lazy">
+          <div class="tm-glare absolute inset-0" style="background:radial-gradient(70% 80% at 88% 8%,rgba(255,240,200,.95),rgba(255,190,90,.5) 35%,transparent 70%),linear-gradient(180deg,rgba(255,210,130,.28),rgba(255,170,80,.12))"></div>
+          <div class="tm-film absolute inset-0" style="background:linear-gradient(115deg,rgba(14,26,46,.55),rgba(22,40,70,.4) 50%,rgba(14,26,46,.55))">
+            <div class="absolute inset-0 bg-[linear-gradient(115deg,transparent_40%,rgba(255,255,255,.12)_48%,transparent_56%)]"></div>
           </div>
-        </div>
-        <div class="relative mx-auto w-full max-w-sm lg:col-span-5">
-          <div class="absolute inset-[-8%] rounded-full bg-gradient-to-br from-gold-200 via-gold-300 to-gold-500 opacity-80"></div>
-          <div class="arch relative aspect-[4/5]"><img src="/assets/img/residential.webp" alt="${tr('A tinted villa in Qatar', 'فيلا مظللة في قطر')}" class="h-full w-full object-cover" loading="lazy"></div>
-          <div class="float-chip absolute end-[-4%] top-[10%] px-3 py-2">${starsRow('h-4 w-4')}</div>
-          <div class="float-chip floaty absolute bottom-[12%] start-[-6%] flex items-center gap-3 p-3 pe-5">
-            <span class="grid h-8 w-8 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('check', 'h-4 w-4', 3)}</span>
-            <span><span class="block text-xs text-muted">${tr('Verified', 'موثّق')}</span><span class="block font-head font-bold text-ink">${tr('Exotic Tint client', 'عميل إكزوتك تينت')}</span></span>
+          <div class="tm-edge pointer-events-none absolute inset-y-0 w-[3px] bg-white shadow-[0_0_24px_6px_rgba(255,255,255,.6)]"></div>
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent"></div>
+
+          <span class="glass-hud absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold text-white ${L === 'ar' ? 'font-arabic' : ''}">
+            <span class="tm-dot h-2 w-2 rounded-full"></span><span data-tm-state data-off="${tr('Without film', 'بدون فيلم')}" data-on="${tr('With Exotic Tint', 'مع إكزوتك تينت')}">${tr('Without film', 'بدون فيلم')}</span>
+          </span>
+
+          <div class="absolute inset-x-3 bottom-3 flex items-end justify-between gap-2 sm:inset-x-4 sm:bottom-4 sm:gap-3">
+            <div class="room-hud rounded-2xl px-3 py-2 sm:px-4 sm:py-3">
+              <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-muted ${L === 'ar' ? 'font-arabic' : ''}">${tr('Temperature', 'الحرارة')}</p>
+              <p class="font-head text-2xl font-extrabold leading-tight text-ink sm:text-4xl"><span data-tm-temp>${scenes[0].from}</span><span class="text-lg text-muted">°C</span></p>
+              <div class="mt-1.5 hidden h-1.5 w-36 overflow-hidden rounded-full bg-line sm:block"><div class="tm-tbar h-full rounded-full"></div></div>
+            </div>
+            <div class="room-hud flex items-center gap-2 rounded-2xl p-2 pe-3 sm:gap-3 sm:p-3 sm:pe-4">
+              <svg class="h-9 w-9 -rotate-90 sm:h-11 sm:w-11" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#tmuv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-tm-ring/><defs><linearGradient id="tmuv"><stop stop-color="#F6C766"/><stop offset="1" stop-color="#C47F1E"/></linearGradient></defs></svg>
+              <div><p class="text-[11px] font-bold uppercase tracking-wider text-muted ${L === 'ar' ? 'font-arabic' : ''}">${tr('UV blocked', 'حجب الأشعة')}</p><p class="font-head text-xl font-extrabold text-ink"><span data-tm-uv>0</span>%</p></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1099,13 +1228,79 @@ function testimonials() {
 </section>`;
 }
 
+function testimonials() {
+  const avatarBg = ['#E9A63B', '#2563EB', '#0F766E', '#6D28D9'];
+  const msg = (r, i) => `
+        <div class="flex items-end gap-2.5 ${i % 2 ? 'sm:ps-10' : ''}" data-review>
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full font-head text-xs font-extrabold text-white shadow-md" style="background:${avatarBg[i % 4]}">${r.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</span>
+          <div class="max-w-[30rem] rounded-2xl rounded-es-md border border-white/70 bg-white/90 p-4 shadow-card backdrop-blur">
+            <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <p class="font-head text-[0.95rem] font-bold text-ink">${r.name} <span class="font-sans text-xs font-medium text-muted">· ${t(r.role)}</span></p>
+              ${starsRow('h-3.5 w-3.5')}
+            </div>
+            <p class="mt-2 text-[0.97rem] leading-relaxed text-ink-2">${t(r.text)}</p>
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <span class="rounded-full bg-tint px-2.5 py-0.5 text-[11px] font-bold text-gold-700">${t(r.service)}</span>
+              <span class="flex items-center gap-1 text-[11px] font-semibold text-emerald-600">${icon('check', 'h-3.5 w-3.5', 3)}${tr('Client review', 'تقييم عميل')}</span>
+            </div>
+          </div>
+        </div>`;
+  const social = (link, bg, ic, name) => `<a href="${link}" target="_blank" rel="noopener" class="flex items-center gap-2.5 rounded-2xl border border-line bg-white px-3.5 py-2.5 text-sm font-bold text-ink shadow-card transition hover:-translate-y-0.5"><span class="grid h-8 w-8 place-items-center rounded-lg text-white" style="background:${bg}">${ic}</span>${name}</a>`;
+  return `
+<section class="relative overflow-hidden pb-20 lg:pb-28" data-assemble>
+  <div class="container-site">
+    <div class="relative overflow-hidden rounded-[28px] border border-line bg-gradient-to-br from-tint-2 via-white to-tint p-6 shadow-glow sm:p-10 lg:p-14">
+      ${aurora('soft')}
+      <div class="relative grid gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5" data-a="left">
+          <span class="eyebrow">${tr('Client stories', 'قصص العملاء')}</span>
+          <h2 class="mt-4 text-balance font-head text-[1.85rem] font-extrabold leading-[1.12] text-ink min-[400px]:text-[2.1rem] sm:text-[2.6rem]">${tr('What our clients <span class="text-grad">tell us</span>', 'ماذا يقول <span class="text-grad">عملاؤنا</span>')}</h2>
+          <p class="mt-4 text-[1.05rem] leading-relaxed text-muted">${tr('Real words from drivers, homeowners and businesses we’ve worked with across Qatar.', 'كلمات حقيقية من سائقين وأصحاب منازل وشركات عملنا معهم في أنحاء قطر.')}</p>
+          <div class="mt-8 rounded-[22px] border border-line bg-white p-5 shadow-card">
+            <div class="flex items-center gap-4">
+              <img src="/assets/img/logo-original.webp" alt="" class="h-14 w-auto">
+              <div><p class="font-head text-lg font-bold text-ink">${t(C.site.name)}</p><p class="flex items-center gap-2 text-sm text-muted">${starsRow('h-4 w-4')} ${tr('Rated by our clients', 'بتقييم عملائنا')}</p></div>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-2 border-t border-dashed border-line pt-5 text-center">
+              <div><p class="font-head text-xl font-extrabold text-ink">${num(C.services.length)}</p><p class="text-[11px] text-muted">${tr('Services', 'خدمات')}</p></div>
+              <div><p class="font-head text-xl font-extrabold text-ink">${num(C.areas.length)}+</p><p class="text-[11px] text-muted">${tr('Areas', 'مناطق')}</p></div>
+              <div><p class="font-head text-xl font-extrabold text-ink" dir="ltr">7/7</p><p class="text-[11px] text-muted">${tr('Days open', 'أيام العمل')}</p></div>
+            </div>
+          </div>
+          <p class="mt-8 text-sm font-semibold text-ink">${tr('Find us &amp; leave a review', 'تابعنا واكتب تقييمك')}</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            ${social(C.site.facebook, '#1877F2', fbIcon('h-4 w-4'), 'Facebook')}
+            ${social(C.site.instagram, 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)', icon('instagram', 'h-4 w-4'), 'Instagram')}
+            ${social(C.site.tiktok, '#000', ttIcon('h-4 w-4'), 'TikTok')}
+          </div>
+        </div>
+        <div class="lg:col-span-7" data-a="right">
+          <div class="glass-card overflow-hidden rounded-[26px]">
+            <div class="flex items-center justify-between gap-3 border-b border-white/70 bg-white/60 px-5 py-4">
+              <div class="flex items-center gap-3">
+                <span class="relative grid h-10 w-10 place-items-center rounded-full bg-grad text-ink">${icon('chat', 'h-5 w-5', 2.2)}<span class="absolute -end-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span></span>
+                <div><p class="font-head font-bold text-ink">${tr('Client reviews', 'تقييمات العملاء')}</p><p class="text-xs text-muted" data-review-status data-typing-label="${tr('new review…', 'تقييم جديد…')}">${num(C.testimonials.length)} ${tr('reviews', 'تقييمات')}</p></div>
+              </div>
+              <a href="${href('reviews/')}" class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-ink shadow-card hover:text-gold-700">${tr('See all', 'عرض الكل')} ${arrow('h-3.5 w-3.5')}</a>
+            </div>
+            <div class="space-y-4 p-4 sm:p-6" data-reviews>
+              ${C.testimonials.map(msg).join('')}
+              <div class="typing hidden w-max rounded-2xl rounded-es-md bg-white px-4 py-3 shadow-sm ms-11" data-typing><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
 function faqSection(items, title) {
   return `
-<section class="pb-20 lg:pb-28">
+<section class="pb-20 lg:pb-28" data-assemble>
   <div class="container-site grid gap-12 lg:grid-cols-12">
     <div class="lg:col-span-5">
       ${sectionHead({ eyebrow: tr('FAQ', 'الأسئلة الشائعة'), title: title || tr('Questions? <span class="text-grad">Answered.</span>', 'لديك أسئلة؟ <span class="text-grad">إليك الإجابات.</span>') })}
-      <div class="relative mt-8 overflow-hidden rounded-[22px] p-7 navy-bg" ${reveal(100)}>
+      <div class="relative mt-8 overflow-hidden rounded-[22px] p-7 navy-bg shadow-float" data-a="left">
         ${img3d('wrench', 'absolute -bottom-3 end-3 h-20 w-20 opacity-90')}
         <p class="font-head text-xl font-bold text-white">${tr('Still have a question?', 'لديك سؤال آخر؟')}</p>
         <p class="mt-1 max-w-xs text-sm text-white/70">${tr('Our specialists reply fast on WhatsApp, 7 days a week.', 'يرد مختصونا بسرعة عبر واتساب، ٧ أيام في الأسبوع.')}</p>
@@ -1119,7 +1314,7 @@ function faqSection(items, title) {
       ${items
         .map(
           ([q, a], i) => `
-      <details class="faq group rounded-2xl border border-line bg-white px-6 shadow-card transition" ${i === 0 ? 'open' : ''} ${reveal(i * 50)}>
+      <details class="faq group rounded-2xl border border-line bg-white px-6 shadow-card transition" ${i === 0 ? 'open' : ''} data-a="right">
         <summary class="flex cursor-pointer items-center justify-between gap-6 py-5 font-head text-lg font-bold text-ink">
           <span>${t(q)}</span>
           <span class="faq-icon grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-tint text-gold-700 transition duration-300">${icon('plus', 'h-4 w-4', 2.4)}</span>
@@ -1143,8 +1338,8 @@ function quoteSection() {
       title: tr('Book your tint <span class="text-grad">in 60 seconds</span>', 'احجز تظليلك <span class="text-grad">في ٦٠ ثانية</span>'),
       text: tr('Fill in a few details — your request goes straight to our team on WhatsApp.', 'أدخل بعض التفاصيل — يصل طلبك مباشرة إلى فريقنا عبر واتساب.'),
     })}
-    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-12" ${reveal(120)}>
-      <form class="relative bg-white p-6 sm:p-10 lg:col-span-7" data-quote-form novalidate
+    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-12" data-assemble>
+      <form class="relative bg-white p-6 sm:p-10 lg:col-span-7" data-a="left" data-quote-form novalidate
         data-msg-intro="${esc(tr('Hello Exotic Tint Qatar! I would like a free quote.', 'مرحباً إكزوتك تينت قطر! أرغب في الحصول على عرض سعر مجاني.'))}"
         data-l-name="${esc(tr('Name', 'الاسم'))}" data-l-phone="${esc(tr('Phone', 'الهاتف'))}" data-l-service="${esc(tr('Service', 'الخدمة'))}" data-l-area="${esc(tr('Area', 'المنطقة'))}" data-l-message="${esc(tr('Details', 'التفاصيل'))}" data-wa="${C.site.whatsapp}">
         <div class="pointer-events-none absolute inset-0 dots opacity-30 [mask-image:linear-gradient(180deg,#000,transparent_50%)]"></div>
@@ -1158,7 +1353,7 @@ function quoteSection() {
         <p class="relative mt-4 hidden items-center gap-2 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-600" data-form-error>${icon('info', 'h-4 w-4', 2.2)} ${tr('Please add your name and phone number.', 'يرجى إدخال الاسم ورقم الهاتف.')}</p>
         <button type="submit" class="btn btn-primary relative mt-6 w-full !py-4">${waIcon('h-5 w-5')} ${tr('Send request on WhatsApp', 'أرسل الطلب عبر واتساب')}</button>
       </form>
-      <div class="relative p-6 sm:p-10 navy-bg lg:col-span-5">
+      <div class="relative p-6 sm:p-10 navy-bg lg:col-span-5" data-a="right">
         <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
         <div class="relative">
           <p class="flex items-center gap-2 text-white/80">${tr('Prefer to talk?', 'تفضل التحدث؟')} <span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-bold uppercase text-emerald-300">${tr('7 days a week', '٧ أيام في الأسبوع')}</span></p>
@@ -1187,18 +1382,19 @@ function quoteSection() {
 function pageHero({ chip, title, text, crumbs = [], image, alt, chips = {} }) {
   return `
 <section class="px-2.5 sm:px-3">
-  <div class="hero-bg relative overflow-hidden rounded-[28px]">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    ${aurora()}
     <div class="pointer-events-none absolute inset-0 grid-lines"></div>
     <div class="container-site relative grid items-center gap-10 py-14 lg:grid-cols-2 lg:py-20">
       <div>
-        <nav class="flex flex-wrap items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" ${reveal()}>
+        <nav class="flex flex-wrap items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
           <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>
           ${crumbs.map(([label, link]) => `${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}${link ? `<a href="${link}" class="font-semibold hover:text-gold-700">${label}</a>` : `<span class="font-semibold text-ink">${label}</span>`}`).join('')}
         </nav>
-        <span class="chip mt-6" ${reveal(40)}>${chip}</span>
-        <h1 class="mt-5 text-balance font-head text-[2.15rem] font-extrabold leading-[1.08] text-ink min-[400px]:text-[2.5rem] sm:text-[3.2rem] lg:text-[2.9rem] xl:text-[3.4rem]" ${reveal(80)}>${title}</h1>
-        ${text ? `<p class="mt-5 max-w-xl text-[1.1rem] leading-relaxed text-muted" ${reveal(140)}>${text}</p>` : ''}
-        <div class="mt-8 flex flex-wrap gap-3" ${reveal(200)}>
+        <span class="chip mt-6" data-a="left">${chip}</span>
+        <h1 class="mt-5 text-balance font-head text-[2.15rem] font-extrabold leading-[1.08] text-ink min-[400px]:text-[2.5rem] sm:text-[3.2rem] lg:text-[2.9rem] xl:text-[3.4rem]" data-split>${title}</h1>
+        ${text ? `<p class="mt-5 max-w-xl text-[1.1rem] leading-relaxed text-muted" data-a="up">${text}</p>` : ''}
+        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} ${t(C.ui.whatsapp)}</a>
         </div>
@@ -1243,20 +1439,11 @@ function pageHome(page) {
     hero() +
       whyUs() +
       servicesSlider() +
+      showcase() +
       bookFast() +
-      howItWorks() +
-      difference() +
-      tintStudio() +
-      statsStrip() +
-      filmTech() +
-      promiseSection() +
       gallery() +
-      areasSection() +
       testimonials() +
-      reviewUs() +
-      blogSection() +
       faqSection(C.homeFaq) +
-      ctaBanner() +
       quoteSection()
   );
 }
@@ -1323,32 +1510,91 @@ ${quoteSection()}`;
 }
 
 function pageServices(page) {
+  const S = C.services;
+  // Per-service animation + one honest headline metric (figures from the client's own content)
+  const FX = {
+    'automotive-window-tinting': { fx: 'tint', label: tr('Solar heat blocked', 'حرارة شمس محجوبة'), to: 60, pre: tr('up to ', 'حتى '), unit: '%', chip: tr('99% UV blocked', 'حجب ٩٩٪ من الأشعة') },
+    'residential-window-tinting-services': { fx: 'tint', label: tr('UV filtered', 'أشعة محجوبة'), to: 99, pre: '', unit: '%', chip: tr('Cooler, brighter rooms', 'غرف أبرد وأكثر إشراقاً') },
+    'commercial-window-tinting-services': { fx: 'tint', label: tr('UV blocked', 'حجب الأشعة'), to: 99, pre: '', unit: '%', chip: tr('Lower AC bills', 'فواتير تكييف أقل') },
+    'customized-cut-frosted-film': { fx: 'frost', label: tr('Privacy where you need it', 'خصوصية حيث تحتاجها'), to: 100, pre: '', unit: '%', chip: tr('Light still passes through', 'يسمح بمرور الضوء') },
+    'marble-protection-film': { fx: 'shield', label: tr('Years of protection', 'سنوات حماية'), to: 10, pre: tr('up to ', 'حتى '), unit: tr(' yrs', ' سنوات'), chip: tr('Invisible gloss finish', 'لمسة لامعة غير مرئية') },
+    'fabric-nano-coating-service': { fx: 'bead', label: tr('Spills that soak in', 'انسكابات تتغلغل'), to: 0, from: 100, pre: '', unit: '%', chip: tr('Liquids bead &amp; wipe away', 'السوائل تتجمع وتُمسح') },
+  };
+  const data = S.map((s) => ({ img: s.img, ...FX[s.slug], label: FX[s.slug].label, chip: FX[s.slug].chip }));
+
+  const hero = `
+<section class="px-2.5 sm:px-3">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    ${aurora()}
+    <div class="pointer-events-none absolute inset-0 grid-lines"></div>
+    <div class="container-site relative py-12 text-center lg:py-16">
+      <nav class="flex items-center justify-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
+        <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}<span class="font-semibold text-ink">${t(C.ui.nav.services)}</span>
+      </nav>
+      <h1 class="mx-auto mt-5 max-w-3xl text-balance font-head text-[2.3rem] font-extrabold leading-[1.06] text-ink sm:text-[3.4rem]"><span data-split>${tr('Six ways to protect', 'ست طرق لحماية')}</span> <span class="text-grad" data-a="up">${tr('what you love.', 'ما تحب.')}</span></h1>
+      <p class="mx-auto mt-4 max-w-xl text-[1.06rem] leading-relaxed text-muted" data-a="up">${tr('Scroll to see each film at work — installed on-site across Qatar.', 'مرّر لترى كل فيلم أثناء العمل — نركّبه في موقعك في أنحاء قطر.')}</p>
+      <div class="mt-7 flex flex-wrap justify-center gap-2" data-a="up">
+        ${S.map((s) => `<a href="#svc-${s.slug}" class="inline-flex items-center gap-2 rounded-full border border-white bg-white/80 px-3.5 py-2 text-sm font-semibold text-ink shadow-card backdrop-blur transition hover:-translate-y-0.5 hover:text-gold-700">${icon(s.icon, 'h-4 w-4 text-gold-600', 2.2)}${t(s.short)}</a>`).join('')}
+      </div>
+    </div>
+  </div>
+</section>`;
+
+  const stage = `
+<div class="sv-stage relative" data-sv data-items='${esc(JSON.stringify(data))}' dir="ltr">
+  <div class="pointer-events-none absolute -inset-4 rounded-[40px] bg-gradient-to-br from-gold-200/60 via-transparent to-[#c7d5ee]/60 blur-2xl"></div>
+  <div class="relative aspect-[16/11] overflow-hidden rounded-[30px] border-[6px] border-white bg-ink shadow-float lg:aspect-[4/4.4]">
+    <img src="/assets/img/${S[0].img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition-opacity duration-500" data-sv-img>
+    <!-- before: glare / scratches -->
+    <div class="sv-glare absolute inset-0" style="background:radial-gradient(70% 80% at 85% 8%,rgba(255,240,200,.95),rgba(255,190,90,.5) 35%,transparent 70%),linear-gradient(180deg,rgba(255,210,130,.3),rgba(255,170,80,.12))"></div>
+    <svg class="sv-scratch absolute inset-0 h-full w-full" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M60 250 L170 210"/><path d="M90 290 L210 250"/><path d="M240 300 L340 240"/><path d="M200 170 L300 140"/><path d="M120 330 L190 310"/></g></svg>
+    <!-- after layers (revealed by the sweep) -->
+    <div class="sv-layer sv-tint absolute inset-0" style="background:linear-gradient(115deg,rgba(14,26,46,.55),rgba(22,40,70,.38) 50%,rgba(14,26,46,.55))"></div>
+    <div class="sv-layer sv-frost absolute inset-0"></div>
+    <div class="sv-layer sv-shield absolute inset-0"><span class="sv-sheen absolute inset-0"></span></div>
+    <div class="sv-beads absolute inset-0">${Array.from({ length: 14 }, (_, i) => `<span style="--x:${[12, 22, 35, 48, 60, 72, 84, 18, 41, 55, 68, 80, 30, 90][i]}%;--y:${[30, 52, 38, 60, 34, 56, 42, 72, 78, 70, 82, 66, 64, 76][i]}%;--s:${[26, 18, 22, 30, 20, 24, 16, 21, 28, 18, 23, 19, 15, 21][i]}px;--d:${i * 0.09}s"></span>`).join('')}</div>
+    <div class="sv-edge pointer-events-none absolute inset-y-0 w-[3px] bg-white shadow-[0_0_26px_7px_rgba(255,255,255,.65)]"></div>
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-ink/20"></div>
+
+    <div class="absolute inset-x-4 top-4 flex items-center justify-between gap-2">
+      <span class="glass-hud inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold text-white ${L === 'ar' ? 'font-arabic' : ''}"><span class="sv-dot h-2 w-2 rounded-full"></span><span data-sv-state data-off="${tr('Before', 'قبل')}" data-on="${tr('Protected by Exotic Tint', 'محمي بإكزوتك تينت')}">${tr('Before', 'قبل')}</span></span>
+      <span class="glass-hud rounded-full px-3 py-2 font-head text-xs font-extrabold text-white"><span data-sv-n>${tr('01', '٠١')}</span> / ${tr('06', '٠٦')}</span>
+    </div>
+    <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
+      <div class="room-hud min-w-0 rounded-2xl px-3 py-2 sm:px-4 sm:py-3">
+        <p class="truncate text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-muted ${L === 'ar' ? 'font-arabic' : ''}" data-sv-label>${data[0].label}</p>
+        <p class="font-head text-2xl font-extrabold leading-tight text-ink sm:text-4xl ${L === 'ar' ? 'font-arabic' : ''}" data-sv-val>—</p>
+        <div class="mt-1.5 h-1.5 w-28 overflow-hidden rounded-full bg-line sm:w-40"><div class="h-full rounded-full bg-grad" style="width:0%" data-sv-bar></div></div>
+      </div>
+      <span class="glass-hud hidden max-w-[11rem] rounded-2xl px-3.5 py-2.5 text-xs font-bold leading-snug text-white sm:block ${L === 'ar' ? 'font-arabic text-right' : ''}" data-sv-chip>${data[0].chip}</span>
+    </div>
+  </div>
+  <div class="mt-4 hidden justify-center gap-1.5 lg:flex">${S.map((_, i) => `<span class="sv-pip h-1.5 w-6 rounded-full bg-line transition-all duration-500" data-sv-pip="${i}"></span>`).join('')}</div>
+</div>`;
+
+  const block = (s, i) => `
+    <article id="svc-${s.slug}" class="sv-block scroll-mt-28 py-10 lg:flex lg:min-h-[62vh] lg:flex-col lg:justify-center lg:py-0" data-sv-step="${i}">
+      <span class="eyebrow"><span class="font-head text-gold-600">${num(pad(i + 1))}</span> ${t(s.short)}</span>
+      <h2 class="mt-3 font-head text-[1.85rem] font-extrabold leading-[1.1] text-ink sm:text-[2.3rem]">${t(s.title)}</h2>
+      <p class="mt-3 text-[1.02rem] leading-relaxed text-muted">${t(s.summary)}</p>
+      <ul class="mt-5 grid gap-2 sm:grid-cols-2">
+        ${s.benefits.slice(0, 4).map(([b]) => `<li class="flex items-center gap-2.5 text-[0.95rem] font-semibold text-ink-2"><span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(b)}</li>`).join('')}
+      </ul>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="${href('service/' + s.slug + '/')}" class="btn btn-primary !py-3 text-sm">${t(C.ui.learnMore)} ${arrow()}</a>
+        <a href="${waLink(tr('Hello, I would like a quote for ', 'مرحباً، أرغب في عرض سعر لخدمة ') + t(s.title))}" target="_blank" rel="noopener" class="btn btn-white !py-3 text-sm">${waIcon('h-4 w-4 text-[#25D366]')} ${tr('Free quote', 'عرض مجاني')}</a>
+      </div>
+    </article>`;
+
   const body = `
-${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('layers', 'h-4 w-4', 2.2)}</span>${tr('Our services', 'خدماتنا')}`,
-  title: tr('Premium tinting &amp; <span class="text-grad">protection services</span>', 'خدمات تظليل وحماية <span class="text-grad">فاخرة</span>'),
-  text: tr('Six specialist services for cars, homes, offices and surfaces — all installed on-site across Qatar.', 'ست خدمات متخصصة للسيارات والمنازل والمكاتب والأسطح — جميعها تُركّب في موقعك في أنحاء قطر.'),
-  crumbs: [[t(C.ui.nav.services)]],
-  image: 'residential',
-  alt: tr('Tinted home windows', 'نوافذ منزل مظللة'),
-  chips: chipHeat(),
-})}
-<section class="py-20 lg:py-28">
-  <div class="container-site">
-    ${sectionHead({ eyebrow: tr('All services', 'جميع الخدمات'), title: tr('Choose what you want <span class="text-grad">to protect</span>', 'اختر ما تريد <span class="text-grad">حمايته</span>'), center: true })}
-    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">${C.services.map((s, i) => `<div ${reveal(i * 60)}>${serviceCard(s, { grid: true })}</div>`).join('')}</div>
+${hero}
+<section class="relative pb-16 pt-10 lg:pb-20">
+  <div class="container-site grid gap-6 lg:grid-cols-12 lg:gap-14">
+    <div class="sticky top-[92px] z-10 lg:col-span-6 lg:top-28 lg:self-start">${stage}</div>
+    <div class="lg:col-span-6">${S.map(block).join('')}</div>
   </div>
 </section>
-${whyUs()}
-${bookFast()}
-${howItWorks()}
-<div class="h-20 lg:h-28"></div>
-${filmTech()}
-${processTimeline()}
-${gallery()}
-${areasSection()}
 ${faqSection(C.homeFaq)}
-${ctaBanner()}
 ${quoteSection()}`;
   return layout(
     page,
@@ -1590,7 +1836,7 @@ function renderBlocks(blocks) {
     .map((b) => {
       if (b.h) return `<h2 id="s${++h2}" class="mt-12 scroll-mt-32 font-head text-[1.7rem] font-extrabold leading-tight text-ink">${t(b.h)}</h2>`;
       if (b.p) return `<p class="mt-5 text-[1.08rem] leading-[1.85] text-ink-2/85">${t(b.p)}</p>`;
-      if (b.list) return `<ul class="mt-5 space-y-3">${b.list.map((x) => `<li class="flex gap-3 text-[1.05rem] leading-relaxed text-ink-2/90"><span class="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(x)}</li>`).join('')}</ul>`;
+      if (b.list) return `<ul class="mt-4 space-y-2.5">${b.list.map((x) => `<li class="flex gap-3 text-[1.05rem] leading-relaxed text-ink-2/90"><span class="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(x)}</li>`).join('')}</ul>`;
       if (b.callout) return `<div class="mt-6 flex gap-4 rounded-2xl border border-[#f3d7a6] bg-tint p-5">${img3d('bulb', 'h-10 w-10 shrink-0')}<p class="font-semibold leading-relaxed text-ink">${t(b.callout)}</p></div>`;
       if (b.table)
         return `<div class="no-scrollbar mt-6 overflow-x-auto rounded-2xl border border-line shadow-card"><table class="w-full min-w-[520px] text-start text-sm"><thead class="bg-ink text-white"><tr>${b.table.head.map((x, i) => `<th class="px-4 py-3.5 text-start font-head font-bold ${i === b.table.head.length - 1 ? 'text-gold-300' : ''}">${t(x)}</th>`).join('')}</tr></thead><tbody>${b.table.rows.map((r, ri) => `<tr class="${ri % 2 ? 'bg-tint-2' : 'bg-white'}">${r.map((c, ci) => `<td class="border-t border-line px-4 py-3.5 ${ci === 0 ? 'font-semibold text-ink' : 'text-ink-2'} ${ci === r.length - 1 && ci ? 'font-bold text-gold-700' : ''}">${t(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
@@ -1698,6 +1944,8 @@ function write(file, html) {
   }
   fs.mkdirSync(path.join(DIST, 'assets', 'js'), { recursive: true });
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'main.js'), path.join(DIST, 'assets', 'js', 'main.js'));
+  fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'motion.js'), path.join(DIST, 'assets', 'js', 'motion.js'));
+  fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'room3d.js'), path.join(DIST, 'assets', 'js', 'room3d.js'));
   fs.rmSync(path.join(DIST, 'assets', 'img', 'favicon.svg'), { force: true });
   // Old WordPress URL kept alive → points to the new commercial service page
   const to = '/service/commercial-window-tinting-services/';
