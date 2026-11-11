@@ -1439,6 +1439,9 @@ function pageHome(page) {
     hero() +
       whyUs() +
       servicesSlider() +
+      howItWorks() +
+      '<div class="h-20 lg:h-28"></div>' +
+      tintStudio() +
       showcase() +
       bookFast() +
       gallery() +
