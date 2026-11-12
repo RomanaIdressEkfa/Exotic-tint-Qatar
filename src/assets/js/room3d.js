@@ -29,7 +29,7 @@ function init() {
 
   /* ---------- renderer / scene / camera ---------- */
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -44,21 +44,112 @@ function init() {
   camera.position.copy(camBase);
   camera.lookAt(target);
 
+  /* ---------- procedural textures (no image downloads) ---------- */
+  const canvasTex = (w, h, draw, rep = [1, 1], srgb = true) => {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    draw(c.getContext('2d'), w, h);
+    const tx = new THREE.CanvasTexture(c);
+    if (srgb) tx.colorSpace = THREE.SRGBColorSpace;
+    tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
+    tx.repeat.set(...rep);
+    tx.anisotropy = 8;
+    return tx;
+  };
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  // light oak planks
+  const oak = canvasTex(1024, 1024, (g, w, h) => {
+    const rows = 9, pw = w / rows;
+    for (let i = 0; i < rows; i++) {
+      let y = -rnd(0, h);
+      while (y < h) {
+        const len = rnd(h * 0.35, h * 0.7);
+        const l = rnd(78, 86);
+        g.fillStyle = `hsl(${rnd(32, 37)}, ${rnd(38, 48)}%, ${l}%)`;
+        g.fillRect(i * pw, y, pw, len);
+        for (let k = 0; k < 14; k++) {
+          g.strokeStyle = `rgba(140,95,50,${rnd(0.04, 0.12)})`;
+          g.lineWidth = rnd(0.6, 1.8);
+          g.beginPath();
+          const x = i * pw + rnd(4, pw - 4);
+          g.moveTo(x, y);
+          g.bezierCurveTo(x + rnd(-6, 6), y + len * 0.3, x + rnd(-6, 6), y + len * 0.7, x + rnd(-4, 4), y + len);
+          g.stroke();
+        }
+        g.fillStyle = 'rgba(90,60,30,.28)';
+        g.fillRect(i * pw, y + len - 1.5, pw, 1.5);
+        y += len;
+      }
+      g.fillStyle = 'rgba(90,60,30,.32)';
+      g.fillRect(i * pw, 0, 1.5, h);
+    }
+  });
+  // fabric weave (bump)
+  const weave = canvasTex(128, 128, (g, w, h) => {
+    g.fillStyle = '#808080'; g.fillRect(0, 0, w, h);
+    for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
+      const v = ((x + y) % 4 === 0 ? 150 : 110) + rnd(-25, 25);
+      g.fillStyle = `rgb(${v},${v},${v})`; g.fillRect(x, y, 2, 2);
+    }
+  }, [6, 6], false);
+  // white marble with soft veins
+  const marble = canvasTex(512, 512, (g, w, h) => {
+    g.fillStyle = '#f4f2ee'; g.fillRect(0, 0, w, h);
+    g.filter = 'blur(1.2px)';
+    for (let i = 0; i < 9; i++) {
+      g.strokeStyle = `rgba(120,120,130,${rnd(0.15, 0.4)})`;
+      g.lineWidth = rnd(0.6, 2.4);
+      g.beginPath();
+      let x = rnd(0, w), y = 0;
+      g.moveTo(x, y);
+      while (y < h) { x += rnd(-40, 40); y += rnd(20, 60); g.lineTo(x, y); }
+      g.stroke();
+    }
+    g.filter = 'none';
+  });
+  // woven rug with a border
+  const rugTex = canvasTex(512, 384, (g, w, h) => {
+    g.fillStyle = '#eadfcb'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 6000; i++) { g.fillStyle = `rgba(${rnd(150, 200)},${rnd(120, 160)},${rnd(90, 120)},.08)`; g.fillRect(rnd(0, w), rnd(0, h), 2, 2); }
+    g.strokeStyle = 'rgba(160,110,70,.55)'; g.lineWidth = 6; g.strokeRect(22, 22, w - 44, h - 44);
+    g.strokeStyle = 'rgba(160,110,70,.3)'; g.lineWidth = 2; g.strokeRect(38, 38, w - 76, h - 76);
+  });
+  // walnut grain
+  const walnut = canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#6e4a2f'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 70; i++) {
+      g.strokeStyle = `rgba(${rnd(30, 60)},${rnd(18, 35)},10,${rnd(0.1, 0.35)})`;
+      g.lineWidth = rnd(0.5, 2);
+      g.beginPath(); const x = rnd(0, w); g.moveTo(x, 0); g.bezierCurveTo(x + rnd(-8, 8), h * 0.3, x + rnd(-8, 8), h * 0.6, x + rnd(-5, 5), h); g.stroke();
+    }
+  });
+
   /* ---------- materials ---------- */
-  const M = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.75, metalness: 0, ...extra });
+  const M = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.75, metalness: 0, envMapIntensity: 0.55, ...extra });
+  const fabric = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.95, bumpMap: weave, bumpScale: 0.6, ...extra });
   const mat = {
-    floor: M('#ffffff', { roughness: 0.92, emissive: '#fff6e8', emissiveIntensity: 0.28 }),
-    wall: M('#e3b25e', { roughness: 0.9 }),
+    floor: M('#ffffff', { map: oak, roughness: 0.55, envMapIntensity: 0.5, emissive: '#fff3e0', emissiveIntensity: 0.06 }),
+    wall: M('#e3b25e', { roughness: 0.92 }),
     wallEdge: M('#c9963f'),
-    frame: M('#1d2b42', { roughness: 0.4, metalness: 0.3 }),
-    cream: M('#f3ede2'),
+    trim: M('#fbf8f2', { roughness: 0.5 }),
+    frame: M('#1d2b42', { roughness: 0.35, metalness: 0.5 }),
+    cream: fabric('#efe6d6'),
     white: M('#ffffff', { roughness: 0.5 }),
-    orange: M('#d9893a', { roughness: 0.6 }),
-    wood: M('#b07a43', { roughness: 0.7 }),
+    orange: fabric('#c6834a'),
+    terracotta: fabric('#b0603a'),
+    leather: M('#b97842', { roughness: 0.42 }),
+    wood: M('#ffffff', { map: walnut, roughness: 0.5 }),
+    brass: new THREE.MeshStandardMaterial({ color: '#c9a25e', metalness: 1, roughness: 0.28, envMapIntensity: 1 }),
+    marble: M('#ffffff', { map: marble, roughness: 0.2 }),
+    ceramic: M('#ece7df', { roughness: 0.65 }),
+    soil: M('#3b2a1e', { roughness: 1 }),
+    bark: M('#7a5a3c', { roughness: 0.9 }),
+    leaf: new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.55, side: THREE.DoubleSide, envMapIntensity: 0.5 }),
     dark: M('#1b1f27', { roughness: 0.35, metalness: 0.2 }),
-    screen: M('#2a3240', { roughness: 0.15, metalness: 0.4, emissive: '#0f1a2c', emissiveIntensity: 0.6 }),
-    green: M('#4f8f5f', { roughness: 0.8 }),
-    rug: M('#ead9bd', { roughness: 1 }),
+    screen: M('#10151f', { roughness: 0.08, metalness: 0.5, emissive: '#0f1a2c', emissiveIntensity: 0.5, envMapIntensity: 1.2 }),
+    book1: M('#2f4a63'), book2: M('#d8cfc0'), book3: M('#9b4f34'),
+    rug: M('#ffffff', { map: rugTex, roughness: 1 }),
+    sheer: M('#fffaf2', { transparent: true, opacity: 0.55, roughness: 1, side: THREE.DoubleSide, depthWrite: false }),
     glass: new THREE.MeshPhysicalMaterial({ color: '#cfe8ff', transparent: true, opacity: 0.18, roughness: 0.05, metalness: 0, clearcoat: 1, depthWrite: false }),
     film: new THREE.MeshStandardMaterial({ color: '#0f1d33', transparent: true, opacity: 0.72, roughness: 0.2, metalness: 0.4, depthWrite: false, side: THREE.DoubleSide }),
   };
@@ -85,8 +176,12 @@ function init() {
   const H = 4.4, T = 0.3;
   const leftWall = new THREE.Group();
   add(box(T, H, 10, 0.04), mat.wall, [-5 + T / 2, H / 2, 0], { parent: leftWall });
-  add(new THREE.BoxGeometry(0.06, 1.25, 2.3), mat.dark, [-4.8, 2.3, 0.6], { parent: leftWall }); // TV
-  add(new THREE.BoxGeometry(0.02, 1.13, 2.18), mat.screen, [-4.76, 2.3, 0.6], { parent: leftWall });
+  add(new THREE.BoxGeometry(0.06, 1.25, 2.3), mat.dark, [-4.6, 2.3, 0.6], { parent: leftWall }); // TV
+  add(new THREE.BoxGeometry(0.02, 1.13, 2.18), mat.screen, [-4.565, 2.3, 0.6], { parent: leftWall });
+  for (let i = 0; i < 26; i++) add(new THREE.CylinderGeometry(0.06, 0.06, H - 0.25, 10), mat.wood, [-4.68, (H - 0.25) / 2 + 0.12, -1.35 + i * 0.155], { parent: leftWall, cast: false });
+  add(box(0.55, 0.42, 3.1, 0.05), mat.wood, [-4.33, 0.36, 0.6], { parent: leftWall }); // TV console
+  add(box(0.5, 0.05, 3.0, 0.02), mat.brass, [-4.33, 0.12, 0.6], { parent: leftWall });
+  add(new THREE.BoxGeometry(0.05, 0.16, 9.7), mat.trim, [-4.68, 0.08, 0], { parent: leftWall, cast: false });
   room.add(leftWall);
   groups.push({ obj: leftWall, type: 'wall' });
 
@@ -97,6 +192,7 @@ function init() {
   add(box(10, H - winT, T, 0.04), mat.wall, [0, winT + (H - winT) / 2, z], { parent: backWall });
   add(box(winL + 5, winT - winB, T, 0.02), mat.wall, [(-5 + winL) / 2, (winB + winT) / 2, z], { parent: backWall });
   add(box(5 - winR, winT - winB, T, 0.02), mat.wall, [(winR + 5) / 2, (winB + winT) / 2, z], { parent: backWall });
+  add(new THREE.BoxGeometry(9.7, 0.16, 0.05), mat.trim, [0, 0.08, z + 0.17], { parent: backWall, cast: false });
   room.add(backWall);
   groups.push({ obj: backWall, type: 'wall' });
 
@@ -125,53 +221,101 @@ function init() {
   groups.push({ obj: win, type: 'drop' });
 
   /* ---------- furniture ---------- */
+  // sheer curtains either side of the window (gently waved)
+  const curtain = (x) => {
+    const g = new THREE.PlaneGeometry(0.9, H - 0.25, 18, 1);
+    const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) p.setZ(i, Math.sin(p.getX(i) * 14) * 0.05);
+    g.computeVertexNormals();
+    return add(g, mat.sheer, [x, (H - 0.25) / 2 + 0.05, z + 0.32], { cast: false, receive: false });
+  };
+  const curtains = new THREE.Group();
+  curtains.add(curtain(winL - 0.25), curtain(winR + 0.25));
+  room.add(curtains);
+  groups.push({ obj: curtains, type: 'pop' });
+
+  // woven rug
+  const rug = add(box(5.8, 0.035, 3.9, 0.015), mat.rug, [1.0, 0.02, 0.5], { cast: false });
+  groups.push({ obj: rug, type: 'pop' });
+
+  // modern sofa: recessed plinth, deep seat cushions, loose back cushions, rounded arms, throw pillows
   const sofa = new THREE.Group();
-  add(box(3.6, 0.5, 1.4, 0.12), mat.cream, [0, 0.45, 0], { parent: sofa });
-  add(box(3.6, 0.9, 0.35, 0.12), mat.cream, [0, 0.85, -0.55], { parent: sofa });
-  add(box(0.35, 0.7, 1.4, 0.12), mat.cream, [-1.8, 0.65, 0], { parent: sofa });
-  add(box(0.35, 0.7, 1.4, 0.12), mat.cream, [1.8, 0.65, 0], { parent: sofa });
-  add(box(1.05, 0.22, 1.0, 0.1), mat.orange, [-1.05, 0.8, 0.1], { parent: sofa });
-  add(box(1.05, 0.22, 1.0, 0.1), mat.orange, [0, 0.8, 0.1], { parent: sofa });
-  add(box(1.05, 0.22, 1.0, 0.1), mat.orange, [1.05, 0.8, 0.1], { parent: sofa });
-  add(box(0.6, 0.55, 0.18, 0.08), mat.orange, [-1.2, 1.15, -0.3], { parent: sofa, rot: [-0.25, 0.2, 0] });
+  add(box(3.5, 0.1, 1.2, 0.03), mat.dark, [0, 0.06, 0.02], { parent: sofa });
+  add(box(3.9, 0.36, 1.5, 0.14), mat.cream, [0, 0.29, 0], { parent: sofa });
+  add(box(3.9, 0.82, 0.3, 0.14), mat.cream, [0, 0.82, -0.6], { parent: sofa });
+  [-1.82, 1.82].forEach((x) => add(box(0.32, 0.66, 1.5, 0.15), mat.cream, [x, 0.62, 0], { parent: sofa }));
+  [-1.1, 0, 1.1].forEach((x) => add(box(1.08, 0.24, 1.12, 0.11), mat.cream, [x, 0.59, 0.12], { parent: sofa }));
+  [-1.1, 0, 1.1].forEach((x) => add(box(1.06, 0.62, 0.3, 0.14), mat.cream, [x, 0.98, -0.36], { parent: sofa, rot: [-0.14, 0, 0] }));
+  add(box(0.62, 0.56, 0.2, 0.1), mat.orange, [-1.25, 1.0, -0.12], { parent: sofa, rot: [-0.3, 0.25, 0.08] });
+  add(box(0.56, 0.5, 0.18, 0.09), mat.terracotta, [-0.72, 0.96, -0.12], { parent: sofa, rot: [-0.32, -0.1, -0.06] });
+  add(box(0.6, 0.54, 0.2, 0.1), mat.orange, [1.28, 0.99, -0.12], { parent: sofa, rot: [-0.3, -0.25, -0.08] });
+  add(box(0.9, 0.04, 1.3, 0.02), mat.terracotta, [1.55, 0.74, 0.12], { parent: sofa, rot: [0, 0, 0.06] }); // throw
   sofa.position.set(1.4, 0, 1.6);
   sofa.rotation.y = Math.PI;
   room.add(sofa);
   groups.push({ obj: sofa, type: 'drop' });
 
-
+  // marble coffee table on a drum base, with books and a vase
   const table = new THREE.Group();
-  add(new THREE.CylinderGeometry(0.85, 0.85, 0.1, 40), mat.white, [0, 0.55, 0], { parent: table });
-  add(new THREE.CylinderGeometry(0.12, 0.25, 0.5, 20), mat.white, [0, 0.27, 0], { parent: table });
-  add(new THREE.BoxGeometry(0.4, 0.04, 0.28), mat.dark, [0.15, 0.62, 0.1], { parent: table, rot: [0, 0.4, 0] });
+  add(new THREE.CylinderGeometry(0.9, 0.9, 0.07, 64), mat.marble, [0, 0.52, 0], { parent: table });
+  add(new THREE.CylinderGeometry(0.5, 0.56, 0.48, 48), mat.wood, [0, 0.24, 0], { parent: table });
+  add(new THREE.TorusGeometry(0.5, 0.015, 8, 48), mat.brass, [0, 0.48, 0], { parent: table, rot: [Math.PI / 2, 0, 0] });
+  add(box(0.5, 0.06, 0.36, 0.01), mat.book1, [0.25, 0.59, 0.1], { parent: table, rot: [0, 0.4, 0] });
+  add(box(0.44, 0.05, 0.32, 0.01), mat.book2, [0.25, 0.645, 0.1], { parent: table, rot: [0, 0.55, 0] });
+  const vaseProfile = [[0, 0], [0.11, 0], [0.14, 0.08], [0.12, 0.22], [0.06, 0.3], [0.05, 0.36], [0.07, 0.4]].map(([x, y]) => new THREE.Vector2(x, y));
+  add(new THREE.LatheGeometry(vaseProfile, 32), mat.ceramic, [-0.35, 0.555, -0.15], { parent: table });
+  [[0.02, 0.38], [-0.05, 0.42]].forEach(([dx, hgt], k) => add(new THREE.CylinderGeometry(0.008, 0.008, hgt, 5), mat.bark, [-0.35 + dx, 0.555 + 0.36 + hgt / 2, -0.15], { parent: table, rot: [0, 0, k ? 0.25 : -0.15] }));
   table.position.set(1.2, 0, -0.4);
   room.add(table);
   groups.push({ obj: table, type: 'drop' });
 
+  // leather lounge chair on splayed walnut legs
   const chair = new THREE.Group();
-  add(box(1.0, 0.4, 1.0, 0.15), mat.orange, [0, 0.55, 0], { parent: chair });
-  add(box(1.0, 0.8, 0.25, 0.12), mat.orange, [0, 0.95, -0.4], { parent: chair });
-  [[-0.4, -0.4], [0.4, -0.4], [-0.4, 0.4], [0.4, 0.4]].forEach(([x, zz]) => add(new THREE.CylinderGeometry(0.04, 0.03, 0.4, 8), mat.wood, [x, 0.2, zz], { parent: chair }));
+  add(box(1.05, 0.2, 0.95, 0.09), mat.leather, [0, 0.5, 0.02], { parent: chair });
+  add(box(1.05, 0.85, 0.16, 0.08), mat.leather, [0, 0.92, -0.42], { parent: chair, rot: [-0.28, 0, 0] });
+  [-0.5, 0.5].forEach((x) => add(box(0.08, 0.06, 0.9, 0.03), mat.wood, [x, 0.62, 0], { parent: chair }));
+  [[-0.42, -0.36, 0.15, -0.15], [0.42, -0.36, -0.15, -0.15], [-0.42, 0.38, 0.15, 0.15], [0.42, 0.38, -0.15, 0.15]].forEach(([x, zz, rz, rx]) =>
+    add(new THREE.CylinderGeometry(0.035, 0.022, 0.46, 10), mat.wood, [x, 0.22, zz], { parent: chair, rot: [rx, 0, rz] }));
+  add(box(0.42, 0.38, 0.14, 0.08), mat.cream, [0.05, 0.75, -0.25], { parent: chair, rot: [-0.3, 0.1, 0] });
   chair.position.set(-2.4, 0, -1.9);
   chair.rotation.y = 0.6;
   room.add(chair);
   groups.push({ obj: chair, type: 'drop' });
 
+  // indoor tree: ceramic pot, curved trunk, ~150 instanced leaves
   const plant = new THREE.Group();
-  add(new THREE.CylinderGeometry(0.32, 0.24, 0.6, 24), mat.white, [0, 0.3, 0], { parent: plant });
-  [[0, 1.05, 0, 0.5], [0.25, 1.45, 0.1, 0.38], [-0.2, 1.35, -0.1, 0.36], [0.05, 1.75, -0.05, 0.28]].forEach(([x, y, zz, r]) =>
-    add(new THREE.IcosahedronGeometry(r, 1), mat.green, [x, y, zz], { parent: plant })
-  );
-  plant.position.set(4.1, 0, -4.1);
+  const potProfile = [[0, 0], [0.26, 0], [0.33, 0.06], [0.36, 0.5], [0.38, 0.62], [0.34, 0.64], [0.32, 0.6]].map(([x, y]) => new THREE.Vector2(x, y));
+  add(new THREE.LatheGeometry(potProfile, 40), mat.ceramic, [0, 0, 0], { parent: plant });
+  add(new THREE.CylinderGeometry(0.31, 0.31, 0.02, 32), mat.soil, [0, 0.58, 0], { parent: plant, cast: false });
+  const trunk = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0.55, 0), new THREE.Vector3(0.05, 1.2, 0.03), new THREE.Vector3(-0.06, 1.8, -0.02), new THREE.Vector3(0.04, 2.35, 0.02)]);
+  add(new THREE.TubeGeometry(trunk, 24, 0.045, 8), mat.bark, [0, 0, 0], { parent: plant });
+  [[[0.02, 1.5, 0], [0.35, 1.9, 0.12]], [[-0.03, 1.75, 0], [-0.36, 2.15, -0.1]], [[0.02, 2.0, 0], [0.22, 2.45, -0.2]]].forEach(([a, b2]) =>
+    add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(...a), new THREE.Vector3(...b2)]), 6, 0.022, 6), mat.bark, [0, 0, 0], { parent: plant }));
+  const leafGeo = new THREE.SphereGeometry(0.5, 10, 6);
+  leafGeo.scale(0.2, 0.025, 0.42);
+  leafGeo.translate(0, 0, 0.2);
+  const LEAVES = 150;
+  const leaves = new THREE.InstancedMesh(leafGeo, mat.leaf, LEAVES);
+  const dummy = new THREE.Object3D(), tint = new THREE.Color();
+  const crowns = [[0.3, 2.0, 0.1, 0.42], [-0.32, 2.2, -0.08, 0.42], [0.18, 2.55, -0.15, 0.4], [0, 2.35, 0.05, 0.45]];
+  for (let i = 0; i < LEAVES; i++) {
+    const [cx2, cy2, cz2, r] = crowns[i % crowns.length];
+    const dir = new THREE.Vector3(rnd(-1, 1), rnd(-0.6, 1), rnd(-1, 1)).normalize();
+    dummy.position.set(cx2 + dir.x * r * rnd(0.5, 1), cy2 + dir.y * r * rnd(0.5, 1), cz2 + dir.z * r * rnd(0.5, 1));
+    dummy.lookAt(dummy.position.clone().add(dir));
+    dummy.rotateX(rnd(-0.6, 0.6));
+    dummy.rotateZ(rnd(-0.8, 0.8));
+    const sc = rnd(0.75, 1.2);
+    dummy.scale.set(sc, sc, sc);
+    dummy.updateMatrix();
+    leaves.setMatrixAt(i, dummy.matrix);
+    leaves.setColorAt(i, tint.setHSL(rnd(0.27, 0.33), rnd(0.35, 0.55), rnd(0.24, 0.4)));
+  }
+  leaves.castShadow = true;
+  plant.add(leaves);
+  plant.position.set(4.0, 0, -4.0);
   room.add(plant);
   groups.push({ obj: plant, type: 'pop' });
-
-  const lamp = new THREE.Group();
-  add(new THREE.CylinderGeometry(0.25, 0.3, 0.05, 24), mat.dark, [0, 0.03, 0], { parent: lamp });
-  add(new THREE.CylinderGeometry(0.03, 0.03, 2.3, 8), mat.dark, [0, 1.15, 0], { parent: lamp });
-  add(new THREE.ConeGeometry(0.38, 0.45, 24, 1, true), mat.white, [0, 2.4, 0], { parent: lamp });
-  lamp.position.set(-3.9, 0, -3.8);
-  // (lamp removed for a cleaner composition)
 
   /* ---------- light: warm sun pouring through the window ---------- */
   const radial = (stops, size = 256) => {
@@ -187,7 +331,7 @@ function init() {
     return tex;
   };
 
-  scene.add(new THREE.HemisphereLight('#ffffff', '#efe2c8', 1.45));
+  scene.add(new THREE.HemisphereLight('#ffffff', '#efe2c8', 1.05));
 
   // soft key light from the front: casts the room's shadow *behind* it onto the ground
   const fill = new THREE.DirectionalLight('#ffffff', 1.0);

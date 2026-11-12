@@ -599,3 +599,42 @@
     }, { threshold: 0.25 }).observe(box);
   });
 })();
+
+/* How it works: step 1 → dots run → step 2 → dots run → step 3, then loop (only while visible) */
+(function () {
+  var box = document.querySelector('[data-hf]');
+  if (!box) return;
+  var steps = box.querySelectorAll('[data-hf-step]'), links = box.querySelectorAll('[data-hf-link]');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // stage: 0 step1 · 1 link1 · 2 step2 · 3 link2 · 4 step3 · 5 hold
+  var DUR = [3000, 1050, 3000, 1050, 3400, 1500], stage = -1, timer = null;
+  var bar = document.querySelector('[data-hf-bar]'), total = DUR.reduce(function (a, b) { return a + b; }, 0);
+  function paint() {
+    if (bar) {
+      var done = 0; for (var k = 0; k <= stage; k++) done += DUR[k];
+      if (stage === 0) { bar.style.transition = 'none'; bar.style.width = '0%'; void bar.offsetWidth; }
+      bar.style.transition = 'width ' + DUR[stage] + 'ms linear';
+      bar.style.width = (done / total) * 100 + '%';
+    }
+    var active = Math.floor(stage / 2);
+    Array.prototype.forEach.call(steps, function (s, i) {
+      s.classList.toggle('is-on', stage % 2 === 0 && i === active);
+      s.classList.toggle('is-done', i < active || (stage === 5 && i === 2) || (stage % 2 === 1 && i === active));
+    });
+    Array.prototype.forEach.call(links, function (l, i) {
+      l.classList.toggle('is-flow', stage === i * 2 + 1);
+      l.classList.toggle('is-done', stage > i * 2 + 1 && stage < 5);
+    });
+  }
+  function next() {
+    stage = (stage + 1) % DUR.length;
+    if (stage === 0) { Array.prototype.forEach.call(steps, function (s) { s.classList.remove('is-on', 'is-done'); }); void box.offsetWidth; }
+    paint();
+    timer = setTimeout(next, DUR[stage]);
+  }
+  if (reduce) { stage = 5; paint(); return; }
+  new IntersectionObserver(function (es) {
+    if (es[0].isIntersecting) { if (!timer) { stage = -1; next(); } }
+    else { clearTimeout(timer); timer = null; }
+  }, { threshold: 0.3 }).observe(box);
+})();

@@ -4,21 +4,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // From the logo: navy + Exotic sky blue + silver
-        ink: { DEFAULT: '#12233D', 2: '#1D3150', 3: '#2A4066' },
-        muted: '#5B6B82',
-        line: '#ECEEF3',
-        tint: { DEFAULT: '#EFF8FD', 2: '#F6FBFE' },
+        // Deep Navy #071D38 · Royal Blue #0878E8 · Ice Blue #EAF5FF · Slate #64748B
+        ink: { DEFAULT: '#071D38', 2: '#0C2A50', 3: '#163B69' },
+        muted: '#64748B',
+        line: '#E3ECF7',
+        tint: { DEFAULT: '#EAF5FF', 2: '#F4F9FF' },
         gold: {
-          50: '#EEF8FD',
-          100: '#D6EFFA',
-          200: '#A9DDF4',
-          300: '#6FC8EE',
-          400: '#2FB2E6',
-          500: '#00A0DC',
-          600: '#0089C2',
-          700: '#006E9C',
-          800: '#05577A',
+          50: '#EAF5FF',
+          100: '#D3E8FD',
+          200: '#A8D0FB',
+          300: '#6FB0F6',
+          400: '#3592EF',
+          500: '#0878E8',
+          600: '#0666C7',
+          700: '#0553A3',
+          800: '#064282',
         },
       },
       fontFamily: {
@@ -28,11 +28,11 @@ module.exports = {
       },
       maxWidth: { site: '82rem' },
       boxShadow: {
-        soft: '0 20px 40px -15px rgba(18,35,61,.18)',
-        card: '0 10px 30px -12px rgba(18,35,61,.12)',
-        float: '0 20px 40px -15px rgba(18,35,61,.3)',
-        gold: '0 10px 25px -8px rgba(0,137,194,.5)',
-        glow: '0 30px 60px -25px rgba(0,160,220,.38)',
+        soft: '0 20px 40px -15px rgba(7,29,56,.18)',
+        card: '0 10px 30px -12px rgba(7,29,56,.12)',
+        float: '0 20px 40px -15px rgba(7,29,56,.3)',
+        gold: '0 10px 25px -8px rgba(8,120,232,.5)',
+        glow: '0 30px 60px -25px rgba(8,120,232,.35)',
       },
     },
   },
