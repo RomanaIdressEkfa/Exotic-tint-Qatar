@@ -1,4 +1,4 @@
-// Exotic Tint Qatar — site interactions (no dependencies)
+// Exotic Tint — site interactions (no dependencies)
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -359,8 +359,8 @@
 
 /* Services page: the sticky stage plays each service's effect as its block scrolls into view */
 (function () {
-  var sv = document.querySelector('[data-sv]');
-  if (!sv) return;
+  var sv = document.querySelector('[data-sv]:not([data-svh])');
+  if (!sv || !sv.dataset.items) return;
   var items = JSON.parse(sv.dataset.items);
   var steps = Array.prototype.slice.call(document.querySelectorAll('[data-sv-step]'));
   var q = function (s) { return sv.querySelector(s); };
@@ -427,7 +427,7 @@
   var range = q('[data-sav-range]'), note = q('[data-sav-note]');
   var ar = document.documentElement.lang === 'ar';
   var fmt = function (n) { return Math.round(n).toLocaleString(ar ? 'ar-EG' : 'en-US'); };
-  var film = 2, mode = 'car';
+  var film = 2, mode = 'home';
   function calc() {
     var m = modes[mode], f = films[film], spend = Number(range.value);
     var cool = spend * m.share / 100, month = cool * f.ac / 100;
@@ -509,12 +509,14 @@
   var ar = document.documentElement.lang === 'ar';
   var started = false, DUR = 3600, idx = -1, timer = null, visible = false, paused = false, tNow = temps[0], raf = 0;
   hw.style.setProperty('--hw-dur', DUR / 1000 + 's');
-  var fmt = function (n) { return Math.round(n).toLocaleString(ar ? 'ar-EG' : 'en-US') + '°C'; };
+  var unit = hw.dataset.unit === undefined ? '°C' : hw.dataset.unit;
+  var fmt = function (n) { return typeof n === 'string' ? n : Math.round(n).toLocaleString(ar ? 'ar-EG' : 'en-US') + unit; };
   function go(i) {
     idx = (i + tabs.length) % tabs.length;
     hw.setAttribute('data-step', idx);
     tabs.forEach(function (t, n) { t.setAttribute('aria-selected', String(n === idx)); var b = t.querySelector('.hw-bar'); b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; });
     caps.forEach(function (c, n) { c.classList.toggle('is-on', n === idx); });
+    if (typeof temps[idx] !== 'number' || typeof tNow !== 'number') { tNow = temps[idx]; tEl.textContent = fmt(tNow); return; }
     var from = tNow, to = temps[idx], t0 = performance.now();
     cancelAnimationFrame(raf);
     (function f(now) { var p = Math.min(1, (now - t0) / 1100), e = 1 - Math.pow(1 - p, 3); tNow = from + (to - from) * e; tEl.textContent = fmt(tNow); if (p < 1) raf = requestAnimationFrame(f); })(t0);
@@ -529,4 +531,71 @@
   }, { threshold: 0.3 }).observe(hw);
   hw.setAttribute('data-step', '0');
 
+})();
+
+
+/* Service hero demos: before → film sweeps across → after, on a loop */
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-svh]'), function (box) {
+    var vals = JSON.parse(box.dataset.vals), val = box.querySelector('[data-svh-val]'), st = box.querySelector('[data-svh-state]');
+    var ar = document.documentElement.lang === 'ar';
+    var unit = vals.length && typeof vals[0] === 'number' ? '°C' : '';
+    var fmt = function (n) { return typeof n === 'number' ? Math.round(n).toLocaleString(ar ? 'ar-EG' : 'en-US') + unit : n; };
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches, raf = 0;
+    function off() { box.classList.remove('is-on', 'is-sweeping'); box.style.setProperty('--pos', '0%'); val.textContent = fmt(vals[0]); st.textContent = st.dataset.off; }
+    function on() {
+      box.classList.add('is-sweeping');
+      var t0 = performance.now();
+      cancelAnimationFrame(raf);
+      (function f(now) {
+        var p = Math.min(1, (now - t0) / 1600), e = 1 - Math.pow(1 - p, 3);
+        box.style.setProperty('--pos', (e * 100).toFixed(1) + '%');
+        if (typeof vals[0] === 'number') val.textContent = fmt(vals[0] + (vals[1] - vals[0]) * e);
+        if (e > 0.35 && !box.classList.contains('is-on')) { box.classList.add('is-on'); st.textContent = st.dataset.on; if (typeof vals[1] !== 'number') val.textContent = vals[1]; }
+        if (p < 1) raf = requestAnimationFrame(f); else box.classList.remove('is-sweeping');
+      })(t0);
+    }
+    if (reduce) { box.style.setProperty('--pos', '100%'); box.classList.add('is-on'); val.textContent = fmt(vals[1]); st.textContent = st.dataset.on; return; }
+    off();
+    var cycle = function () { off(); setTimeout(on, 900); };
+    var timer = null;
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { if (!timer) { cycle(); timer = setInterval(cycle, 5600); } }
+      else { clearInterval(timer); timer = null; }
+    }, { threshold: 0.2 }).observe(box);
+  });
+})();
+
+/* Service options explorer: plays through each option like a short film; click to jump */
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ox]'), function (box) {
+    var tabs = box.querySelectorAll('[data-ox-tab]'), panels = box.querySelectorAll('[data-ox-panel]');
+    var dur = parseInt(getComputedStyle(box).getPropertyValue('--ox-dur'), 10) || 4800;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var i = 0, timer = null;
+    function go(n) {
+      i = (n + tabs.length) % tabs.length;
+      Array.prototype.forEach.call(tabs, function (t, k) { t.classList.toggle('is-on', k === i); t.setAttribute('aria-selected', String(k === i)); });
+      Array.prototype.forEach.call(panels, function (p, k) { p.classList.toggle('is-on', k === i); if (k === i) p.removeAttribute('aria-hidden'); else p.setAttribute('aria-hidden', 'true'); });
+    }
+    function stop() { clearInterval(timer); timer = null; }
+    function play() {
+      stop();
+      if (reduce || tabs.length < 2) return;
+      box.classList.add('is-playing');
+      timer = setInterval(function () { go(i + 1); }, dur);
+    }
+    Array.prototype.forEach.call(tabs, function (t, k) {
+      t.addEventListener('click', function () {
+        // restart the progress bar on the chosen option
+        box.classList.remove('is-playing'); void box.offsetWidth;
+        go(k); play();
+      });
+    });
+    go(0);
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { if (!timer) play(); }
+      else { stop(); box.classList.remove('is-playing'); }
+    }, { threshold: 0.25 }).observe(box);
+  });
 })();

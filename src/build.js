@@ -19,7 +19,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const pad = (n) => String(n).padStart(2, '0');
 const num = (n) => (L === 'ar' ? Number(n).toLocaleString('ar-EG') : String(n));
 const waLink = (msg) => `https://wa.me/${C.site.whatsapp}?text=${encodeURIComponent(msg)}`;
-const waHello = () => waLink(tr('Hello Exotic Tint Qatar, I would like a free quote.', 'مرحباً إكزوتك تينت قطر، أرغب في الحصول على عرض سعر مجاني.'));
+const waHello = () => waLink(tr('Hello Exotic Tint for Trading and Contracting, I would like a free quote.', 'مرحباً إكزوتك تينت للتجارة والمقاولات، أرغب في الحصول على عرض سعر مجاني.'));
 const reveal = (d = 0) => `data-reveal style="--d:${d}ms"`;
 const img3d = (name, cls = 'h-28 w-28') => `<img src="/assets/img/3d/${name}.webp" alt="" class="${cls}" loading="lazy" width="200" height="200">`;
 
@@ -79,18 +79,18 @@ const aurora = (tone = '') => `<div class="aurora ${tone}" aria-hidden="true"><s
 
 /* Per-service visual identity (pastel card + accent + 3D emoji) */
 const SV = {
-  'automotive-window-tinting': { emoji: 'car', bg: 'linear-gradient(160deg,#FFF0D6 0%,#FFFAF1 100%)', acc: 'linear-gradient(135deg,#F6C766,#C47F1E)', on: '#12233D', color: '#C47F1E', badge: ['Up to 60% less heat', 'حرارة أقل حتى ٦٠٪'] },
-  'residential-window-tinting-services': { emoji: 'house', bg: 'linear-gradient(160deg,#E6EFFF 0%,#F7FAFF 100%)', acc: 'linear-gradient(135deg,#60A5FA,#1D4ED8)', on: '#fff', color: '#2563EB', badge: ['99% UV blocked', 'حجب ٩٩٪ من الأشعة'] },
-  'commercial-window-tinting-services': { emoji: 'office', bg: 'linear-gradient(160deg,#E8EBF6 0%,#F8F9FD 100%)', acc: 'linear-gradient(135deg,#2A4066,#12233D)', on: '#fff', color: '#1D3150', badge: ['Lower AC bills', 'فواتير تكييف أقل'] },
-  'customized-cut-frosted-film': { emoji: 'window', bg: 'linear-gradient(160deg,#E1F5F3 0%,#F5FCFB 100%)', acc: 'linear-gradient(135deg,#2DD4BF,#0F766E)', on: '#fff', color: '#0F766E', badge: ['Custom designs', 'تصاميم مخصصة'] },
-  'marble-protection-film': { emoji: 'rock', bg: 'linear-gradient(160deg,#F4ECE3 0%,#FCFAF7 100%)', acc: 'linear-gradient(135deg,#C9A27A,#8A6440)', on: '#fff', color: '#8A6440', badge: ['Invisible finish', 'لمسة غير مرئية'] },
-  'fabric-nano-coating-service': { emoji: 'couch', bg: 'linear-gradient(160deg,#EFE9FF 0%,#FBF9FF 100%)', acc: 'linear-gradient(135deg,#A78BFA,#6D28D9)', on: '#fff', color: '#6D28D9', badge: ['Spill-proof fabric', 'أقمشة مقاومة للانسكاب'] },
+  'architectural-window-film-solutions': { emoji: 'office', bg: 'linear-gradient(160deg,#E3F4FC 0%,#F5FBFE 100%)', acc: 'linear-gradient(135deg,#4CC6F2,#0074AD)', on: '#fff', color: '#0089C2', badge: ['Up to 98% heat blocked', 'حجب حتى ٩٨٪ من الحرارة'] },
+  'smart-glass-privacy-solutions': { emoji: 'voltage', bg: 'linear-gradient(160deg,#E8EBF6 0%,#F8F9FD 100%)', acc: 'linear-gradient(135deg,#2A4066,#12233D)', on: '#fff', color: '#1D3150', badge: ['Clear ↔ private in a second', 'شفاف ↔ خاص في ثانية'] },
+  'surface-protection-solutions': { emoji: 'rock', bg: 'linear-gradient(160deg,#F4ECE3 0%,#FCFAF7 100%)', acc: 'linear-gradient(135deg,#C9A27A,#8A6440)', on: '#fff', color: '#8A6440', badge: ['Invisible finish', 'لمسة غير مرئية'] },
+  'decorative-interior-solutions': { emoji: 'sparkles', bg: 'linear-gradient(160deg,#E1F5F3 0%,#F5FCFB 100%)', acc: 'linear-gradient(135deg,#2DD4BF,#0F766E)', on: '#fff', color: '#0F766E', badge: ['Any design or logo', 'أي تصميم أو شعار'] },
+  'fabric-material-protection': { emoji: 'couch', bg: 'linear-gradient(160deg,#EFE9FF 0%,#FBF9FF 100%)', acc: 'linear-gradient(135deg,#A78BFA,#6D28D9)', on: '#fff', color: '#6D28D9', badge: ['Spill-proof fabric', 'أقمشة مقاومة للانسكاب'] },
 };
 
 /* ------------------------------------------------------------------- logo */
-// The client's original logo, used as-is.
-const logo = (size = 'md') =>
-  `<img src="/assets/img/logo-original.webp" alt="${esc(t(C.site.name))}" class="${size === 'lg' ? 'h-24' : 'h-[62px]'} w-auto" width="106" height="120">`;
+// The company logo: white-background version on light surfaces, transparent version on dark ones.
+const logo = (size = 'md', dark = false) =>
+  `<img src="/assets/img/logo-${dark ? 'dark' : 'light'}.webp" alt="${esc(t(C.site.name))}" class="${size === 'lg' ? 'h-24' : 'h-[64px]'} w-auto" width="270" height="240">`;
+const mark = (cls = 'h-9 w-9') => `<span class="grid ${cls} shrink-0 place-items-center rounded-full bg-ink p-1"><img src="/assets/img/logo-mark.webp" alt="" class="h-full w-full object-contain"></span>`;
 
 /* ------------------------------------------------------------------ pages */
 const PAGES = [
@@ -124,16 +124,17 @@ function head(page, meta) {
 <meta property="og:title" content="${esc(meta.title)}">
 <meta property="og:description" content="${esc(meta.description)}">
 <meta property="og:url" content="${canonical}">
-<meta property="og:image" content="${C.site.domain}/assets/img/${meta.image || 'automotive'}.webp">
+<meta property="og:image" content="${C.site.domain}/assets/img/${meta.image || 'residential'}.webp">
 <meta property="og:locale" content="${L === 'ar' ? 'ar_QA' : 'en_QA'}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Urbanist:wght@500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
 <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
-${(page.key === 'home' || (page.service && page.service.slug === 'automotive-window-tinting')) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
+${(page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions')) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
 ${meta.jsonld ? `<script type="application/ld+json">${JSON.stringify(meta.jsonld)}</script>` : ''}
 </head>`;
 }
@@ -154,7 +155,7 @@ function header(page) {
 
 <div class="hidden border-b border-line bg-tint-2 lg:block">
   <div class="container-site flex h-10 items-center justify-between text-[13px] text-muted">
-    <p class="flex items-center gap-2"><span class="grid h-5 w-5 place-items-center rounded-md bg-grad text-ink">${icon('bolt', 'h-3 w-3', 2.4)}</span><b class="font-bold text-ink">${tr('Free on-site estimates.', 'تقدير مجاني في موقعك.')}</b> ${tr('Premium tint & protective films across Qatar.', 'أفلام تظليل وحماية فاخرة في جميع أنحاء قطر.')}</p>
+    <p class="flex items-center gap-2"><span class="grid h-5 w-5 place-items-center rounded-md bg-grad text-white">${icon('bolt', 'h-3 w-3', 2.4)}</span><b class="font-bold text-ink">${tr('Free on-site estimates.', 'تقدير مجاني في موقعك.')}</b> ${tr('Premium tint & protective films across Qatar.', 'أفلام تظليل وحماية فاخرة في جميع أنحاء قطر.')}</p>
     <div class="flex items-center gap-5">
       <span class="flex items-center gap-1.5">${icon('clock', 'h-3.5 w-3.5 text-gold-600')} ${t(C.site.hours)}</span>
       <a href="tel:${C.site.phoneRaw}" class="flex items-center gap-1.5 font-semibold text-ink hover:text-gold-700">${icon('phone', 'h-3.5 w-3.5 text-gold-600')} <span dir="ltr">${C.site.phone}</span></a>
@@ -260,7 +261,7 @@ function footer() {
       <div>
         <p class="text-[0.7rem] font-extrabold uppercase tracking-[0.3em] text-gold-400">${reveal2(tr('Premium tint &amp; protection · Qatar', 'تظليل وحماية فاخرة · قطر'))}</p>
         <p class="mt-2 font-head text-[2.8rem] font-black uppercase leading-none tracking-tight sm:text-6xl lg:text-7xl" aria-label="${tr('Let’s talk', 'لنتحدث')}"><span aria-hidden="true">${wavy(tr('Let’s talk', 'لنتحدث'))}</span></p>
-        <p class="mt-4 max-w-2xl font-head text-xl font-medium leading-snug text-white sm:text-2xl md:text-[2rem]">${reveal2(tr('Cooler cars, brighter homes,', 'سيارات أبرد، منازل أكثر إشراقاً،'), 150)} ${reveal2('<span class="premium-text-shine font-extrabold">' + tr('protected surfaces.', 'وأسطح محمية.') + '</span>', 300)}</p>
+        <p class="mt-4 max-w-2xl font-head text-xl font-medium leading-snug text-white sm:text-2xl md:text-[2rem]">${reveal2(tr('Cooler homes, brighter offices,', 'منازل أبرد، مكاتب أكثر إشراقاً،'), 150)} ${reveal2('<span class="premium-text-shine font-extrabold">' + tr('protected surfaces.', 'وأسطح محمية.') + '</span>', 300)}</p>
       </div>
       <div class="f-up flex flex-col items-start gap-2.5 lg:items-end" style="--d:400ms">
         <a href="${waHello()}" target="_blank" rel="noopener" class="group inline-flex items-center gap-6 bg-white px-6 py-4 font-head text-lg font-bold text-ink transition hover:bg-gold-300">${tr('Get a free quote', 'احصل على عرض سعر مجاني')} <span class="transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1">${arrow('h-5 w-5')}</span></a>
@@ -272,7 +273,7 @@ function footer() {
     <div class="grid grid-cols-2 border-t border-white/10 lg:grid-cols-4">
       <div class="${colCls} col-span-2 border-b border-white/10 pe-6 md:col-span-1 lg:border-b-0 lg:pe-8">
         ${head(tr('Contact', 'التواصل'))}
-        <a href="${href()}" class="mt-4 inline-block" aria-label="${esc(t(C.site.name))}">${logo()}</a>
+        <a href="${href()}" class="mt-4 inline-block" aria-label="${esc(t(C.site.name))}">${logo('md', true)}</a>
         <p class="mt-3 font-head text-lg font-bold">${t(C.site.address)}</p>
         <p class="text-sm text-white/50">${tr('On-site service across Qatar', 'خدمة في الموقع في كل قطر')}</p>
         <a href="mailto:${C.site.email}" class="mt-3 block break-all font-semibold text-white transition hover:text-gold-300">${C.site.email}</a>
@@ -309,7 +310,7 @@ function footer() {
         </span>
         <a href="${base(other)}" hreflang="${other}" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-2 font-semibold text-white/80 transition hover:border-gold-400/50 hover:text-white ${other === 'ar' ? 'font-arabic' : ''}">${icon('globe', 'h-4 w-4')} ${t(C.ui.langSwitch)}</a>
         <button type="button" class="relative grid h-10 w-10 place-items-center rounded-full bg-white/[0.06] text-white transition hover:bg-white/[0.12]" data-to-top aria-label="${tr('Back to top', 'العودة للأعلى')}">
-          <svg class="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/><circle cx="22" cy="22" r="20" fill="none" stroke="#E9A63B" stroke-width="2" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-top-ring/></svg>
+          <svg class="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/><circle cx="22" cy="22" r="20" fill="none" stroke="#00A0DC" stroke-width="2" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-top-ring/></svg>
           ${icon('arrow', 'relative h-4 w-4 -rotate-90', 2.4)}
         </button>
       </div>
@@ -334,7 +335,7 @@ ${header(page)}
 <main id="main">
 ${body}
 </main>
-${page.key === 'home' ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n</body>') : page.service && page.service.slug === 'automotive-window-tinting' ? footer().replace('</body>', '<script type="module" src="/assets/js/car3d.js"></script>\n</body>') : footer()}`;
+${page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions') ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n</body>') : footer()}`;
 
 /* --------------------------------------------------------------- sections */
 function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
@@ -369,12 +370,12 @@ function hero() {
     <div class="container-site relative grid items-center gap-6 pb-40 pt-10 lg:grid-cols-12 lg:gap-4 lg:pt-6">
       <!-- copy (kept short) -->
       <div class="lg:col-span-5">
-        <span class="chip" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('sun', 'h-4 w-4', 2.2)}</span>${tr('Window tint · Qatar', 'تظليل النوافذ · قطر')}</span>
+        <span class="chip" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('sun', 'h-4 w-4', 2.2)}</span>${tr('Window tint · Qatar', 'تظليل النوافذ · قطر')}</span>
         <h1 class="mt-6 font-head text-[2.6rem] font-extrabold leading-[1.02] text-ink min-[400px]:text-[3rem] sm:text-[4rem] lg:text-[3.6rem] xl:text-[4.6rem]">
           <span class="block" data-split>${tr('Stay cool.', 'برودة دائمة.')}</span>
           <span class="block text-grad" data-a="up">${tr('Stay protected.', 'حماية تامة.')}</span>
         </h1>
-        <p class="mt-5 max-w-md text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Premium window film for cars, villas and offices — installed on-site across Qatar.', 'أفلام نوافذ فاخرة للسيارات والفلل والمكاتب — نركّبها في موقعك في أنحاء قطر.')}</p>
+        <p class="mt-5 max-w-md text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Window film, smart glass and surface protection for villas, offices and buildings — installed on-site across Qatar.', 'أفلام نوافذ وزجاج ذكي وحماية أسطح للفلل والمكاتب والمباني — نركّبها في موقعك في أنحاء قطر.')}</p>
         <div class="mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
@@ -396,7 +397,7 @@ function hero() {
             <p class="mt-2 hidden text-[11px] font-semibold text-muted sm:block" data-r-state data-on="${tr('With Exotic Tint film', 'مع فيلم إكزوتك تينت')}" data-off="${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}">${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}</p>
           </div>
           <div class="room-hud absolute bottom-[14%] start-0 flex items-center gap-2.5 rounded-2xl p-2.5 pe-3.5 sm:bottom-auto sm:top-[44%] sm:gap-3 sm:p-3 sm:pe-4" data-r-card>
-            <svg class="h-10 w-10 -rotate-90 sm:h-12 sm:w-12" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#ruv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-r-ring/><defs><linearGradient id="ruv"><stop stop-color="#F6C766"/><stop offset="1" stop-color="#C47F1E"/></linearGradient></defs></svg>
+            <svg class="h-10 w-10 -rotate-90 sm:h-12 sm:w-12" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#ruv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-r-ring/><defs><linearGradient id="ruv"><stop stop-color="#4CC6F2"/><stop offset="1" stop-color="#0074AD"/></linearGradient></defs></svg>
             <div><p class="text-[11px] font-bold uppercase tracking-wider text-muted">${tr('UV blocked', 'حجب الأشعة')}</p><p class="font-head text-2xl font-extrabold text-ink"><span data-r-uv>0</span>%</p></div>
           </div>
           <div class="absolute inset-x-0 bottom-[3%] flex justify-center">
@@ -412,7 +413,7 @@ function hero() {
     <div class="absolute inset-x-0 bottom-0">
       <div class="container-site">
         <div class="rounded-t-[28px] bg-white px-4 pb-6 pt-6 sm:px-8" data-a="rise">
-          <p class="flex items-center justify-center gap-4 text-center text-sm text-muted"><span class="hidden h-px w-20 bg-line sm:block"></span><span>${tr('Serving <b class="text-ink">drivers, homes &amp; businesses</b> across Qatar', 'نخدم <b class="text-ink">السائقين والمنازل والشركات</b> في جميع أنحاء قطر')}</span><span class="hidden h-px w-20 bg-line sm:block"></span></p>
+          <p class="flex items-center justify-center gap-4 text-center text-sm text-muted"><span class="hidden h-px w-20 bg-line sm:block"></span><span>${tr('Serving <b class="text-ink">homes, offices &amp; businesses</b> across Qatar', 'نخدم <b class="text-ink">المنازل والمكاتب والشركات</b> في جميع أنحاء قطر')}</span><span class="hidden h-px w-20 bg-line sm:block"></span></p>
           <div class="marquee mt-5 overflow-hidden" dir="ltr">
             <div class="marquee-track">
               ${[0, 1]
@@ -445,7 +446,7 @@ function serviceCard(s, { grid = false } = {}) {
     <p class="mb-5 mt-2 line-clamp-2 text-[0.95rem] leading-relaxed text-muted">${t(s.summary)}</p>
     <div class="mt-auto flex items-center justify-between border-t border-dashed border-line pt-4">
       <span class="text-sm font-bold text-ink transition group-hover:text-gold-700">${t(C.ui.learnMore)}</span>
-      <span class="grid h-10 w-10 place-items-center rounded-full bg-[#f2f4f7] text-ink transition duration-300 group-hover:bg-grad group-hover:shadow-gold">${arrow('h-4 w-4')}</span>
+      <span class="grid h-10 w-10 place-items-center rounded-full bg-[#f2f4f7] text-white transition duration-300 group-hover:bg-grad group-hover:shadow-gold">${arrow('h-4 w-4')}</span>
     </div>
   </div>
 </a>`;
@@ -473,7 +474,7 @@ function servicesSlider() {
             <span class="font-head text-5xl font-extrabold leading-none text-white/25">${num(pad(i + 1))}</span>
           </div>
           <div class="max-w-xl">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-grad px-3 py-1 text-xs font-extrabold text-ink"><span class="h-1.5 w-1.5 rounded-full bg-ink"></span>${t(v.badge)}</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-grad px-3 py-1 text-xs font-extrabold text-white"><span class="h-1.5 w-1.5 rounded-full bg-ink"></span>${t(v.badge)}</span>
             <h3 class="mt-4 font-head text-[1.9rem] font-extrabold leading-[1.1] sm:text-[2.6rem]">${t(s.title)}</h3>
             <p class="mt-3 max-w-lg text-[1.02rem] leading-relaxed text-white/80">${t(s.summary)}</p>
             <div class="mt-6 flex flex-wrap gap-3">
@@ -492,12 +493,12 @@ function servicesSlider() {
       ${sectionHead({
         eyebrow: tr('Our services', 'خدماتنا'),
         title: tr('Find the right film for <span class="text-grad">your space</span>', 'اختر الفيلم المناسب <span class="text-grad">لمساحتك</span>'),
-        text: tr('Six specialist services for cars, homes, offices and surfaces — installed on-site by our team.', 'ست خدمات متخصصة للسيارات والمنازل والمكاتب والأسطح — يركّبها فريقنا في موقعك.'),
+        text: tr('Five specialist services for homes, offices, glass and surfaces — installed on-site by our team.', 'خمس خدمات متخصصة للمنازل والمكاتب والزجاج والأسطح — يركّبها فريقنا في موقعك.'),
       })}
       <div class="flex items-center gap-3" data-a="right">
         <span class="font-head text-lg font-extrabold text-ink" dir="ltr"><span data-xp-count>${tr('01', '٠١')}</span><span class="text-[#c7cdd8]"> / ${tr(pad(C.services.length), pad(C.services.length).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]))}</span></span>
         <button type="button" class="grid h-12 w-12 place-items-center rounded-full border border-line bg-white text-ink shadow-card transition hover:-translate-y-0.5" data-xp-prev aria-label="${tr('Previous', 'السابق')}">${icon('arrowLeft', 'h-5 w-5 rtl:-scale-x-100', 2.2)}</button>
-        <button type="button" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold transition hover:-translate-y-0.5" data-xp-next aria-label="${tr('Next', 'التالي')}">${arrow('h-5 w-5')}</button>
+        <button type="button" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-white shadow-gold transition hover:-translate-y-0.5" data-xp-next aria-label="${tr('Next', 'التالي')}">${arrow('h-5 w-5')}</button>
       </div>
     </div>
     <div class="xp mt-12" data-xp data-a="up">
@@ -505,7 +506,7 @@ function servicesSlider() {
     </div>
     <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
       <p class="inline-flex items-center gap-3 rounded-full border border-line bg-white px-5 py-3 text-[0.95rem] font-medium text-ink shadow-card"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('shield', 'h-4 w-4', 2.2)}</span>${tr('Every estimate is free — no hidden fees.', 'كل التقديرات مجانية — دون رسوم خفية.')}</p>
-      <a href="${href('service/')}" class="btn btn-white !pe-2">${t(C.ui.nav.allServices)} <span class="grid h-9 w-9 place-items-center rounded-full bg-grad text-ink">${arrow('h-4 w-4')}</span></a>
+      <a href="${href('service/')}" class="btn btn-white !pe-2">${t(C.ui.nav.allServices)} <span class="grid h-9 w-9 place-items-center rounded-full bg-grad text-white">${arrow('h-4 w-4')}</span></a>
     </div>
   </div>
 </section>`;
@@ -525,7 +526,7 @@ function howItWorks() {
   const mock1 = `
     <div class="rounded-xl bg-white p-3.5 text-ink"><span class="block text-xs text-muted">${tr('What needs tinting?', 'ماذا تريد أن تظلل؟')}</span><span class="mt-0.5 block font-head text-lg font-bold">${tr('Villa · 14 windows', 'فيلا · ١٤ نافذة')}</span></div>
     <div class="mt-2.5 grid grid-cols-3 gap-1 rounded-xl bg-white p-1 text-center text-sm font-semibold text-muted">
-      <span class="py-2">${tr('Car', 'سيارة')}</span><span class="rounded-lg bg-grad py-2 text-ink shadow-gold">${tr('Home', 'منزل')}</span><span class="py-2">${tr('Office', 'مكتب')}</span>
+      <span class="rounded-lg bg-grad py-2 text-white shadow-gold">${tr('Home', 'منزل')}</span><span class="py-2">${tr('Office', 'مكتب')}</span><span class="py-2">${tr('Surface', 'سطح')}</span>
     </div>`;
   const mock2 = `
     <div class="space-y-2 text-sm font-semibold">
@@ -554,7 +555,7 @@ function howItWorks() {
         </div>
       </div>
       <div class="mt-12 grid gap-5 lg:grid-cols-3">
-        ${step(1, 'edit', tr('Tell us what you need', 'أخبرنا بما تحتاجه'), tr('Car, villa, office or surface — send sizes or a few photos on WhatsApp.', 'سيارة أو فيلا أو مكتب أو سطح — أرسل المقاسات أو بعض الصور عبر واتساب.'), mock1, 0)}
+        ${step(1, 'edit', tr('Tell us what you need', 'أخبرنا بما تحتاجه'), tr('Villa, office, glass or surface — send sizes or a few photos on WhatsApp.', 'فيلا أو مكتب أو زجاج أو سطح — أرسل المقاسات أو بعض الصور عبر واتساب.'), mock1, 0)}
         ${step(2, 'scale', tr('Choose your film', 'اختر الفيلم'), tr('We recommend the right film and send a clear, flat-rate quote.', 'نوصي بالفيلم المناسب ونرسل عرض سعر واضحاً وثابتاً.'), mock2, 100)}
         ${step(3, 'check', tr('We install on-site', 'نركّب في موقعك'), tr('Our specialists come to you, install with precision and inspect before handover.', 'يأتي مختصونا إليك ويركّبون بدقة ويفحصون العمل قبل التسليم.'), mock3, 200)}
       </div>
@@ -577,7 +578,7 @@ function difference() {
   return `
 <section class="py-20 lg:py-28">
   <div class="container-site">
-    <div class="relative overflow-hidden rounded-[28px] border border-[#f6e6c8] bg-gradient-to-br from-tint via-white to-[#FFF3DD] p-6 shadow-glow sm:p-10 lg:p-14">
+    <div class="relative overflow-hidden rounded-[28px] border border-[#d3ecf8] bg-gradient-to-br from-tint via-white to-[#E8F6FD] p-6 shadow-glow sm:p-10 lg:p-14">
       <div class="pointer-events-none absolute inset-0 grid-lines opacity-70"></div>
       <div class="relative grid items-center gap-12 lg:grid-cols-2">
         <div class="relative" ${reveal()}>
@@ -589,7 +590,7 @@ function difference() {
               <div class="absolute inset-0 bg-gradient-to-bl from-orange-300/50 via-amber-200/25 to-transparent mix-blend-screen"></div>
               <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-ink shadow ${L === 'ar' ? 'font-arabic' : ''}">${tr('Without film', 'بدون فيلم')}</span>
             </div>
-            <span class="absolute right-3 top-3 rounded-full bg-grad px-3 py-1.5 text-xs font-bold text-ink shadow ${L === 'ar' ? 'font-arabic' : ''}">${tr('With Exotic Tint', 'مع إكزوتك تينت')}</span>
+            <span class="absolute right-3 top-3 rounded-full bg-grad px-3 py-1.5 text-xs font-bold text-white shadow ${L === 'ar' ? 'font-arabic' : ''}">${tr('With Exotic Tint', 'مع إكزوتك تينت')}</span>
             <div class="ba-handle pointer-events-none absolute inset-y-0 w-1 -translate-x-1/2 bg-white">
               <span class="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-ink shadow-float">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6-6 6 6 6M15 6l6 6-6 6"/></svg>
@@ -638,12 +639,11 @@ function tintStudio() {
   const shades = [
     { v: 70, privacy: 1, best: tr('Clear views · homes & offices', 'رؤية واضحة · منازل ومكاتب') },
     { v: 50, privacy: 2, best: tr('Bright rooms with less glare', 'غرف مضيئة بوهج أقل') },
-    { v: 35, privacy: 3, best: tr('Balanced daily driving', 'قيادة يومية متوازنة') },
-    { v: 20, privacy: 4, best: tr('Rear windows & villas', 'النوافذ الخلفية والفلل') },
-    { v: 5, privacy: 5, best: tr('Maximum, limo-level privacy', 'خصوصية قصوى بمستوى الليموزين') },
+    { v: 35, privacy: 3, best: tr('Balanced everyday comfort', 'راحة يومية متوازنة') },
+    { v: 20, privacy: 4, best: tr('Bedrooms & street-facing rooms', 'غرف النوم والغرف المطلة على الشارع') },
+    { v: 5, privacy: 5, best: tr('Maximum, full privacy', 'خصوصية قصوى وكاملة') },
   ];
   const scenes = [
-    ['car', tr('Car', 'سيارة'), 'automotive'],
     ['home', tr('Home', 'منزل'), 'residential'],
     ['building', tr('Office', 'مكتب'), 'frosted'],
   ];
@@ -657,7 +657,7 @@ function tintStudio() {
         text: tr('Move the slider to see how each shade looks — lower percentage means more privacy.', 'حرّك المؤشر لترى شكل كل درجة — كلما قلت النسبة زادت الخصوصية.'),
       })}
       <div class="inline-flex w-max rounded-2xl border border-line bg-white p-1.5 shadow-card" role="tablist" data-scenes ${reveal(100)}>
-        ${scenes.map(([ic, l, img], i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-scene="${img}" class="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-ink aria-selected:shadow-gold">${icon(ic, 'h-4 w-4', 2.2)} ${l}</button>`).join('')}
+        ${scenes.map(([ic, l, img], i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-scene="${img}" class="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-white aria-selected:shadow-gold">${icon(ic, 'h-4 w-4', 2.2)} ${l}</button>`).join('')}
       </div>
     </div>
     <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-2" data-tint-lab data-shades='${esc(JSON.stringify(shades))}' data-assemble>
@@ -677,14 +677,14 @@ function tintStudio() {
           </div>
           <div class="my-8 border-t border-dashed border-line"></div>
           <div class="flex items-center gap-3"><span class="ico ico-soft !h-10 !w-10">${icon('check', 'h-[18px] w-[18px]', 2.4)}</span><span><span class="block text-sm text-muted">${tr('Best for', 'الأنسب لـ')}</span><span class="block font-head text-lg font-bold text-ink" data-out="best">${shades[2].best}</span></span></div>
-          <p class="mt-8 flex gap-2 rounded-2xl border border-[#f6e3bf] bg-tint p-4 text-sm text-muted">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}${tr('Visual preview only. Our ceramic films block 99% of UV. Vehicle tint must follow local regulations — we’ll advise on compliant options.', 'معاينة بصرية فقط. أفلام السيراميك لدينا تحجب ٩٩٪ من الأشعة. يجب أن يتوافق تظليل السيارات مع الأنظمة المحلية — وسننصحك بالخيارات المسموحة.')}</p>
+          <p class="mt-8 flex gap-2 rounded-2xl border border-[#cdebf8] bg-tint p-4 text-sm text-muted">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}${tr('Visual preview only. Our ceramic films block 99% of UV in every shade — we help you pick the right one for each room.', 'معاينة بصرية فقط. أفلام السيراميك لدينا تحجب ٩٩٪ من الأشعة بكل الدرجات — ونساعدك على اختيار الأنسب لكل غرفة.')}</p>
         </div>
       </div>
       <div class="relative p-6 sm:p-10 navy-bg" data-a="right">
         <div class="flex items-center gap-2 text-white/80"><span class="font-semibold">${tr('Your preview', 'المعاينة')}</span><span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-bold uppercase text-emerald-300">${tr('Live', 'مباشر')}</span></div>
         <p class="mt-2 font-head text-5xl font-extrabold text-white" dir="ltr"><span data-out="vlt2">35</span>% <span class="text-2xl text-white/60">VLT</span></p>
         <div class="relative mt-6 aspect-[16/10] overflow-hidden rounded-2xl border-4 border-white/10">
-          <img src="/assets/img/automotive.webp" alt="${tr('Tint preview', 'معاينة التظليل')}" class="h-full w-full object-cover transition-opacity duration-300" data-scene-img loading="lazy">
+          <img src="/assets/img/residential.webp" alt="${tr('Tint preview', 'معاينة التظليل')}" class="h-full w-full object-cover transition-opacity duration-300" data-scene-img loading="lazy">
           <div class="absolute inset-0 transition-[background-color] duration-500" data-tint-overlay style="background-color:rgba(10,16,28,.6)"></div>
           <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
         </div>
@@ -707,7 +707,7 @@ function tintStudio() {
    Film figures come from the client's article "Super Nano Ceramic vs Nano Ceramic vs Regular Tint".
    Savings model (shown openly on the page):
      saving = monthly spend × cooling share × AC-load reduction
-     cooling share: car ≈ 15% of fuel in summer; home ≈ 60% of the electricity bill
+     cooling share: home ≈ 60% of the electricity bill; office ≈ 50%
      AC-load reduction: regular 10%, nano ceramic 20%, super nano ceramic 30% ("up to 30%" in the article) */
 function savings() {
   const films = [
@@ -716,8 +716,8 @@ function savings() {
     { id: 'super', name: tr('Super nano ceramic', 'سوبر نانو سيراميك'), heat: 94, heatTxt: '90–98%', uv: '99%+', uvN: 99, ac: 30 },
   ];
   const modes = {
-    car: { label: tr('My monthly petrol spend', 'إنفاقي الشهري على البنزين'), min: 200, max: 2000, step: 50, val: 600, share: 15 },
     home: { label: tr('My monthly Kahramaa bill', 'فاتورة كهرماء الشهرية'), min: 300, max: 5000, step: 100, val: 1500, share: 60 },
+    office: { label: tr('Monthly office electricity bill', 'فاتورة كهرباء المكتب الشهرية'), min: 1000, max: 30000, step: 500, val: 6000, share: 50 },
   };
   const qar = tr('QAR', 'ر.ق');
   return `
@@ -726,7 +726,7 @@ function savings() {
     ${sectionHead({
       eyebrow: tr('Tint, explained', 'التظليل ببساطة'),
       title: tr('Darker isn’t cooler. <span class="text-grad">The right film is.</span>', 'الأغمق ليس الأبرد. <span class="text-grad">الفيلم الصحيح هو الأبرد.</span>'),
-      text: tr('The shade you choose is about privacy. What cuts the heat — and your fuel and electricity bills — is the film technology inside.', 'درجة التظليل تتعلق بالخصوصية. أما ما يخفض الحرارة — وفواتير الوقود والكهرباء — فهو تقنية الفيلم نفسها.'),
+      text: tr('The shade you choose is about privacy. What cuts the heat — and your electricity bill — is the film technology inside.', 'درجة التظليل تتعلق بالخصوصية. أما ما يخفض الحرارة — وفاتورة الكهرباء — فهو تقنية الفيلم نفسها.'),
       center: true,
     })}
     <div class="mt-12 grid gap-5 lg:grid-cols-12" data-sav data-films='${esc(JSON.stringify(films))}' data-modes='${esc(JSON.stringify(modes))}'>
@@ -740,7 +740,7 @@ function savings() {
           <div class="flex items-center justify-center bg-violet-500" style="width:3%" title="UV 3%"></div>
         </div>
         <div class="mt-2 grid grid-cols-3 gap-3 text-[13px] leading-snug text-muted">
-          <p><b class="text-rose-500">${tr('Heat', 'الحرارة')}</b> — ${tr('makes the cabin hot and the AC work hard.', 'تسخّن المقصورة وترهق المكيف.')}</p>
+          <p><b class="text-rose-500">${tr('Heat', 'الحرارة')}</b> — ${tr('makes rooms hot and the AC work hard.', 'تسخّن الغرف وترهق المكيف.')}</p>
           <p><b class="text-amber-600">${tr('Light', 'الضوء')}</b> — ${tr('what you see. The shade % controls this (privacy).', 'ما تراه. نسبة التظليل تتحكم به (الخصوصية).')}</p>
           <p><b class="text-violet-600">UV</b> — ${tr('burns skin and fades interiors.', 'يحرق البشرة ويُبهت الأثاث.')}</p>
         </div>
@@ -748,7 +748,7 @@ function savings() {
         <div class="my-7 border-t border-dashed border-line"></div>
         <p class="font-head text-lg font-bold text-ink">${tr('How much each film stops', 'كم يحجب كل فيلم')}</p>
         <div class="mt-4 inline-flex flex-wrap gap-1.5 rounded-2xl border border-line bg-white p-1.5 shadow-card" role="tablist">
-          ${films.map((f, i) => `<button type="button" role="tab" aria-selected="${i === 2}" data-sav-film="${i}" class="rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-ink aria-selected:shadow-gold">${f.name}</button>`).join('')}
+          ${films.map((f, i) => `<button type="button" role="tab" aria-selected="${i === 2}" data-sav-film="${i}" class="rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-white aria-selected:shadow-gold">${f.name}</button>`).join('')}
         </div>
         <div class="mt-6 space-y-5">
           <div>
@@ -764,7 +764,7 @@ function savings() {
             <div class="mt-2 h-3 overflow-hidden rounded-full bg-emerald-100"><div class="h-full rounded-full bg-emerald-500 transition-[width] duration-700" style="width:${films[2].ac * 2}%" data-sav-acbar></div></div>
           </div>
         </div>
-        <p class="mt-6 flex gap-2 rounded-2xl border border-[#f6e3bf] bg-tint p-4 text-sm text-ink-2">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}<span>${tr('Any shade — light or dark — can come in nano or super nano ceramic. So you can keep a <b>legal, lighter shade</b> and still block most of the heat.', 'يمكن لأي درجة — فاتحة أو داكنة — أن تكون نانو أو سوبر نانو سيراميك. لذلك يمكنك اختيار <b>درجة فاتحة ومسموحة</b> مع حجب معظم الحرارة.')}</span></p>
+        <p class="mt-6 flex gap-2 rounded-2xl border border-[#cdebf8] bg-tint p-4 text-sm text-ink-2">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}<span>${tr('Any shade — light or dark — can come in nano or super nano ceramic. So you can keep a <b>light, bright shade</b> and still block most of the heat.', 'يمكن لأي درجة — فاتحة أو داكنة — أن تكون نانو أو سوبر نانو سيراميك. لذلك يمكنك اختيار <b>درجة فاتحة ومشرقة</b> مع حجب معظم الحرارة.')}</span></p>
       </div>
 
       <!-- RIGHT: money saved -->
@@ -773,14 +773,14 @@ function savings() {
         <div class="relative">
           <p class="font-head text-lg font-bold text-white">${tr('How much will you save?', 'كم ستوفر؟')}</p>
           <div class="mt-4 grid grid-cols-2 gap-1 rounded-2xl bg-white/10 p-1" role="tablist">
-            <button type="button" role="tab" aria-selected="true" data-sav-mode="car" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('car', 'h-4 w-4', 2.2)} ${tr('Car · petrol', 'سيارة · بنزين')}</button>
-            <button type="button" role="tab" aria-selected="false" data-sav-mode="home" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('home', 'h-4 w-4', 2.2)} ${tr('Home · electricity', 'منزل · كهرباء')}</button>
+            <button type="button" role="tab" aria-selected="true" data-sav-mode="home" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('home', 'h-4 w-4', 2.2)} ${tr('Home', 'منزل')}</button>
+            <button type="button" role="tab" aria-selected="false" data-sav-mode="office" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('building', 'h-4 w-4', 2.2)} ${tr('Office', 'مكتب')}</button>
           </div>
           <div class="mt-6 flex items-end justify-between gap-3">
-            <label class="text-sm font-semibold text-white/75" for="sav-spend" data-sav-label>${modes.car.label}</label>
-            <span class="font-head text-xl font-extrabold text-white" dir="ltr"><span data-sav-spend>600</span> <span class="text-sm text-white/60">${qar}</span></span>
+            <label class="text-sm font-semibold text-white/75" for="sav-spend" data-sav-label>${modes.home.label}</label>
+            <span class="font-head text-xl font-extrabold text-white" dir="ltr"><span data-sav-spend>1,500</span> <span class="text-sm text-white/60">${qar}</span></span>
           </div>
-          <input id="sav-spend" type="range" class="range mt-3" min="${modes.car.min}" max="${modes.car.max}" step="${modes.car.step}" value="${modes.car.val}" data-sav-range dir="ltr">
+          <input id="sav-spend" type="range" class="range mt-3" min="${modes.home.min}" max="${modes.home.max}" step="${modes.home.step}" value="${modes.home.val}" data-sav-range dir="ltr">
 
           <div class="mt-7 rounded-2xl bg-white p-5 text-center">
             <p class="text-xs font-bold uppercase tracking-wider text-muted">${tr('You could save about', 'يمكنك توفير حوالي')}</p>
@@ -793,7 +793,7 @@ function savings() {
             <p class="flex justify-between gap-3"><span>${tr('AC workload cut by', 'تخفيض حمل المكيف')}</span><b class="text-white" dir="ltr"><span data-sav-ac2>30</span>%</b></p>
           </div>
           <a href="#quote" class="btn btn-primary mt-6 w-full">${tr('Start saving — free quote', 'ابدأ التوفير — عرض مجاني')} ${arrow()}</a>
-          <p class="mt-4 text-[11px] leading-relaxed text-white/50" data-sav-note data-car="${esc(tr('Estimate. Assumes AC uses about 15% of a car’s fuel in Qatar’s summer. Real savings depend on your car, driving and film.', 'تقدير. يفترض أن المكيف يستهلك حوالي ١٥٪ من وقود السيارة في صيف قطر. التوفير الفعلي يعتمد على سيارتك وقيادتك والفيلم.'))}" data-home="${esc(tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.'))}">${tr('Estimate. Assumes AC uses about 15% of a car’s fuel in Qatar’s summer. Real savings depend on your car, driving and film.', 'تقدير. يفترض أن المكيف يستهلك حوالي ١٥٪ من وقود السيارة في صيف قطر. التوفير الفعلي يعتمد على سيارتك وقيادتك والفيلم.')}</p>
+          <p class="mt-4 text-[11px] leading-relaxed text-white/50" data-sav-note data-home="${esc(tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.'))}" data-office="${esc(tr('Estimate. Assumes cooling is about 50% of an office’s electricity bill in Qatar. Real savings depend on the building, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٥٠٪ من فاتورة كهرباء المكتب في قطر. التوفير الفعلي يعتمد على المبنى والزجاج والفيلم.'))}">${tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.')}</p>
         </div>
       </div>
     </div>
@@ -804,14 +804,14 @@ function savings() {
 function statsStrip() {
   const items = [
     ['star', '99', '%', tr('UV blocked', 'حجب الأشعة'), tr('With ceramic films', 'مع أفلام السيراميك')],
-    ['thermo', '60', '%', tr('Heat rejection', 'العزل الحراري'), tr('Premium auto films', 'أفلام السيارات الفاخرة')],
-    ['layers', '6', '+', tr('Specialist services', 'خدمات متخصصة'), tr('Cars, homes & surfaces', 'سيارات ومنازل وأسطح')],
+    ['thermo', '98', '%', tr('Heat rejection', 'العزل الحراري'), tr('Super nano ceramic', 'سوبر نانو سيراميك')],
+    ['layers', '5', '', tr('Specialist services', 'خدمات متخصصة'), tr('Glass, surfaces & interiors', 'زجاج وأسطح وديكور')],
     ['clock', '7', '/7', tr('Days a week', 'أيام في الأسبوع'), tr('8 AM – 6 PM', '٨ ص – ٦ م')],
   ];
   return `
 <section class="pb-20 lg:pb-28">
   <div class="container-site">
-    <div class="grid grid-cols-2 overflow-hidden rounded-[28px] border-2 border-[#f6e6c8] bg-white shadow-glow lg:grid-cols-4" ${reveal()}>
+    <div class="grid grid-cols-2 overflow-hidden rounded-[28px] border-2 border-[#d3ecf8] bg-white shadow-glow lg:grid-cols-4" ${reveal()}>
       ${items
         .map(
           ([ic, n, sup, title, sub], i) => `
@@ -860,7 +860,7 @@ function filmTech() {
         ${films
           .map(
             (f) => `<div class="relative flex flex-col items-center px-4 pb-5 pt-7 text-center ${f.featured ? 'rounded-t-[22px] bg-gold-50/80' : ''}">
-          ${f.featured ? `<span class="absolute -top-0 rounded-b-xl bg-grad px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-ink shadow-gold">${tr('Recommended', 'موصى به')}</span>` : ''}
+          ${f.featured ? `<span class="absolute -top-0 rounded-b-xl bg-grad px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-gold">${tr('Recommended', 'موصى به')}</span>` : ''}
           ${img3d(f.emoji, 'mt-2 h-14 w-14 drop-shadow-lg')}
           <span class="mt-3 font-head text-lg font-extrabold text-ink">${f.name}</span>
           <span class="text-xs text-muted">${f.sub}</span>
@@ -897,9 +897,9 @@ function filmTech() {
 function whyUs() {
   // [emoji, title, text, metric, metric label, accent]
   const feats = [
-    ['thermometer', tr('Heat reduction', 'تقليل الحرارة'), tr('Cooler rooms and cabins with heat-rejection film.', 'غرف وسيارات أبرد مع أفلام العزل الحراري.'), tr('−10°C', '−١٠°'), tr('cooler inside', 'أبرد من الداخل'), '#FCA5A5'],
+    ['thermometer', tr('Heat reduction', 'تقليل الحرارة'), tr('Cooler rooms and offices with heat-rejection film.', 'غرف ومكاتب أبرد مع أفلام العزل الحراري.'), tr('−10°C', '−١٠°'), tr('cooler inside', 'أبرد من الداخل'), '#FCA5A5'],
     ['shield', tr('UV protection', 'الحماية من الأشعة'), tr('Protects skin, furniture and interiors from fading.', 'يحمي البشرة والأثاث والتصميم الداخلي من البهتان.'), '99%', tr('UV blocked', 'حجب الأشعة'), '#93C5FD'],
-    ['locked', tr('Daytime privacy', 'خصوصية نهارية'), tr('See out clearly while keeping prying eyes out.', 'رؤية واضحة للخارج مع حجب الأنظار.'), tr('1-way', 'اتجاه واحد'), tr('mirror view', 'رؤية عاكسة'), '#F6C766'],
+    ['locked', tr('Daytime privacy', 'خصوصية نهارية'), tr('See out clearly while keeping prying eyes out.', 'رؤية واضحة للخارج مع حجب الأنظار.'), tr('1-way', 'اتجاه واحد'), tr('mirror view', 'رؤية عاكسة'), '#7DD3FC'],
     ['voltage', tr('Energy savings', 'توفير الطاقة'), tr('Less AC load and lower Kahramaa bills.', 'حمل أقل على التكييف وفواتير كهرماء أقل.'), tr('30%', '٣٠٪'), tr('less AC usage', 'استهلاك تكييف أقل'), '#6EE7B7'],
   ];
   const card = ([emoji, title, text, metric, label, acc], i) => `
@@ -932,7 +932,7 @@ function whyUs() {
           </div>
           <a href="tel:${C.site.phoneRaw}" class="group flex w-full items-center justify-between gap-4 rounded-2xl bg-white p-2.5 ps-4 transition hover:bg-gold-50 lg:w-auto lg:min-w-[19rem]">
             <span><span class="block text-[10px] font-bold uppercase tracking-wider text-muted">${tr('Call · free estimate', 'اتصل · تقدير مجاني')}</span><span class="block font-head text-lg font-extrabold text-ink" dir="ltr">${C.site.phone}</span></span>
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-grad text-ink shadow-gold transition group-hover:scale-110">${icon('phone', 'h-4 w-4', 2.2)}</span>
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-grad text-white shadow-gold transition group-hover:scale-110">${icon('phone', 'h-4 w-4', 2.2)}</span>
           </a>
         </div>
       </div>
@@ -950,7 +950,7 @@ function bookFast() {
   const points = [
     ['card', tr('Affordable flat-rate pricing', 'أسعار ثابتة ومناسبة'), tr('No hidden fees — just premium tint and protection.', 'دون رسوم خفية — فقط تظليل وحماية فاخرة.')],
     ['calendar', tr('Fast & easy booking', 'حجز سريع وسهل'), tr('Get a quote and schedule your service in minutes.', 'احصل على عرض سعر واحجز خدمتك خلال دقائق.')],
-    ['bulb', tr('Advanced tint & protection', 'حلول تظليل وحماية متطورة'), tr('Privacy, UV protection and energy efficiency for cars, homes and offices.', 'خصوصية وحماية وكفاءة طاقة للسيارات والمنازل والمكاتب.')],
+    ['bulb', tr('Advanced tint & protection', 'حلول تظليل وحماية متطورة'), tr('Privacy, UV protection and energy efficiency for homes and offices.', 'خصوصية وحماية من الأشعة وكفاءة طاقة للمنازل والمكاتب.')],
   ];
   const bubble = (me, text, time) =>
     `<div class="flex ${me ? 'justify-end' : 'justify-start'}" data-chat-msg><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm ${me ? 'rounded-ee-md bg-[#d9fdd3] text-ink' : 'rounded-es-md bg-white text-ink'}">${text}<span class="ms-2 inline-block align-bottom text-[10px] text-muted">${time}${me ? ' ✓✓' : ''}</span></div></div>`;
@@ -977,14 +977,14 @@ function bookFast() {
           <div class="rounded-[38px] bg-ink p-2.5 shadow-[0_40px_70px_-25px_rgba(18,35,61,.7)]">
             <div class="overflow-hidden rounded-[30px] bg-[#efe7dd]">
               <div class="flex items-center gap-3 bg-[#075E54] px-4 py-3 text-white">
-                <img src="/assets/img/logo-original.webp" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5">
+                ${mark('h-9 w-9')}
                 <div class="flex-1"><p class="text-sm font-semibold">${t(C.site.name)}</p><p class="text-[11px] text-white/75" data-status data-typing-label="${tr('typing…', 'يكتب…')}" data-online-label="${tr('online', 'متصل الآن')}">${tr('online', 'متصل الآن')}</p></div>
                 ${icon('phone', 'h-4 w-4')}
               </div>
               <div class="space-y-2.5 p-4 [background-image:radial-gradient(rgba(0,0,0,.04)_1px,transparent_1px)] [background-size:14px_14px]" data-chat>
                 <p class="mx-auto w-max rounded-lg bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-muted">${tr('TODAY', 'اليوم')}</p>
-                ${bubble(true, tr('Hi! I need tint for my car and villa windows 🚙🏡', 'مرحباً! أحتاج تظليل لسيارتي ونوافذ الفيلا 🚙🏡'), '10:02')}
-                ${bubble(false, tr('Welcome to Exotic Tint Qatar! Send us a photo and we’ll recommend the best film 👌', 'أهلاً بك في إكزوتك تينت قطر! أرسل لنا صورة وسنوصي بأفضل فيلم 👌'), '10:03')}
+                ${bubble(true, tr('Hi! I need heat film for my villa windows 🏡☀️', 'مرحباً! أحتاج فيلماً حرارياً لنوافذ الفيلا 🏡☀️'), '10:02')}
+                ${bubble(false, tr('Welcome to Exotic Tint! Send us a photo and we’ll recommend the best film 👌', 'أهلاً بك في إكزوتك تينت! أرسل لنا صورة وسنوصي بأفضل فيلم 👌'), '10:03')}
                 <div class="flex justify-end" data-chat-msg><div class="h-24 w-36 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/residential.webp" alt="" class="h-full w-full object-cover" loading="lazy"></div></div>
                 ${bubble(false, tr('Super nano ceramic is perfect ✅ We can install tomorrow at 10 AM in Lusail.', 'السوبر نانو سيراميك مثالي ✅ يمكننا التركيب غداً الساعة ١٠ صباحاً في لوسيل.'), '10:05')}
                 ${bubble(true, tr('Booked! Thank you 🙏', 'تم الحجز! شكراً لكم 🙏'), '10:05')}
@@ -1047,7 +1047,7 @@ function gallery() {
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
         <div><span class="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-ink">${t(s.short)}</span><p class="mt-2 font-head text-lg font-bold text-white">${t(s.title)}</p></div>
-        <span class="grid h-10 w-10 shrink-0 translate-y-2 place-items-center rounded-full bg-grad text-ink opacity-0 shadow-gold transition group-hover:translate-y-0 group-hover:opacity-100">${arrow('h-4 w-4')}</span>
+        <span class="grid h-10 w-10 shrink-0 translate-y-2 place-items-center rounded-full bg-grad text-white opacity-0 shadow-gold transition group-hover:translate-y-0 group-hover:opacity-100">${arrow('h-4 w-4')}</span>
       </div>
     </a>`;
   };
@@ -1055,21 +1055,20 @@ function gallery() {
 <section class="pb-20 lg:pb-28">
   <div class="container-site">
     <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-      ${sectionHead({ eyebrow: tr('Our work', 'أعمالنا'), title: tr('Fresh from our <span class="text-grad">installations</span>', 'من أحدث <span class="text-grad">أعمالنا</span>'), text: tr('Cars, villas, offices and surfaces — finished by our team across Qatar.', 'سيارات وفلل ومكاتب وأسطح — أنجزها فريقنا في أنحاء قطر.') })}
+      ${sectionHead({ eyebrow: tr('Our work', 'أعمالنا'), title: tr('Fresh from our <span class="text-grad">installations</span>', 'من أحدث <span class="text-grad">أعمالنا</span>'), text: tr('Villas, offices, glass and surfaces — finished by our team across Qatar.', 'فلل ومكاتب وزجاج وأسطح — أنجزها فريقنا في أنحاء قطر.') })}
       <a href="${C.site.instagram}" target="_blank" rel="noopener" class="btn btn-white w-max" ${reveal(100)}><span class="grid h-7 w-7 place-items-center rounded-lg text-white" style="background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)">${icon('instagram', 'h-4 w-4')}</span>@exotic_tint_qatar</a>
     </div>
     <div class="mt-10 grid auto-rows-[200px] grid-cols-2 gap-4 lg:auto-rows-[230px] lg:grid-cols-4" data-assemble="scrub">
-      ${tile('automotive-window-tinting', 'col-span-2 row-span-2', 'far-left')}
-      ${tile('customized-cut-frosted-film', '', 'far-top')}
-      ${tile('marble-protection-film', '', 'far-right')}
-      ${tile('commercial-window-tinting-services', 'col-span-2', 'far-right')}
-      ${tile('fabric-nano-coating-service', '', 'far-bottom')}
-      <a href="${C.site.instagram}" target="_blank" rel="noopener" class="group relative flex flex-col justify-between overflow-hidden rounded-[22px] p-5 text-white" style="background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 50%,#6228d7 100%)" data-a="far-bottom">
+      ${tile('architectural-window-film-solutions', 'col-span-2 row-span-2', 'far-left')}
+      ${tile('smart-glass-privacy-solutions', '', 'far-top')}
+      ${tile('surface-protection-solutions', '', 'far-right')}
+      ${tile('decorative-interior-solutions', 'col-span-2', 'far-right')}
+      ${tile('fabric-material-protection', 'col-span-2', 'far-bottom')}
+      <a href="${C.site.instagram}" target="_blank" rel="noopener" class="group relative col-span-2 flex flex-col justify-between overflow-hidden rounded-[22px] p-5 text-white" style="background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 50%,#6228d7 100%)" data-a="far-bottom">
         ${img3d('camera', 'absolute -bottom-3 -end-3 h-24 w-24 opacity-90 drop-shadow-xl transition duration-500 group-hover:rotate-12')}
         <span class="grid h-11 w-11 place-items-center rounded-xl bg-white/20 backdrop-blur">${icon('instagram', 'h-5 w-5')}</span>
         <div><p class="font-head text-xl font-extrabold leading-tight">${tr('See more on Instagram', 'شاهد المزيد على إنستغرام')}</p><p class="mt-1 text-sm text-white/85">${tr('Follow for daily work', 'تابعنا لأعمالنا اليومية')}</p></div>
       </a>
-      ${tile('residential-window-tinting-services', 'col-span-2', 'far-left')}
     </div>
   </div>
 </section>`;
@@ -1080,14 +1079,14 @@ function areasSection() {
   return `
 <section class="pb-20 lg:pb-28">
   <div class="container-site">
-    <div class="relative overflow-hidden rounded-[28px] border border-[#f6e6c8] bg-gradient-to-br from-tint via-white to-tint-2 p-7 shadow-glow sm:p-12">
+    <div class="relative overflow-hidden rounded-[28px] border border-[#d3ecf8] bg-gradient-to-br from-tint via-white to-tint-2 p-7 shadow-glow sm:p-12">
       <div class="pointer-events-none absolute inset-0 dots opacity-50 [mask-image:radial-gradient(ellipse_at_70%_50%,#000_20%,transparent_70%)]"></div>
       <div class="relative grid items-center gap-12 lg:grid-cols-12">
         <div class="lg:col-span-5">
           ${sectionHead({
             eyebrow: tr('Service areas', 'مناطق الخدمة'),
             title: tr('Across Qatar. <span class="text-grad">At your door.</span>', 'في كل قطر. <span class="text-grad">عند بابك.</span>'),
-            text: tr('Professional window tint and marble protection across Doha, Lusail, Al Rayyan, Al Wakra and surrounding areas — heat-resistant, UV-blocking solutions for your home, office and vehicle.', 'خدمات تظليل وحماية رخام احترافية في الدوحة ولوسيل والريان والوكرة والمناطق المحيطة — حلول مقاومة للحرارة وحاجبة للأشعة لمنزلك ومكتبك وسيارتك.'),
+            text: tr('Professional window tint and marble protection across Doha, Lusail, Al Rayyan, Al Wakra and surrounding areas — heat-resistant, UV-blocking solutions for your home and office.', 'خدمات تظليل وحماية رخام احترافية في الدوحة ولوسيل والريان والوكرة والمناطق المحيطة — حلول مقاومة للحرارة وحاجبة للأشعة لمنزلك ومكتبك.'),
           })}
           <div class="mt-8 flex flex-wrap gap-3" ${reveal(120)}>
             <a href="#quote" class="btn btn-primary">${tr('Check availability', 'تحقق من التوفر')} ${arrow()}</a>
@@ -1119,8 +1118,8 @@ function reviewUs() {
   const s = (link, bg, ic, name, sub) => `<a href="${link}" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-2xl border border-line bg-white p-3 pe-5 shadow-card transition hover:-translate-y-0.5"><span class="grid h-11 w-11 place-items-center rounded-xl text-white" style="background:${bg}">${ic}</span><span><span class="block font-head font-bold text-ink">${name}</span><span class="block text-xs text-muted">${sub}</span></span></a>`;
   return `
 <div class="container-site -mt-8 pb-20 lg:pb-28">
-  <div class="flex flex-col items-center justify-between gap-5 rounded-[22px] border border-dashed border-[#e7d7b8] bg-tint-2 p-5 sm:p-6 lg:flex-row" ${reveal()}>
-    <div class="flex items-center gap-4">${img3d('chat', 'h-14 w-14 drop-shadow-lg')}<div><p class="font-head text-xl font-bold text-ink">${tr('Happy with our work? Review us on', 'راضٍ عن عملنا؟ قيّمنا على')}</p><p class="text-sm text-muted">${tr('Your feedback helps other drivers and homeowners in Qatar.', 'رأيك يساعد السائقين وأصحاب المنازل الآخرين في قطر.')}</p></div></div>
+  <div class="flex flex-col items-center justify-between gap-5 rounded-[22px] border border-dashed border-[#b9dcec] bg-tint-2 p-5 sm:p-6 lg:flex-row" ${reveal()}>
+    <div class="flex items-center gap-4">${img3d('chat', 'h-14 w-14 drop-shadow-lg')}<div><p class="font-head text-xl font-bold text-ink">${tr('Happy with our work? Review us on', 'راضٍ عن عملنا؟ قيّمنا على')}</p><p class="text-sm text-muted">${tr('Your feedback helps other homeowners and businesses in Qatar.', 'رأيك يساعد أصحاب المنازل والشركات الآخرين في قطر.')}</p></div></div>
     <div class="flex flex-wrap justify-center gap-3">
       ${s(C.site.facebook, '#1877F2', fbIcon('h-5 w-5'), 'Facebook', tr('Leave a review', 'اكتب تقييماً'))}
       ${s(C.site.instagram, 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)', icon('instagram', 'h-5 w-5'), 'Instagram', '@exotic_tint_qatar')}
@@ -1138,7 +1137,7 @@ function blogSection() {
   <div class="container-site">
     <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
       ${sectionHead({ eyebrow: tr('Insights & guides', 'مقالات وأدلة'), title: tr('From our <span class="text-grad">blog</span>', 'من <span class="text-grad">مدونتنا</span>'), text: tr('Practical tint and protection guides written for Qatar’s climate.', 'أدلة عملية للتظليل والحماية مكتوبة لمناخ قطر.') })}
-      <a href="${href('blogs/')}" class="btn btn-white w-max !pe-2" ${reveal(100)}>${tr('View all posts', 'كل المقالات')} <span class="grid h-9 w-9 place-items-center rounded-full bg-grad text-ink">${arrow('h-4 w-4')}</span></a>
+      <a href="${href('blogs/')}" class="btn btn-white w-max !pe-2" ${reveal(100)}>${tr('View all posts', 'كل المقالات')} <span class="grid h-9 w-9 place-items-center rounded-full bg-grad text-white">${arrow('h-4 w-4')}</span></a>
     </div>
     <div class="mt-10 grid gap-5 lg:grid-cols-12">
       <a href="${href(f.slug + '/')}" class="group relative min-h-[460px] overflow-hidden rounded-[28px] shadow-soft lg:col-span-7" ${reveal()}>
@@ -1147,11 +1146,11 @@ function blogSection() {
         <span class="absolute start-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-gold-700 shadow">${icon('star', 'h-3.5 w-3.5', 2.4)} ${tr('Editor’s pick', 'اختيار المحرر')}</span>
         <span class="absolute end-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">${icon('clock', 'h-3.5 w-3.5', 2.4)} ${num(f.read)} ${tr('min read', 'دقائق قراءة')}</span>
         <div class="absolute inset-x-4 bottom-4 rounded-[22px] border border-white/20 bg-ink/55 p-6 backdrop-blur-xl">
-          <span class="rounded-full bg-grad px-2.5 py-1 text-[11px] font-extrabold uppercase text-ink">${t(f.cat)}</span>
+          <span class="rounded-full bg-grad px-2.5 py-1 text-[11px] font-extrabold uppercase text-white">${t(f.cat)}</span>
           <h3 class="mt-3 font-head text-2xl font-extrabold leading-tight text-white">${t(f.title)}</h3>
           <p class="mt-2 line-clamp-2 text-sm text-white/80">${t(f.excerpt)}</p>
           <div class="mt-4 flex items-center justify-between border-t border-white/15 pt-4">
-            <span class="flex items-center gap-2.5"><img src="/assets/img/logo-original.webp" alt="" class="h-9 w-9 rounded-full bg-white object-contain p-0.5"><span><span class="block text-sm font-bold text-white">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</span><span class="block text-xs text-white/70">${fmtDate(f.date)}</span></span></span>
+            <span class="flex items-center gap-2.5">${mark('h-9 w-9')}<span><span class="block text-sm font-bold text-white">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</span><span class="block text-xs text-white/70">${fmtDate(f.date)}</span></span></span>
             <span class="grid h-11 w-11 place-items-center rounded-full bg-white text-ink transition group-hover:bg-gold-300">${arrow('h-4 w-4')}</span>
           </div>
         </div>
@@ -1164,7 +1163,7 @@ function blogSection() {
           <div class="flex min-w-0 flex-1 flex-col py-1">
             <span class="w-max rounded-full bg-tint px-2.5 py-1 text-[11px] font-bold uppercase text-gold-700">${t(p.cat)}</span>
             <h3 class="mt-2 line-clamp-3 font-head text-lg font-bold leading-snug text-ink">${t(p.title)}</h3>
-            <div class="mt-auto flex items-center justify-between pt-3 text-xs text-muted"><span class="flex items-center gap-1.5">${icon('clock', 'h-3.5 w-3.5')} ${num(p.read)} ${tr('min', 'د')} · ${fmtDate(p.date)}</span><span class="grid h-8 w-8 place-items-center rounded-full bg-[#f2f4f7] text-ink transition group-hover:bg-grad">${arrow('h-3.5 w-3.5')}</span></div>
+            <div class="mt-auto flex items-center justify-between pt-3 text-xs text-muted"><span class="flex items-center gap-1.5">${icon('clock', 'h-3.5 w-3.5')} ${num(p.read)} ${tr('min', 'د')} · ${fmtDate(p.date)}</span><span class="grid h-8 w-8 place-items-center rounded-full bg-[#f2f4f7] text-white transition group-hover:bg-grad">${arrow('h-3.5 w-3.5')}</span></div>
           </div>
         </a>`
           )
@@ -1229,7 +1228,7 @@ function processTimeline() {
       ${C.process
         .map(
           ([a, b], i) => `<li class="relative text-center" ${reveal(i * 80)}>
-        <span class="relative mx-auto grid h-[72px] w-[72px] place-items-center rounded-full border-[6px] border-white bg-grad font-head text-2xl font-extrabold text-ink shadow-gold">${num(i + 1)}</span>
+        <span class="relative mx-auto grid h-[72px] w-[72px] place-items-center rounded-full border-[6px] border-white bg-grad font-head text-2xl font-extrabold text-white shadow-gold">${num(i + 1)}</span>
         <div class="card mt-5 p-5"><h3 class="font-head text-lg font-bold text-ink">${t(a)}</h3><p class="mt-1.5 text-sm leading-relaxed text-muted">${t(b)}</p></div>
       </li>`
         )
@@ -1261,8 +1260,7 @@ function mapSection() {
 function showcase() {
   // Illustrative temperatures (the villa drop matches the 9°C example in the client's own article)
   const scenes = [
-    { img: 'automotive', icon: 'car', label: tr('Car cabin', 'مقصورة السيارة'), from: 52, to: 40 },
-    { img: 'residential', icon: 'home', label: tr('Villa living room', 'غرفة معيشة الفيلا'), from: 41, to: 32 },
+        { img: 'residential', icon: 'home', label: tr('Villa living room', 'غرفة معيشة الفيلا'), from: 41, to: 32 },
     { img: 'commercial', icon: 'building', label: tr('Office workspace', 'مساحة المكتب'), from: 38, to: 30 },
   ];
   const deg = (n) => (L === 'ar' ? Number(n).toLocaleString('ar-EG') : n) + '°';
@@ -1314,7 +1312,7 @@ function showcase() {
               <div class="mt-1.5 hidden h-1.5 w-36 overflow-hidden rounded-full bg-line sm:block"><div class="tm-tbar h-full rounded-full"></div></div>
             </div>
             <div class="room-hud flex items-center gap-2 rounded-2xl p-2 pe-3 sm:gap-3 sm:p-3 sm:pe-4">
-              <svg class="h-9 w-9 -rotate-90 sm:h-11 sm:w-11" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#tmuv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-tm-ring/><defs><linearGradient id="tmuv"><stop stop-color="#F6C766"/><stop offset="1" stop-color="#C47F1E"/></linearGradient></defs></svg>
+              <svg class="h-9 w-9 -rotate-90 sm:h-11 sm:w-11" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#tmuv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-tm-ring/><defs><linearGradient id="tmuv"><stop stop-color="#4CC6F2"/><stop offset="1" stop-color="#0074AD"/></linearGradient></defs></svg>
               <div><p class="text-[11px] font-bold uppercase tracking-wider text-muted ${L === 'ar' ? 'font-arabic' : ''}">${tr('UV blocked', 'حجب الأشعة')}</p><p class="font-head text-xl font-extrabold text-ink"><span data-tm-uv>0</span>%</p></div>
             </div>
           </div>
@@ -1326,7 +1324,7 @@ function showcase() {
 }
 
 function testimonials() {
-  const avatarBg = ['#E9A63B', '#2563EB', '#0F766E', '#6D28D9'];
+  const avatarBg = ['#0096D6', '#2563EB', '#0F766E', '#6D28D9'];
   const msg = (r, i) => `
         <div class="flex items-end gap-2.5 ${i % 2 ? 'sm:ps-10' : ''}" data-review>
           <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full font-head text-xs font-extrabold text-white shadow-md" style="background:${avatarBg[i % 4]}">${r.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</span>
@@ -1352,10 +1350,10 @@ function testimonials() {
         <div class="lg:col-span-5" data-a="left">
           <span class="eyebrow">${tr('Client stories', 'قصص العملاء')}</span>
           <h2 class="mt-4 text-balance font-head text-[1.85rem] font-extrabold leading-[1.12] text-ink min-[400px]:text-[2.1rem] sm:text-[2.6rem]">${tr('What our clients <span class="text-grad">tell us</span>', 'ماذا يقول <span class="text-grad">عملاؤنا</span>')}</h2>
-          <p class="mt-4 text-[1.05rem] leading-relaxed text-muted">${tr('Real words from drivers, homeowners and businesses we’ve worked with across Qatar.', 'كلمات حقيقية من سائقين وأصحاب منازل وشركات عملنا معهم في أنحاء قطر.')}</p>
+          <p class="mt-4 text-[1.05rem] leading-relaxed text-muted">${tr('Real words from homeowners and businesses we’ve worked with across Qatar.', 'كلمات حقيقية من سائقين وأصحاب منازل وشركات عملنا معهم في أنحاء قطر.')}</p>
           <div class="mt-8 rounded-[22px] border border-line bg-white p-5 shadow-card">
             <div class="flex items-center gap-4">
-              <img src="/assets/img/logo-original.webp" alt="" class="h-14 w-auto">
+              <img src="/assets/img/logo-light.webp" alt="" class="h-14 w-auto">
               <div><p class="font-head text-lg font-bold text-ink">${t(C.site.name)}</p><p class="flex items-center gap-2 text-sm text-muted">${starsRow('h-4 w-4')} ${tr('Rated by our clients', 'بتقييم عملائنا')}</p></div>
             </div>
             <div class="mt-5 grid grid-cols-3 gap-2 border-t border-dashed border-line pt-5 text-center">
@@ -1375,7 +1373,7 @@ function testimonials() {
           <div class="glass-card overflow-hidden rounded-[26px]">
             <div class="flex items-center justify-between gap-3 border-b border-white/70 bg-white/60 px-5 py-4">
               <div class="flex items-center gap-3">
-                <span class="relative grid h-10 w-10 place-items-center rounded-full bg-grad text-ink">${icon('chat', 'h-5 w-5', 2.2)}<span class="absolute -end-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span></span>
+                <span class="relative grid h-10 w-10 place-items-center rounded-full bg-grad text-white">${icon('chat', 'h-5 w-5', 2.2)}<span class="absolute -end-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span></span>
                 <div><p class="font-head font-bold text-ink">${tr('Client reviews', 'تقييمات العملاء')}</p><p class="text-xs text-muted" data-review-status data-typing-label="${tr('new review…', 'تقييم جديد…')}">${num(C.testimonials.length)} ${tr('reviews', 'تقييمات')}</p></div>
               </div>
               <a href="${href('reviews/')}" class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-ink shadow-card hover:text-gold-700">${tr('See all', 'عرض الكل')} ${arrow('h-3.5 w-3.5')}</a>
@@ -1437,7 +1435,7 @@ function quoteSection() {
     })}
     <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-12" data-assemble>
       <form class="relative bg-white p-6 sm:p-10 lg:col-span-7" data-a="left" data-quote-form novalidate
-        data-msg-intro="${esc(tr('Hello Exotic Tint Qatar! I would like a free quote.', 'مرحباً إكزوتك تينت قطر! أرغب في الحصول على عرض سعر مجاني.'))}"
+        data-msg-intro="${esc(tr('Hello Exotic Tint for Trading and Contracting! I would like a free quote.', 'مرحباً إكزوتك تينت للتجارة والمقاولات! أرغب في الحصول على عرض سعر مجاني.'))}"
         data-l-name="${esc(tr('Name', 'الاسم'))}" data-l-phone="${esc(tr('Phone', 'الهاتف'))}" data-l-service="${esc(tr('Service', 'الخدمة'))}" data-l-area="${esc(tr('Area', 'المنطقة'))}" data-l-message="${esc(tr('Details', 'التفاصيل'))}" data-wa="${C.site.whatsapp}">
         <div class="pointer-events-none absolute inset-0 dots opacity-30 [mask-image:linear-gradient(180deg,#000,transparent_50%)]"></div>
         <div class="relative grid gap-5 sm:grid-cols-2">
@@ -1445,7 +1443,7 @@ function quoteSection() {
           <div><label class="label" for="f-phone">${tr('Phone', 'رقم الهاتف')} *</label><input id="f-phone" name="phone" required type="tel" autocomplete="tel" class="field" placeholder="+974" dir="ltr"></div>
           <div><label class="label" for="f-service">${tr('Service', 'الخدمة')}</label><select id="f-service" name="service" class="field">${C.services.map((s) => opt(t(s.title))).join('')}${opt(tr('Not sure yet', 'لم أحدد بعد'))}</select></div>
           <div><label class="label" for="f-area">${tr('Area', 'المنطقة')}</label><select id="f-area" name="area" class="field">${C.areas.map((a) => opt(t(a))).join('')}${opt(tr('Other', 'أخرى'))}</select></div>
-          <div class="sm:col-span-2"><label class="label" for="f-message">${tr('Details', 'التفاصيل')}</label><textarea id="f-message" name="message" rows="4" class="field resize-none" placeholder="${tr('Car model, number of windows, surface size…', 'طراز السيارة، عدد النوافذ، مساحة السطح…')}"></textarea></div>
+          <div class="sm:col-span-2"><label class="label" for="f-message">${tr('Details', 'التفاصيل')}</label><textarea id="f-message" name="message" rows="4" class="field resize-none" placeholder="${tr('Number of windows, glass or surface size…', 'عدد النوافذ، مقاس الزجاج أو السطح…')}"></textarea></div>
         </div>
         <p class="relative mt-4 hidden items-center gap-2 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-600" data-form-error>${icon('info', 'h-4 w-4', 2.2)} ${tr('Please add your name and phone number.', 'يرجى إدخال الاسم ورقم الهاتف.')}</p>
         <button type="submit" class="btn btn-primary relative mt-6 w-full !py-4">${waIcon('h-5 w-5')} ${tr('Send request on WhatsApp', 'أرسل الطلب عبر واتساب')}</button>
@@ -1512,21 +1510,21 @@ function pageHome(page) {
   return layout(
     page,
     {
-      title: tr('Exotic Tint Qatar — Premium Window Tinting & Protective Films in Doha', 'إكزوتك تينت قطر — تظليل نوافذ وأفلام حماية فاخرة في الدوحة'),
+      title: tr('Exotic Tint for Trading and Contracting — Premium Window Tinting & Protective Films in Doha', 'إكزوتك تينت للتجارة والمقاولات — تظليل نوافذ وأفلام حماية فاخرة في الدوحة'),
       description: tr(
-        'Premium car, home and commercial window tinting, frosted film, marble protection and fabric nano coating across Qatar. 99% UV protection, on-site installation, free estimates.',
-        'تظليل فاخر للسيارات والمنازل والمباني التجارية، وأفلام مصنفرة وحماية رخام وطلاء نانو للأقمشة في جميع أنحاء قطر. حماية ٩٩٪ من الأشعة، تركيب في موقعك، وتقدير مجاني.'
+        'Architectural window films, smart switchable glass, surface protection, decorative films and fabric nano coating across Qatar. 99% UV protection, on-site installation, free estimates.',
+        'أفلام نوافذ معمارية وزجاج ذكي قابل للتحويل وحماية أسطح وأفلام ديكورية وطلاء نانو للأقمشة في جميع أنحاء قطر. حماية ٩٩٪ من الأشعة وتركيب في موقعك وتقديرات مجانية.'
       ),
       jsonld: {
         '@context': 'https://schema.org',
         '@type': 'LocalBusiness',
-        name: 'Exotic Tint Qatar',
-        alternateName: 'إكزوتك تينت قطر',
+        name: 'Exotic Tint for Trading and Contracting',
+        alternateName: 'إكزوتك تينت للتجارة والمقاولات',
         url: C.site.domain,
-        logo: C.site.domain + '/assets/img/logo-original.webp',
+        logo: C.site.domain + '/assets/img/logo-light.webp',
         telephone: C.site.phoneRaw,
         email: C.site.email,
-        image: C.site.domain + '/assets/img/automotive.webp',
+        image: C.site.domain + '/assets/img/residential.webp',
         address: { '@type': 'PostalAddress', addressLocality: 'Doha', addressCountry: 'QA' },
         areaServed: C.areas.map((a) => a[0]),
         openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], opens: '08:00', closes: '18:00' },
@@ -1552,9 +1550,9 @@ function pageHome(page) {
 function pageAbout(page) {
   const body = `
 ${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('user', 'h-4 w-4', 2.2)}</span>${tr('About us', 'من نحن')}`,
+  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('user', 'h-4 w-4', 2.2)}</span>${tr('About us', 'من نحن')}`,
   title: tr('Comfort, privacy &amp; protection — <span class="text-grad">installed on-site</span>', 'راحة وخصوصية وحماية — <span class="text-grad">تُركّب في موقعك</span>'),
-  text: tr('Exotic Tint Qatar specialises in premium window tinting and protective film solutions for cars, homes, offices and commercial spaces.', 'تتخصص إكزوتك تينت قطر في حلول تظليل النوافذ وأفلام الحماية الفاخرة للسيارات والمنازل والمكاتب والمنشآت التجارية.'),
+  text: tr('Exotic Tint for Trading and Contracting specialises in window films, smart glass, surface protection and interior finishes for homes, offices and commercial spaces.', 'تتخصص إكزوتك تينت للتجارة والمقاولات في أفلام النوافذ والزجاج الذكي وحماية الأسطح والتشطيبات الداخلية للمنازل والمكاتب والمساحات التجارية.'),
   crumbs: [[t(C.ui.nav.about)]],
   image: 'commercial',
   alt: tr('Technician working on a glass façade', 'فني يعمل على واجهة زجاجية'),
@@ -1566,14 +1564,14 @@ ${pageHero({
       <img src="/assets/img/marble.webp" alt="${tr('Marble protection film installation', 'تركيب فيلم حماية الرخام')}" class="aspect-[3/4] w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy">
       <div class="mt-10 space-y-4">
         <img src="/assets/img/frosted.webp" alt="${tr('Decorative frosted film', 'فيلم مصنفر زخرفي')}" class="aspect-square w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy">
-        <div class="rounded-[22px] bg-grad p-5 text-ink shadow-gold"><span class="block font-head text-4xl font-extrabold">${num(6)}</span><span class="text-sm font-semibold">${tr('Specialist services under one roof', 'خدمات متخصصة تحت سقف واحد')}</span></div>
+        <div class="rounded-[22px] bg-grad p-5 text-white shadow-gold"><span class="block font-head text-4xl font-extrabold">${num(6)}</span><span class="text-sm font-semibold">${tr('Specialist services under one roof', 'خدمات متخصصة تحت سقف واحد')}</span></div>
       </div>
     </div>
     <div>
       ${sectionHead({
         eyebrow: tr('Who we are', 'من نحن'),
         title: tr('A team of specialists <span class="text-grad">who come to you</span>', 'فريق من المختصين <span class="text-grad">يأتي إليك</span>'),
-        text: tr('We are a team of skilled professionals offering on-site installation services across Qatar. Our goal is to provide cutting-edge tinting and coating solutions that enhance comfort, aesthetics and durability for both vehicles and buildings.', 'نحن فريق من المحترفين نقدم خدمات التركيب في الموقع في جميع أنحاء قطر. هدفنا تقديم حلول تظليل وطلاء متطورة تعزز الراحة والجمال والمتانة للسيارات والمباني.'),
+        text: tr('We are a team of skilled professionals offering on-site installation services across Qatar. Our goal is to provide cutting-edge tinting and coating solutions that enhance comfort, aesthetics and durability for homes and buildings.', 'نحن فريق من المحترفين نقدم خدمات التركيب في الموقع في جميع أنحاء قطر. هدفنا تقديم حلول تظليل وطلاء متطورة تعزز الراحة والجمال والمتانة للمنازل والمباني.'),
       })}
       <ul class="mt-8 space-y-3" ${reveal(100)}>
         ${[
@@ -1602,8 +1600,8 @@ ${quoteSection()}`;
   return layout(
     page,
     {
-      title: tr('About Exotic Tint Qatar — Window Tint & Protection Specialists', 'عن إكزوتك تينت قطر — مختصو التظليل والحماية'),
-      description: tr('Meet Exotic Tint Qatar: skilled professionals delivering on-site window tinting, frosted film, marble protection and nano coating across Doha, Lusail and Al Rayyan.', 'تعرّف على إكزوتك تينت قطر: محترفون يقدمون خدمات التظليل والأفلام المصنفرة وحماية الرخام وطلاء النانو في موقعك.'),
+      title: tr('About Exotic Tint for Trading and Contracting — Window Tint & Protection Specialists', 'عن إكزوتك تينت للتجارة والمقاولات — مختصو التظليل والحماية'),
+      description: tr('Meet Exotic Tint for Trading and Contracting: skilled professionals delivering on-site window tinting, frosted film, marble protection and nano coating across Doha, Lusail and Al Rayyan.', 'تعرّف على إكزوتك تينت للتجارة والمقاولات: محترفون يقدمون خدمات التظليل والأفلام المصنفرة وحماية الرخام وطلاء النانو في موقعك.'),
       image: 'commercial',
     },
     body
@@ -1614,12 +1612,11 @@ function pageServices(page) {
   const S = C.services;
   // Per-service animation + one honest headline metric (figures from the client's own content)
   const FX = {
-    'automotive-window-tinting': { fx: 'tint', label: tr('Solar heat blocked', 'حرارة شمس محجوبة'), to: 60, pre: tr('up to ', 'حتى '), unit: '%', chip: tr('99% UV blocked', 'حجب ٩٩٪ من الأشعة') },
-    'residential-window-tinting-services': { fx: 'tint', label: tr('UV filtered', 'أشعة محجوبة'), to: 99, pre: '', unit: '%', chip: tr('Cooler, brighter rooms', 'غرف أبرد وأكثر إشراقاً') },
-    'commercial-window-tinting-services': { fx: 'tint', label: tr('UV blocked', 'حجب الأشعة'), to: 99, pre: '', unit: '%', chip: tr('Lower AC bills', 'فواتير تكييف أقل') },
-    'customized-cut-frosted-film': { fx: 'frost', label: tr('Privacy where you need it', 'خصوصية حيث تحتاجها'), to: 100, pre: '', unit: '%', chip: tr('Light still passes through', 'يسمح بمرور الضوء') },
-    'marble-protection-film': { fx: 'shield', label: tr('Years of protection', 'سنوات حماية'), to: 10, pre: tr('up to ', 'حتى '), unit: tr(' yrs', ' سنوات'), chip: tr('Invisible gloss finish', 'لمسة لامعة غير مرئية') },
-    'fabric-nano-coating-service': { fx: 'bead', label: tr('Spills that soak in', 'انسكابات تتغلغل'), to: 0, from: 100, pre: '', unit: '%', chip: tr('Liquids bead &amp; wipe away', 'السوائل تتجمع وتُمسح') },
+    'architectural-window-film-solutions': { fx: 'tint', label: tr('Solar heat blocked', 'حرارة شمس محجوبة'), to: 98, pre: tr('up to ', 'حتى '), unit: '%', chip: tr('99% UV blocked', 'حجب ٩٩٪ من الأشعة') },
+    'smart-glass-privacy-solutions': { fx: 'frost', label: tr('Privacy, on demand', 'خصوصية عند الطلب'), to: 100, pre: '', unit: '%', chip: tr('Clear ↔ private in a second', 'شفاف ↔ خاص في ثانية') },
+    'surface-protection-solutions': { fx: 'shield', label: tr('Years of protection', 'سنوات حماية'), to: 10, pre: tr('up to ', 'حتى '), unit: tr(' yrs', ' سنوات'), chip: tr('Marble, wood & steel', 'رخام وخشب وستانلس') },
+    'decorative-interior-solutions': { fx: 'pattern', label: tr('Designs we can cut', 'تصاميم يمكننا قصها'), to: 100, pre: '', unit: '%', chip: tr('Your logo or pattern', 'شعارك أو نقشك') },
+    'fabric-material-protection': { fx: 'bead', label: tr('Spills that soak in', 'انسكابات تتغلغل'), to: 0, from: 100, pre: '', unit: '%', chip: tr('Liquids bead &amp; wipe away', 'السوائل تتجمع وتُمسح') },
   };
   const data = S.map((s) => ({ img: s.img, ...FX[s.slug], label: FX[s.slug].label, chip: FX[s.slug].chip }));
 
@@ -1632,7 +1629,7 @@ function pageServices(page) {
       <nav class="flex items-center justify-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
         <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}<span class="font-semibold text-ink">${t(C.ui.nav.services)}</span>
       </nav>
-      <h1 class="mx-auto mt-5 max-w-3xl text-balance font-head text-[2.3rem] font-extrabold leading-[1.06] text-ink sm:text-[3.4rem]"><span data-split>${tr('Six ways to protect', 'ست طرق لحماية')}</span> <span class="text-grad" data-a="up">${tr('what you love.', 'ما تحب.')}</span></h1>
+      <h1 class="mx-auto mt-5 max-w-3xl text-balance font-head text-[2.3rem] font-extrabold leading-[1.06] text-ink sm:text-[3.4rem]"><span data-split>${tr('Five ways to protect', 'خمس طرق لحماية')}</span> <span class="text-grad" data-a="up">${tr('what you love.', 'ما تحب.')}</span></h1>
       <p class="mx-auto mt-4 max-w-xl text-[1.06rem] leading-relaxed text-muted" data-a="up">${tr('Scroll to see each film at work — installed on-site across Qatar.', 'مرّر لترى كل فيلم أثناء العمل — نركّبه في موقعك في أنحاء قطر.')}</p>
       <div class="mt-7 flex flex-wrap justify-center gap-2" data-a="up">
         ${S.map((s) => `<a href="#svc-${s.slug}" class="inline-flex items-center gap-2 rounded-full border border-white bg-white/80 px-3.5 py-2 text-sm font-semibold text-ink shadow-card backdrop-blur transition hover:-translate-y-0.5 hover:text-gold-700">${icon(s.icon, 'h-4 w-4 text-gold-600', 2.2)}${t(s.short)}</a>`).join('')}
@@ -1653,13 +1650,14 @@ function pageServices(page) {
     <div class="sv-layer sv-tint absolute inset-0" style="background:linear-gradient(115deg,rgba(14,26,46,.55),rgba(22,40,70,.38) 50%,rgba(14,26,46,.55))"></div>
     <div class="sv-layer sv-frost absolute inset-0"></div>
     <div class="sv-layer sv-shield absolute inset-0"><span class="sv-sheen absolute inset-0"></span></div>
+    <div class="sv-layer sv-pattern absolute inset-0"><span class="sv-brand">${tr('YOUR BRAND', 'علامتك')}</span></div>
     <div class="sv-beads absolute inset-0">${Array.from({ length: 14 }, (_, i) => `<span style="--x:${[12, 22, 35, 48, 60, 72, 84, 18, 41, 55, 68, 80, 30, 90][i]}%;--y:${[30, 52, 38, 60, 34, 56, 42, 72, 78, 70, 82, 66, 64, 76][i]}%;--s:${[26, 18, 22, 30, 20, 24, 16, 21, 28, 18, 23, 19, 15, 21][i]}px;--d:${i * 0.09}s"></span>`).join('')}</div>
     <div class="sv-edge pointer-events-none absolute inset-y-0 w-[3px] bg-white shadow-[0_0_26px_7px_rgba(255,255,255,.65)]"></div>
     <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-ink/20"></div>
 
     <div class="absolute inset-x-4 top-4 flex items-center justify-between gap-2">
       <span class="glass-hud inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold text-white ${L === 'ar' ? 'font-arabic' : ''}"><span class="sv-dot h-2 w-2 rounded-full"></span><span data-sv-state data-off="${tr('Before', 'قبل')}" data-on="${tr('Protected by Exotic Tint', 'محمي بإكزوتك تينت')}">${tr('Before', 'قبل')}</span></span>
-      <span class="glass-hud rounded-full px-3 py-2 font-head text-xs font-extrabold text-white"><span data-sv-n>${tr('01', '٠١')}</span> / ${tr('06', '٠٦')}</span>
+      <span class="glass-hud rounded-full px-3 py-2 font-head text-xs font-extrabold text-white"><span data-sv-n>${tr('01', '٠١')}</span> / ${tr(pad(S.length), num(pad(S.length)))}</span>
     </div>
     <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
       <div class="room-hud min-w-0 rounded-2xl px-3 py-2 sm:px-4 sm:py-3">
@@ -1679,7 +1677,7 @@ function pageServices(page) {
       <h2 class="mt-3 font-head text-[1.85rem] font-extrabold leading-[1.1] text-ink sm:text-[2.3rem]">${t(s.title)}</h2>
       <p class="mt-3 text-[1.02rem] leading-relaxed text-muted">${t(s.summary)}</p>
       <ul class="mt-5 grid gap-2 sm:grid-cols-2">
-        ${s.benefits.slice(0, 4).map(([b]) => `<li class="flex items-center gap-2.5 text-[0.95rem] font-semibold text-ink-2"><span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(b)}</li>`).join('')}
+        ${s.options.slice(0, 6).map(([b]) => `<li class="flex items-center gap-2.5 text-[0.95rem] font-semibold text-ink-2"><span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(b)}</li>`).join('')}
       </ul>
       <div class="mt-6 flex flex-wrap gap-3">
         <a href="${href('service/' + s.slug + '/')}" class="btn btn-primary !py-3 text-sm">${t(C.ui.learnMore)} ${arrow()}</a>
@@ -1700,115 +1698,93 @@ ${quoteSection()}`;
   return layout(
     page,
     {
-      title: tr('Window Tinting & Protection Services in Qatar | Exotic Tint Qatar', 'خدمات التظليل والحماية في قطر | إكزوتك تينت قطر'),
-      description: tr('Automotive, residential and commercial window tinting, custom frosted film, marble protection film and fabric nano coating in Qatar.', 'تظليل السيارات والمنازل والمباني التجارية، والأفلام المصنفرة المخصصة، وأفلام حماية الرخام، وطلاء النانو للأقمشة في قطر.'),
+      title: tr('Window Tinting & Protection Services in Qatar | Exotic Tint for Trading and Contracting', 'خدمات التظليل والحماية في قطر | إكزوتك تينت للتجارة والمقاولات'),
+      description: tr('Architectural window films, smart switchable glass, surface protection, decorative films and fabric nano coating in Qatar.', 'أفلام النوافذ المعمارية والزجاج الذكي وحماية الأسطح والأفلام الديكورية وطلاء النانو للأقمشة في قطر.'),
       image: 'residential',
     },
     body
   );
 }
 
-/* How car window film works — compact auto-playing stepper with a clear diagram */
-function carExplainer() {
-  const deg = (n) => (L === 'ar' ? Number(n).toLocaleString('ar-EG') : n);
-  const steps = [
-    { title: tr('The sun hits your car', 'الشمس تضرب سيارتك'), text: tr('Sunlight is three things: heat you feel, light you see, and UV that burns skin and fades your dashboard.', 'ضوء الشمس ثلاثة أشياء: حرارة تشعر بها، وضوء تراه، وأشعة فوق بنفسجية تحرق البشرة وتُبهت لوحة القيادة.'), tab: tr('Sun', 'الشمس') },
-    { title: tr('Without film, it all gets in', 'بدون فيلم، كل شيء يدخل'), text: tr('Plain glass lets the heat and UV straight into the cabin. A parked car in a Qatar summer can pass 60°C.', 'الزجاج العادي يُدخل الحرارة والأشعة مباشرة. قد تتجاوز حرارة السيارة المتوقفة ٦٠° في صيف قطر.'), tab: tr('No film', 'بدون فيلم') },
-    { title: tr('With Exotic Tint', 'مع إكزوتك تينت'), text: tr('The ceramic layer in the film bounces the heat back outside and stops the UV. Light still comes in, so you can see clearly.', 'طبقة السيراميك في الفيلم تعكس الحرارة للخارج وتوقف الأشعة. الضوء يدخل لترى بوضوح.'), tab: tr('With film', 'مع الفيلم') },
-    { title: tr('What you get', 'ماذا تحصل عليه'), text: tr('A cooler cabin the moment you get in. The AC works less, so you burn less petrol.', 'مقصورة أبرد لحظة الركوب. المكيف يعمل أقل، فتستهلك بنزيناً أقل.'), tab: tr('Result', 'النتيجة') },
-  ];
-  const arrow = (id, color) => `<marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="${color}"/></marker>`;
+/* ============================================================
+   Service pages — 5 main services, each with its own options.
+   Same structure as the original car page: animated hero, auto-playing
+   "how it works", an auto-playing options explorer, one unique section,
+   three steps, FAQ and CTA.
+   ============================================================ */
+
+/* Generic "how it works" stepper — configurable rays */
+function howItWorksFor(cfg) {
+  const ar = L === 'ar';
+  const arrowM = (id, color) => `<marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="${color}"/></marker>`;
   const line = (cls, d, color, mk) => `<path class="hw-line ${cls}" d="${d}" stroke="${color}" marker-end="url(#${mk})" pathLength="1"/>`;
-  const pill = (cls, x, y, color, text, ic) => `<span dir="${L === 'ar' ? 'rtl' : 'ltr'}" class="hw-pill ${cls}" style="left:${x}%;top:${y}%;--c:${color}">${ic}${text}</span>`;
+  const pill = (cls, x, y, color, text, ic) => `<span dir="${ar ? 'rtl' : 'ltr'}" class="hw-pill ${cls}" style="left:${x}%;top:${y}%;--c:${color}">${ic}${text}</span>`;
   const xIc = '<svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   const backIc = '<svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg>';
   const inIc = '<svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-
+  const IN = ['M114 104 L292 130', 'M112 116 L292 196', 'M104 126 L292 262'];
+  const THRU = ['M318 132 L450 146', 'M318 198 L450 206', 'M318 264 L450 268'];
+  const ys = [32, 49, 66];
+  const mk = ['hw-a0', 'hw-a1', 'hw-a2'];
+  const rays = cfg.rays;
+  const filmPill = (r, i) =>
+    r.film === 'bounce' ? pill('hw-p3', 14, 50, r.color, r.filmLabel, backIc) : r.film === 'block' ? pill('hw-p3', 52, [40, 57, 74][i], r.color, r.filmLabel, xIc) : pill('hw-p3', 57, ys[i], r.color, r.filmLabel, inIc);
+  const meterVal = (v) => (typeof v === 'number' ? (ar ? v.toLocaleString('ar-EG') : v) + (cfg.unit || '') : v);
   const diagram = `
   <div class="hw-diagram relative" dir="ltr">
     <svg viewBox="0 0 640 360" class="w-full" aria-hidden="true">
-      <defs>${arrow('hw-r', '#ef4444')}${arrow('hw-y', '#e9a63b')}${arrow('hw-v', '#8b5cf6')}
-        <radialGradient id="hw-sun"><stop offset="0" stop-color="#fff7e0"/><stop offset=".6" stop-color="#f6c766"/><stop offset="1" stop-color="#e9a63b"/></radialGradient>
-        <linearGradient id="hw-in" x1="0" x2="1"><stop offset="0" stop-color="#f3f6fb"/><stop offset="1" stop-color="#e9eff8"/></linearGradient>
+      <defs>${rays.map((r, i) => arrowM(mk[i], r.color)).join('')}
+        <radialGradient id="hw-sun2"><stop offset="0" stop-color="#fff7e0"/><stop offset=".6" stop-color="#f6c766"/><stop offset="1" stop-color="#e9a63b"/></radialGradient>
+        <linearGradient id="hw-in2" x1="0" x2="1"><stop offset="0" stop-color="#f3f6fb"/><stop offset="1" stop-color="#e9eff8"/></linearGradient>
       </defs>
-      <!-- zones -->
-      <rect x="326" y="16" width="300" height="328" rx="22" fill="url(#hw-in)" class="hw-cabin"/>
+      <rect x="326" y="16" width="300" height="328" rx="22" fill="url(#hw-in2)"/>
       <rect x="326" y="16" width="300" height="328" rx="22" fill="#ef4444" class="hw-hot"/>
       <rect x="326" y="16" width="300" height="328" rx="22" fill="#38bdf8" class="hw-cool"/>
-      <text x="40" y="34" class="hw-zone">${tr('OUTSIDE', 'الخارج')}</text>
-      <text x="378" y="46" class="hw-zone">${tr('INSIDE YOUR CAR', 'داخل سيارتك')}</text>
-      <!-- sun -->
-      <circle cx="80" cy="96" r="54" fill="#f6c766" opacity=".2"/>
-      <circle cx="80" cy="96" r="32" fill="url(#hw-sun)"/>
-      <!-- incoming rays -->
-      ${line('hw-in1', 'M114 104 L292 130', '#ef4444', 'hw-r')}
-      ${line('hw-in2', 'M112 116 L292 196', '#e9a63b', 'hw-y')}
-      ${line('hw-in3', 'M104 126 L292 262', '#8b5cf6', 'hw-v')}
-      <!-- through rays (no film) -->
-      ${line('hw-thru hw-thru1', 'M318 132 L450 146', '#ef4444', 'hw-r')}
-      ${line('hw-thru hw-thru2', 'M318 198 L450 206', '#e9a63b', 'hw-y')}
-      ${line('hw-thru hw-thru3', 'M318 264 L450 268', '#8b5cf6', 'hw-v')}
-      <!-- with film: light through, heat bounced, UV stopped -->
-      ${line('hw-film-light', 'M318 198 L450 206', '#e9a63b', 'hw-y')}
-      ${line('hw-bounce', 'M292 134 L150 206', '#ef4444', 'hw-r')}
-      <!-- window: glass + film -->
-      <rect x="296" y="40" width="20" height="290" rx="6" fill="#d9ecff" stroke="#9cc4ea" stroke-width="2"/>
-      <rect x="316" y="40" width="9" height="290" rx="3" fill="#1d3150" class="hw-film"/>
-      <text x="306" y="352" text-anchor="middle" class="hw-small">${tr('Car window', 'زجاج السيارة')}</text>
-      <!-- seat -->
-      <path d="M470 300 L470 178 Q470 156 492 156 L502 156 Q520 156 518 176 L513 248 L566 248 Q582 248 582 264 L582 300 Z" fill="#c47f1e"/>
-      <!-- thermometer -->
+      <text x="40" y="34" class="hw-zone">${cfg.outZone}</text>
+      <text x="378" y="46" class="hw-zone">${cfg.inZone}</text>
+      ${cfg.sourceEmoji ? '' : '<circle cx="80" cy="96" r="54" fill="#f6c766" opacity=".2"/><circle cx="80" cy="96" r="32" fill="url(#hw-sun2)"/>'}
+      ${rays.map((r, i) => line('hw-in' + (i + 1), IN[i], r.color, mk[i])).join('')}
+      ${rays.map((r, i) => line('hw-thru' + (r.film === 'pass' ? ' fp' : ''), THRU[i], r.color, mk[i])).join('')}
+      ${rays[0].film === 'bounce' ? line('hw-bounce', 'M292 134 L150 206', rays[0].color, mk[0]) : ''}
+      <rect x="296" y="40" width="20" height="290" rx="6" fill="${cfg.baseFill || '#d9ecff'}" stroke="${cfg.baseStroke || '#9cc4ea'}" stroke-width="2"/>
+      <rect x="316" y="40" width="9" height="290" rx="3" fill="${cfg.layerFill || '#1d3150'}" class="hw-film"/>
+      <text x="306" y="352" text-anchor="middle" class="hw-small">${cfg.baseLabel}</text>
       <rect x="596" y="64" width="16" height="200" rx="8" fill="#fff" stroke="#e3e7ee" stroke-width="2"/>
       <rect x="600" y="70" width="8" height="190" rx="4" fill="#ef4444" class="hw-merc"/>
       <circle cx="604" cy="276" r="15" fill="#ef4444" class="hw-bulb"/>
     </svg>
-    <!-- labels (HTML so they stay crisp and translate) -->
-    ${pill('hw-p1', 22, 22, '#ef4444', tr('Heat 53%', 'حرارة ٥٣٪'), '')}
-    ${pill('hw-p1', 21, 43, '#c47f1e', tr('Light 44%', 'ضوء ٤٤٪'), '')}
-    ${pill('hw-p1', 19, 64, '#8b5cf6', tr('UV 3%', 'أشعة ٣٪'), '')}
-    ${pill('hw-p2', 58, 32, '#ef4444', tr('Heat gets in', 'الحرارة تدخل'), inIc)}
-    ${pill('hw-p2', 58, 49, '#c47f1e', tr('Light gets in', 'الضوء يدخل'), inIc)}
-    ${pill('hw-p2', 58, 66, '#8b5cf6', tr('UV gets in', 'الأشعة تدخل'), inIc)}
-    ${pill('hw-p3', 14, 50, '#ef4444', tr('Heat bounced back', 'الحرارة ارتدت'), backIc)}
-    ${pill('hw-p3', 56, 49, '#c47f1e', tr('Light comes in', 'الضوء يدخل'), inIc)}
-    ${pill('hw-p3', 52, 72, '#8b5cf6', tr('UV blocked', 'الأشعة محجوبة'), xIc)}
-    ${pill('hw-p3 hw-film-tag', 46, 7, '#1d3150', tr('Ceramic film', 'فيلم سيراميك'), '')}
-    <span class="hw-temp" data-hw-temp>${deg(38)}°C</span>
+    ${cfg.sourceEmoji ? `<img src="/assets/img/3d/${cfg.sourceEmoji}.webp" alt="" class="absolute h-[19%] w-auto" style="left:6%;top:15%">` : ''}
+    <img src="/assets/img/3d/${cfg.insideEmoji}.webp" alt="" class="absolute h-[34%] w-auto drop-shadow-xl" style="left:72%;top:40%">
+    ${rays.map((r, i) => pill('hw-p1', [22, 21, 19][i], [22, 43, 64][i], r.color, r.label, '')).join('')}
+    ${rays.map((r, i) => pill('hw-p2', 58, ys[i], r.color, r.inLabel, inIc)).join('')}
+    ${rays.map(filmPill).join('')}
+    ${pill('hw-p3 hw-film-tag', 46, 7, '#1d3150', cfg.layerLabel, '')}
+    <span class="hw-temp" data-hw-temp>${meterVal(cfg.meter[0])}</span>
   </div>`;
-
+  const s = cfg.steps;
   return `
 <section class="relative pt-20 lg:pt-28" data-assemble>
   <div class="container-site">
-    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
-      <div>
-        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-gold-700">${tr('How it works', 'كيف يعمل')}</p>
-        <h2 class="mt-3 font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${tr('How the film keeps <span class="text-grad">your car cool</span>', 'كيف يُبقي الفيلم <span class="text-grad">سيارتك باردة</span>')}</h2>
-      </div>
+    <div data-a="up">
+      <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-gold-700">${tr('How it works', 'كيف يعمل')}</p>
+      <h2 class="mt-3 font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${cfg.title}</h2>
     </div>
-    <div class="hw mt-8 overflow-hidden rounded-[28px] border border-line bg-white shadow-soft" data-hw data-temps='[38,62,52,52]' data-a="up">
+    <div class="hw mt-8 overflow-hidden rounded-[28px] border border-line bg-white shadow-soft" data-hw data-temps='${esc(JSON.stringify(cfg.meter))}' data-unit='${cfg.unit || ''}' data-a="up">
       <div class="grid grid-cols-4 border-b border-line" role="tablist">
-        ${steps
-          .map(
-            (s, i) => `<button type="button" role="tab" aria-selected="${i === 0}" class="hw-tab relative px-2 py-4 text-center sm:px-4" data-hw-tab="${i}">
+        ${s.map((st, i) => `<button type="button" role="tab" aria-selected="${i === 0}" class="hw-tab relative px-2 py-4 text-center sm:px-4" data-hw-tab="${i}">
           <span class="block text-[11px] font-extrabold text-gold-700">${num(pad(i + 1))}</span>
-          <span class="block font-head text-sm font-bold text-ink sm:text-base">${s.tab}</span>
+          <span class="block font-head text-sm font-bold text-ink sm:text-base">${st[0]}</span>
           <span class="absolute inset-x-0 bottom-0 h-[3px]"><span class="hw-bar block h-full bg-grad"></span></span>
-        </button>`
-          )
-          .join('')}
+        </button>`).join('')}
       </div>
       <div class="grid items-center gap-6 p-5 sm:p-8 lg:grid-cols-12 lg:gap-10 lg:p-10">
         <div class="lg:col-span-4">
-          ${steps
-            .map(
-              (s, i) => `<div class="hw-cap ${i === 0 ? 'is-on' : ''}" data-hw-cap="${i}">
-            <h3 class="font-head text-[1.6rem] font-extrabold leading-tight text-ink sm:text-[1.9rem]">${s.title}</h3>
-            <p class="mt-3 text-[1.03rem] leading-relaxed text-muted">${s.text}</p>
-            ${i === 2 ? `<div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-rose-50 px-3 py-1.5 text-sm font-bold text-rose-600">${tr('Up to 98% heat blocked', 'حجب حتى ٩٨٪ من الحرارة')}</span><span class="rounded-full bg-violet-50 px-3 py-1.5 text-sm font-bold text-violet-600">${tr('99% UV blocked', 'حجب ٩٩٪ من الأشعة')}</span></div>` : ''}
-            ${i === 3 ? `<ul class="mt-5 space-y-2 text-[0.98rem] font-semibold text-ink-2">${[tr('About 10°C cooler cabin*', 'مقصورة أبرد بنحو ١٠°*'), tr('AC works less — less petrol', 'المكيف يعمل أقل — بنزين أقل'), tr('Skin and dashboard protected', 'البشرة ولوحة القيادة محمية')].map((x) => `<li class="flex items-center gap-2.5"><span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('check', 'h-3.5 w-3.5', 3)}</span>${x}</li>`).join('')}</ul><p class="mt-3 text-xs text-muted">${tr('*Illustrative, with super nano ceramic film.', '*توضيحي، مع فيلم سوبر نانو سيراميك.')}</p>` : ''}
-          </div>`
-            )
-            .join('')}
+          ${s.map((st, i) => `<div class="hw-cap ${i === 0 ? 'is-on' : ''}" data-hw-cap="${i}">
+            <h3 class="font-head text-[1.6rem] font-extrabold leading-tight text-ink sm:text-[1.9rem]">${st[1]}</h3>
+            <p class="mt-3 text-[1.03rem] leading-relaxed text-muted">${st[2]}</p>
+            ${i === 2 && cfg.chips ? `<div class="mt-5 flex flex-wrap gap-2">${cfg.chips.map(([c, t2]) => `<span class="rounded-full bg-${c}-50 px-3 py-1.5 text-sm font-bold text-${c}-600">${t2}</span>`).join('')}</div>` : ''}
+            ${i === 3 ? `<ul class="mt-5 space-y-2 text-[0.98rem] font-semibold text-ink-2">${cfg.results.map((x) => `<li class="flex items-center gap-2.5"><span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-50 text-emerald-600">${icon('check', 'h-3.5 w-3.5', 3)}</span>${x}</li>`).join('')}</ul>${cfg.note ? `<p class="mt-3 text-xs text-muted">${cfg.note}</p>` : ''}` : ''}
+          </div>`).join('')}
         </div>
         <div class="lg:col-span-8">${diagram}</div>
       </div>
@@ -1817,145 +1793,426 @@ function carExplainer() {
 </section>`;
 }
 
-/* ============================================================
-   Automotive window tinting — focused, animated service page
-   ============================================================ */
-function pageAutomotive(page) {
-  const s = page.service;
-  const wa = waLink(tr('Hi, I want a price for car window tinting. My car is: ', 'مرحباً، أريد سعر تظليل سيارة. سيارتي: '));
-  const deg = (n) => (L === 'ar' ? Number(n).toLocaleString('ar-EG') : n);
+/* Looping photo demo for heroes: tint / frost / shield / bead / smart (switchable) / pattern (decor & branding) */
+function fxStage(cfg) {
+  const ar = L === 'ar';
+  return `
+  <div class="relative" data-a="up">
+    <div class="pointer-events-none absolute -inset-4 rounded-[40px] bg-gradient-to-br from-gold-200/60 via-transparent to-[#c7d5ee]/60 blur-2xl"></div>
+    <div class="relative aspect-[4/3] overflow-hidden rounded-[30px] border-[6px] border-white bg-ink shadow-float" data-sv data-svh data-fx="${cfg.fx}" data-vals='${esc(JSON.stringify(cfg.vals))}' dir="ltr">
+      <img src="/assets/img/${cfg.img}.webp" alt="${esc(cfg.alt)}" class="absolute inset-0 h-full w-full object-cover" style="object-position:${cfg.pos || '50% 50%'}" fetchpriority="high">
+      <div class="sv-glare absolute inset-0" style="background:radial-gradient(70% 80% at 85% 8%,rgba(255,240,200,.95),rgba(255,190,90,.5) 35%,transparent 70%),linear-gradient(180deg,rgba(255,210,130,.3),rgba(255,170,80,.12))"></div>
+      <svg class="sv-scratch absolute inset-0 h-full w-full" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.8)" stroke-width="1.8" stroke-linecap="round" fill="none"><path d="M60 190 L170 160"/><path d="M90 220 L210 190"/><path d="M240 230 L340 180"/><path d="M200 130 L300 105"/><path d="M120 250 L190 236"/></g></svg>
+      <div class="sv-layer sv-tint absolute inset-0" style="background:linear-gradient(115deg,rgba(14,26,46,.55),rgba(22,40,70,.38) 50%,rgba(14,26,46,.55))"></div>
+      <div class="sv-layer sv-frost absolute inset-0"></div>
+      <div class="sv-layer sv-shield absolute inset-0"><span class="sv-sheen absolute inset-0"></span></div>
+      <div class="sv-layer sv-pattern absolute inset-0"><span class="sv-brand">${tr('YOUR BRAND', 'علامتك')}</span></div>
+      <div class="sv-beads absolute inset-0">${Array.from({ length: 14 }, (_, i) => `<span style="--x:${[12, 22, 35, 48, 60, 72, 84, 18, 41, 55, 68, 80, 30, 90][i]}%;--y:${[30, 52, 38, 60, 34, 56, 42, 72, 78, 70, 82, 66, 64, 76][i]}%;--s:${[26, 18, 22, 30, 20, 24, 16, 21, 28, 18, 23, 19, 15, 21][i]}px;--d:${i * 0.07}s"></span>`).join('')}</div>
+      <div class="sv-edge pointer-events-none absolute inset-y-0 w-[3px] bg-white shadow-[0_0_26px_7px_rgba(255,255,255,.65)]"></div>
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent"></div>
+      <span class="glass-hud absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold text-white ${ar ? 'font-arabic' : ''}"><span class="sv-dot h-2 w-2 rounded-full"></span><span data-svh-state data-off="${cfg.off}" data-on="${cfg.on}">${cfg.off}</span></span>
+      ${cfg.fx === 'smart' ? `<span class="sv-switch glass-hud absolute right-4 top-4 inline-flex items-center gap-2 rounded-full py-1.5 pl-3 pr-1.5 text-[11px] font-extrabold uppercase tracking-wider text-white" aria-hidden="true">${icon('bolt', 'h-3.5 w-3.5', 2.4)}<span class="sv-toggle"><span></span></span></span>` : ''}
+      <div class="room-hud absolute bottom-4 left-4 rounded-2xl px-4 py-3 ${ar ? 'text-right' : ''}" dir="${ar ? 'rtl' : 'ltr'}">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-muted">${cfg.metric}</p>
+        <p class="font-head text-2xl font-extrabold leading-tight text-ink sm:text-3xl" data-svh-val>${cfg.vals[0]}</p>
+      </div>
+    </div>
+    ${cfg.caption ? `<p class="mt-3 text-center text-[11px] text-muted">${cfg.caption}</p>` : ''}
+  </div>`;
+}
 
-  /* 1. Hero — 3D car */
+/* 3D villa room (same scene as the homepage) */
+function roomStage() {
+  return `
+  <div class="relative" data-a="up">
+    <div class="room3d relative aspect-[4/5] w-full sm:aspect-[5/4]" data-room>
+      <div class="pointer-events-none absolute inset-[12%] rounded-full bg-gold-300/30 blur-[80px]"></div>
+      <canvas class="relative h-full w-full" aria-label="${tr('3D living room showing window film blocking the sun', 'غرفة ثلاثية الأبعاد توضح حجب فيلم النوافذ للشمس')}" role="img"></canvas>
+      <img src="/assets/img/residential.webp" alt="" class="room-fallback-img absolute inset-[8%] hidden h-[84%] w-[84%] rounded-[28px] object-cover shadow-float">
+      <div class="room-hud absolute end-0 top-0 w-[9.5rem] rounded-2xl p-3 sm:top-[6%] sm:w-52 sm:p-4" data-r-card>
+        <p class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted">${icon('thermo', 'h-3.5 w-3.5 text-gold-600', 2.2)} ${tr('Room temperature', 'حرارة الغرفة')}</p>
+        <p class="mt-1 font-head text-3xl font-extrabold leading-none text-ink sm:text-[2.6rem]" dir="ltr"><span data-r-temp>46</span><span class="text-xl text-muted">°C</span></p>
+        <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-line"><div class="room-tbar h-full rounded-full" data-r-bar style="width:90%"></div></div>
+        <p class="mt-2 hidden text-[11px] font-semibold text-muted sm:block" data-r-state data-on="${tr('With Exotic Tint film', 'مع فيلم إكزوتك تينت')}" data-off="${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}">${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}</p>
+      </div>
+      <div class="room-hud absolute bottom-[14%] start-0 flex items-center gap-2.5 rounded-2xl p-2.5 pe-3.5 sm:bottom-auto sm:top-[44%]" data-r-card>
+        <svg class="h-10 w-10 -rotate-90 sm:h-12 sm:w-12" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#ruv2)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-r-ring/><defs><linearGradient id="ruv2"><stop stop-color="#4CC6F2"/><stop offset="1" stop-color="#0074AD"/></linearGradient></defs></svg>
+        <div><p class="text-[11px] font-bold uppercase tracking-wider text-muted">${tr('UV blocked', 'حجب الأشعة')}</p><p class="font-head text-2xl font-extrabold text-ink" dir="ltr"><span data-r-uv>0</span>%</p></div>
+      </div>
+      <div class="absolute inset-x-0 bottom-[3%] flex justify-center">
+        <div class="room-hud inline-flex rounded-full p-1.5" role="group">
+          <button type="button" class="room-btn" data-r-mode="off" aria-pressed="true">${icon('sun', 'h-4 w-4', 2.2)} ${tr('Without film', 'بدون فيلم')}</button>
+          <button type="button" class="room-btn" data-r-mode="on" aria-pressed="false">${icon('shield', 'h-4 w-4', 2.2)} ${tr('With Exotic Tint', 'مع إكزوتك تينت')}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* Options explorer — every sub-option of a main service, auto-playing like a short film.
+   Each item: { title, desc, img, pos, layer (html), stat: [label, value], tag } */
+function optionExplorer({ kicker, title, text, items, wa }) {
+  const ar = L === 'ar';
+  return `
+<section class="px-2.5 pt-20 sm:px-3 lg:pt-28">
+  <div class="relative overflow-hidden rounded-[28px] bg-ink" data-assemble>
+    <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
+    <div class="pointer-events-none absolute -top-40 end-[-10%] h-[28rem] w-[28rem] rounded-full bg-gold-500/20 blur-[110px]"></div>
+    <div class="container-site relative py-16 lg:py-24">
+      <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-end" data-a="up">
+        <div>
+          <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-gold-300">${kicker}</p>
+          <h2 class="mt-3 max-w-2xl font-head text-[2rem] font-extrabold leading-tight text-white sm:text-[2.7rem]">${title}</h2>
+        </div>
+        <p class="max-w-sm text-white/60">${text}</p>
+      </div>
+      <div class="ox mt-10 grid gap-6 lg:grid-cols-12 lg:gap-10" data-ox style="--ox-dur:4800ms" data-a="up">
+        <div class="order-2 lg:order-1 lg:col-span-5" role="tablist">
+          ${items.map((it, i) => `<button type="button" role="tab" aria-selected="${i === 0}" class="ox-tab ${i === 0 ? 'is-on' : ''}" data-ox-tab="${i}">
+            <span class="ox-num">${num(pad(i + 1))}</span>
+            <span class="min-w-0 flex-1 text-start">
+              <span class="ox-title">${it.title}</span>
+              <span class="ox-desc"><span>${it.desc}</span></span>
+            </span>
+            <span class="ox-bar" aria-hidden="true"><span></span></span>
+          </button>`).join('')}
+          <a href="${wa}" target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white underline decoration-gold-400 decoration-2 underline-offset-8 hover:text-gold-300">${tr('Not sure which one? Ask us', 'لست متأكداً؟ اسألنا')} ${arrow('h-4 w-4')}</a>
+        </div>
+        <div class="order-1 lg:order-2 lg:col-span-7">
+          <div class="ox-stage relative aspect-[4/3] overflow-hidden rounded-[24px] border-[5px] border-white/10 bg-ink-2 shadow-float" dir="ltr">
+            ${items.map((it, i) => `<div class="ox-panel ${i === 0 ? 'is-on' : ''}" data-ox-panel="${i}" ${i ? 'aria-hidden="true"' : ''}>
+              ${it.img ? `<img src="/assets/img/${it.img}.webp" alt="" class="ox-img absolute inset-0 h-full w-full object-cover" style="object-position:${it.pos || '50% 50%'}" loading="lazy">` : ''}
+              <div class="ox-layer absolute inset-0">${it.layer || ''}</div>
+              <span class="ox-edge" aria-hidden="true"></span>
+              <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-ink/10"></div>
+              <span class="glass-hud absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold text-white ${ar ? 'font-arabic' : ''}" dir="${ar ? 'rtl' : 'ltr'}"><span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,.25)]"></span>${it.tag || it.title}</span>
+              <div class="room-hud ox-stat absolute bottom-4 left-4 rounded-2xl px-4 py-3 ${ar ? 'text-right' : ''}" dir="${ar ? 'rtl' : 'ltr'}">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-muted">${it.stat[0]}</p>
+                <p class="font-head text-2xl font-extrabold leading-tight text-ink sm:text-3xl">${it.stat[1]}</p>
+              </div>
+              <span class="absolute bottom-4 right-4 font-head text-5xl font-extrabold leading-none text-white/20 sm:text-6xl">${num(pad(i + 1))}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+/* Overlay helpers for the explorer (pure CSS/SVG so every option gets a clear visual) */
+const OX = {
+  tint: (a = 0.42) => `<div class="absolute inset-0" style="background:linear-gradient(115deg,rgba(14,26,46,${a}),rgba(22,40,70,${a * 0.7}) 50%,rgba(14,26,46,${a}))"></div>`,
+  mirror: () => `<div class="absolute inset-0" style="background:linear-gradient(135deg,rgba(238,242,247,.9),rgba(168,180,196,.82) 42%,rgba(242,245,249,.88) 62%,rgba(186,197,211,.85))"></div><div class="ox-sheen absolute inset-0"></div>`,
+  frost: (css = 'background:rgba(255,255,255,.42)') => `<div class="absolute inset-0" style="${css};backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)"></div>`,
+  blackout: () => `<div class="absolute inset-0" style="background:rgba(4,7,12,.93)"></div>`,
+  sky: () => `<div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(14,26,46,.62),rgba(14,26,46,.3) 55%,transparent 80%)"></div>`,
+  crack: () => `<div class="absolute inset-0" style="background:rgba(160,200,230,.12)"></div><svg class="absolute inset-0 h-full w-full" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.9)" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M250 120 L330 40 M250 120 L360 140 M250 120 L300 250 M250 120 L150 60 M250 120 L170 220 M250 120 L120 140"/><path d="M290 80 L330 100 M300 175 L340 200 M200 90 L210 140 M205 170 L250 190 M160 110 L180 160" stroke-width="1"/></g><circle cx="250" cy="120" r="7" fill="rgba(255,255,255,.95)"/></svg>`,
+  sheen: () => `<div class="ox-sheen absolute inset-0"></div><div class="absolute inset-0" style="box-shadow:inset 0 0 0 3px rgba(76,198,242,.55)"></div>`,
+  beads: (n = 9) => `<div class="ox-beads absolute inset-0">${Array.from({ length: n }, (_, i) => `<span style="left:${[18, 32, 46, 60, 74, 26, 52, 66, 40][i]}%;top:${[38, 56, 42, 60, 46, 70, 74, 32, 26][i]}%;--s:${[24, 18, 28, 20, 16, 22, 18, 26, 14][i]}px;--d:${i * 0.12}s"></span>`).join('')}</div>`,
+  brand: () => `<div class="absolute inset-0" style="background:linear-gradient(180deg,transparent 0 30%,rgba(255,255,255,.5) 30% 62%,transparent 62%);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)"></div><div class="absolute inset-x-0 top-[38%] text-center font-head text-[2.2rem] font-black uppercase tracking-[0.25em] text-ink/80 sm:text-5xl">${tr('Your logo', 'شعارك')}</div>`,
+  steel: () => `<div class="ox-steel absolute inset-0"></div><div class="ox-prints absolute inset-0"></div>`,
+  wood: () => `<div class="ox-wood absolute inset-0"></div>`,
+  wall: () => `<div class="ox-wall absolute inset-0"></div><img src="/assets/img/3d/couch.webp" alt="" class="absolute bottom-[6%] left-1/2 h-[42%] w-auto -translate-x-1/2 drop-shadow-2xl">`,
+  smart: () => `<div class="ox-smart absolute inset-0"></div>`,
+};
+
+function shadeStrip(img, title, text) {
+  const shades = [
+    [70, tr('Almost clear', 'شبه شفاف'), tr('Keeps your view, cuts the heat', 'يحافظ على الإطلالة ويقلل الحرارة')],
+    [50, tr('Light', 'فاتح'), tr('Subtle look, less glare', 'مظهر هادئ ووهج أقل')],
+    [35, tr('Medium', 'متوسط'), tr('Our most popular balance', 'التوازن الأكثر طلباً')],
+    [20, tr('Dark', 'داكن'), tr('Strong daytime privacy', 'خصوصية نهارية قوية')],
+    [5, tr('Max', 'أقصى'), tr('Full privacy, bedrooms & media rooms', 'خصوصية كاملة لغرف النوم والسينما')],
+  ];
+  return `
+<section class="py-20 lg:py-28" data-assemble>
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
+      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${title}</h2>
+      <p class="max-w-sm text-muted">${text}</p>
+    </div>
+    <div class="shade-strip mt-10 flex h-[420px] gap-2 overflow-hidden rounded-[28px] sm:h-[460px]" data-a="up" dir="ltr">
+      ${shades.map(([v, n, u], i) => `<div class="shade group relative flex-1 overflow-hidden rounded-[18px] ${i === 2 ? 'is-on' : ''}" tabindex="0">
+        <img src="/assets/img/${img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${18 + i * 16}% 50%" loading="lazy">
+        <div class="absolute inset-0" style="background:rgba(8,12,20,${((100 - v) / 100) * 0.85})"></div>
+        <div class="absolute inset-x-0 bottom-0 p-4 text-white ${L === 'ar' ? 'text-right' : ''}" dir="${L === 'ar' ? 'rtl' : 'ltr'}">
+          <p class="font-head text-3xl font-extrabold leading-none sm:text-4xl" dir="ltr">${v}%</p>
+          <p class="shade-more mt-2 font-head font-bold">${n}</p>
+          <p class="shade-more text-xs text-white/75">${u}</p>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>`;
+}
+
+function finishGrid(img, title, text, items) {
+  // items: [name, note, overlay css]
+  return `
+<section class="py-20 lg:py-28" data-assemble>
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
+      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${title}</h2>
+      <p class="max-w-sm text-muted">${text}</p>
+    </div>
+    <div class="mt-10 grid gap-3 ${items.length === 2 ? 'sm:grid-cols-2' : 'grid-cols-2 lg:grid-cols-4'}">
+      ${items.map(([n, note, overlay]) => `<div class="group relative ${items.length === 2 ? 'aspect-[4/3]' : 'aspect-[3/4]'} overflow-hidden rounded-[22px]" data-a="up">
+        <img src="/assets/img/${img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+        <div class="absolute inset-0" style="${overlay}"></div>
+        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 to-transparent p-4 pt-16">
+          <p class="font-head text-lg font-bold text-white">${n}</p>
+          <p class="text-xs text-white/75">${note}</p>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>`;
+}
+
+function spillTest() {
+  const drinks = [
+    [tr('Water', 'ماء'), 'rgba(170,210,245,.85)'],
+    [tr('Coffee', 'قهوة'), 'rgba(120,72,36,.9)'],
+    [tr('Juice', 'عصير'), 'rgba(240,140,40,.9)'],
+  ];
+  return `
+<section class="py-20 lg:py-28" data-assemble>
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
+      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${tr('The spill <span class="text-grad">test.</span>', 'اختبار <span class="text-grad">الانسكاب.</span>')}</h2>
+      <p class="max-w-sm text-muted">${tr('Coated fabric makes liquids sit on top as drops. Blot them away before they soak in.', 'القماش المطلي يجعل السوائل تبقى قطرات على السطح. امسحها قبل أن تتغلغل.')}</p>
+    </div>
+    <div class="mt-10 grid gap-4 md:grid-cols-3">
+      ${drinks.map(([n, c], k) => `<div class="spill relative aspect-[4/3] overflow-hidden rounded-[22px]" data-a="up" style="--liq:${c}">
+        <img src="/assets/img/nano.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${20 + k * 30}% 70%" loading="lazy">
+        <div class="absolute inset-0 bg-[#e9e4dc]/70"></div>
+        ${[[30, 45, 34], [55, 40, 26], [44, 62, 30], [68, 60, 20], [24, 66, 18]].map(([x, y, s2], j) => `<span class="spill-drop" style="left:${x}%;top:${y}%;width:${s2}px;height:${s2 * 0.82}px;--d:${j * 0.15 + k * 0.4}s"></span>`).join('')}
+        <span class="absolute start-4 top-4 rounded-full bg-white px-3 py-1 text-sm font-bold text-ink shadow">${n}</span>
+        <span class="absolute bottom-4 end-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold text-white">${icon('check', 'h-3.5 w-3.5', 3)} ${tr('Beads up', 'تتجمع قطرات')}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>`;
+}
+
+/* Per-service setup */
+function premiumConfig(slug) {
+  const s = C.services.find((x) => x.slug === slug);
+  if (!s) return null;
+  const opt = (i) => (s.options[i] ? { title: t(s.options[i][0]), desc: t(s.options[i][1]) } : {});
+  const heat = (inZone, baseLabel, insideEmoji, title, steps, results, meter, note) => ({
+    title, outZone: tr('OUTSIDE', 'الخارج'), inZone, baseLabel, insideEmoji, layerLabel: tr('Ceramic film', 'فيلم سيراميك'), unit: '°C', meter, note,
+    rays: [
+      { color: '#ef4444', label: tr('Heat 53%', 'حرارة ٥٣٪'), inLabel: tr('Heat gets in', 'الحرارة تدخل'), film: 'bounce', filmLabel: tr('Heat bounced back', 'الحرارة ارتدت') },
+      { color: '#e9a63b', label: tr('Light 44%', 'ضوء ٤٤٪'), inLabel: tr('Light gets in', 'الضوء يدخل'), film: 'pass', filmLabel: tr('Light comes in', 'الضوء يدخل') },
+      { color: '#8b5cf6', label: tr('UV 3%', 'أشعة ٣٪'), inLabel: tr('UV gets in', 'الأشعة تدخل'), film: 'block', filmLabel: tr('UV blocked', 'الأشعة محجوبة') },
+    ],
+    chips: [['rose', tr('Up to 98% heat blocked', 'حجب حتى ٩٨٪ من الحرارة')], ['violet', tr('99% UV blocked', 'حجب ٩٩٪ من الأشعة')]],
+    steps, results,
+  });
+  const C2 = {
+    'architectural-window-film-solutions': {
+      kicker: tr('Architectural window film', 'أفلام النوافذ المعمارية'),
+      h1: [tr('Bright rooms.', 'غرف مشرقة.'), tr('Without the heat.', 'دون حرارة.')],
+      sub: tr('Six films for villas, offices and towers — heat control, safety, mirror, privacy, blackout and skylights. Fitted on-site.', 'ستة أفلام للفلل والمكاتب والأبراج — عزل حراري وأمان وعاكس وخصوصية وتعتيم ومناور. تُركّب في موقعك.'),
+      facts: [['clock', tr('Most homes in a day', 'معظم المنازل في يوم')], ['building', tr('Villas to full towers', 'من الفلل إلى الأبراج')], ['sun', tr('Keeps your view', 'يحافظ على الإطلالة')]],
+      wa: tr('Hi, I want a price for window film. Building / number of windows: ', 'مرحباً، أريد سعر أفلام النوافذ. المبنى / عدد النوافذ: '),
+      stage: 'room',
+      how: heat(tr('INSIDE', 'الداخل'), tr('Window', 'النافذة'), 'couch', tr('How the film keeps <span class="text-grad">rooms cool</span>', 'كيف يُبقي الفيلم <span class="text-grad">الغرف باردة</span>'),
+        [[tr('Sun', 'الشمس'), tr('The sun hits your glass', 'الشمس تضرب زجاجك'), tr('Big windows bring in light — and a lot of heat and UV with it.', 'النوافذ الكبيرة تُدخل الضوء — ومعه الكثير من الحرارة والأشعة.')],
+         [tr('No film', 'بدون فيلم'), tr('Without film, rooms heat up', 'بدون فيلم، تسخن الغرف'), tr('Heat pours in, the AC runs all day, and furniture slowly fades.', 'تدخل الحرارة ويعمل المكيف طوال اليوم ويبهت الأثاث تدريجياً.')],
+         [tr('With film', 'مع الفيلم'), tr('With Exotic Tint', 'مع إكزوتك تينت'), tr('The ceramic layer bounces heat back out and stops UV. Daylight still fills the room.', 'طبقة السيراميك تعكس الحرارة وتوقف الأشعة. ويبقى ضوء النهار يملأ الغرفة.')],
+         [tr('Result', 'النتيجة'), tr('What you get', 'ماذا تحصل عليه'), tr('A room you can actually sit in at 3 PM — and a smaller Kahramaa bill.', 'غرفة يمكنك الجلوس فيها الساعة ٣ عصراً — وفاتورة كهرماء أصغر.')]],
+        [tr('Up to 9°C cooler rooms*', 'غرف أبرد حتى ٩°*'), tr('Lower electricity bills', 'فواتير كهرباء أقل'), tr('Floors & furniture protected', 'حماية الأرضيات والأثاث')], [30, 41, 32, 32], tr('*From our Doha villa example. Results vary.', '*من مثال فيلا في الدوحة. النتائج تختلف.')),
+      ox: {
+        kicker: tr('Six films', 'ستة أفلام'),
+        title: tr('One service. <span class="text-grad">A film for every window.</span>', 'خدمة واحدة. <span class="text-grad">فيلم لكل نافذة.</span>'),
+        text: tr('Watch each film at work — or tap one to see it.', 'شاهد كل فيلم أثناء العمل — أو اضغط على أحدها لتراه.'),
+        items: [
+          { ...opt(0), img: 'residential', pos: '60% 50%', layer: OX.tint(0.4), stat: [tr('Heat blocked', 'الحرارة المحجوبة'), tr('Up to 98%', 'حتى ٩٨٪')] },
+          { ...opt(1), img: 'commercial', pos: '70% 40%', layer: OX.crack(), stat: [tr('If the glass breaks', 'إذا انكسر الزجاج'), tr('Held in place', 'يبقى متماسكاً')] },
+          { ...opt(2), img: 'blog-home', pos: '50% 50%', layer: OX.mirror(), stat: [tr('From outside', 'من الخارج'), tr('Mirror finish', 'مظهر مرآة')] },
+          { ...opt(3), img: 'residential', pos: '40% 50%', layer: OX.tint(0.68), stat: [tr('Seen from outside', 'المرئي من الخارج'), tr('Almost nothing', 'تقريباً لا شيء')] },
+          { ...opt(4), img: 'blog-ceramic', pos: '50% 50%', layer: OX.blackout(), stat: [tr('Light blocked', 'الضوء المحجوب'), '100%'] },
+          { ...opt(5), img: 'commercial', pos: '50% 0%', layer: OX.sky(), stat: [tr('Overhead glare', 'الوهج العلوي'), tr('Gone', 'اختفى')] },
+        ],
+      },
+      middle: () => shadeStrip('residential', tr('Same room. <span class="text-grad">Five shades.</span>', 'نفس الغرفة. <span class="text-grad">خمس درجات.</span>'), tr('Lower % = darker and more private. The film type, not the shade, blocks the heat.', 'نسبة أقل = أغمق وأكثر خصوصية. نوع الفيلم وليس الدرجة هو ما يحجب الحرارة.')),
+      steps: [[tr('Send window sizes or photos', 'أرسل المقاسات أو الصور'), tr('On WhatsApp. We reply with a fixed price.', 'عبر واتساب. نرد بسعر ثابت.')], [tr('We visit and measure', 'نزورك ونقيس'), tr('Any day, 8 AM to 6 PM, at no cost.', 'أي يوم من ٨ ص إلى ٦ م، مجاناً.')], [tr('Fitted, clean, done', 'تركيب نظيف وجاهز'), tr('Evenings and weekends for offices.', 'مساءً وفي العطلات للمكاتب.')]],
+      cta: [tr('Send a photo of your windows. <span class="text-grad">Get a price today.</span>', 'أرسل صورة لنوافذك. <span class="text-grad">واحصل على السعر اليوم.</span>'), 'residential'],
+    },
+    'smart-glass-privacy-solutions': {
+      kicker: tr('Smart switchable film', 'الفيلم الذكي القابل للتحويل'),
+      h1: [tr('Clear glass.', 'زجاج شفاف.'), tr('Private in one tap.', 'وخاص بلمسة واحدة.')],
+      sub: tr('Smart film goes on your existing glass. Switch it off and the glass frosts — switch it on and it’s crystal clear again.', 'يُركّب الفيلم الذكي على زجاجك الحالي. أطفئه فيصبح الزجاج مصنفراً — وشغّله فيعود شفافاً تماماً.'),
+      facts: [['bolt', tr('Switch, remote or app', 'مفتاح أو ريموت أو تطبيق')], ['frost', tr('No new glass needed', 'دون تغيير الزجاج')], ['sun', tr('Light still comes in', 'الضوء يبقى يدخل')]],
+      wa: tr('Hi, I want a price for smart switchable film. Glass size / room: ', 'مرحباً، أريد سعر الفيلم الذكي. مقاس الزجاج / الغرفة: '),
+      stage: { fx: 'smart', img: 'residential', pos: '60% 50%', alt: tr('Office glass with smart film', 'زجاج مكتب مع فيلم ذكي'), off: tr('Clear mode', 'الوضع الشفاف'), on: tr('Privacy mode', 'وضع الخصوصية'), metric: tr('Seen from outside', 'المرئي من الخارج'), vals: [tr('Everything', 'كل شيء'), tr('Nothing', 'لا شيء')] },
+      how: { title: tr('How smart film <span class="text-grad">switches</span>', 'كيف يتحول <span class="text-grad">الفيلم الذكي</span>'), outZone: tr('CORRIDOR', 'الممر'), inZone: tr('YOUR ROOM', 'غرفتك'), baseLabel: tr('Glass', 'الزجاج'), sourceEmoji: 'camera', insideEmoji: 'locked', layerLabel: tr('Smart film', 'فيلم ذكي'), layerFill: '#dfe7ef',
+        rays: [
+          { color: '#1d3150', label: tr('Eyes', 'الأنظار'), inLabel: tr('Can see in', 'يرون الداخل'), film: 'block', filmLabel: tr('View blocked', 'الرؤية محجوبة') },
+          { color: '#e9a63b', label: tr('Light', 'الضوء'), inLabel: tr('Light in', 'الضوء يدخل'), film: 'pass', filmLabel: tr('Soft light in', 'ضوء ناعم يدخل') },
+          { color: '#8b5cf6', label: tr('Screens', 'الشاشات'), inLabel: tr('Visible', 'مرئية'), film: 'block', filmLabel: tr('Kept private', 'تبقى خاصة') },
+        ],
+        meter: ['', tr('Fully seen', 'مرئي كلياً'), tr('Private', 'خاص'), tr('Private', 'خاص')],
+        steps: [[tr('Power on', 'تشغيل'), tr('Power on: crystal clear', 'عند التشغيل: شفاف تماماً'), tr('Open, bright and see-through — like normal glass.', 'مفتوح ومشرق وشفاف — مثل الزجاج العادي.')], [tr('Need privacy', 'وقت الخصوصية'), tr('A meeting starts', 'يبدأ الاجتماع'), tr('Everyone in the corridor can see the screen and the people.', 'الجميع في الممر يرون الشاشة والأشخاص.')], [tr('Switch off', 'إيقاف'), tr('One tap — it frosts', 'لمسة واحدة — فيتصنفر'), tr('The film scatters the view in a second. Daylight still passes.', 'يشتت الفيلم الرؤية في ثانية. ويبقى ضوء النهار يمر.')], [tr('Result', 'النتيجة'), tr('What you get', 'ماذا تحصل عليه'), tr('Privacy when you want it, open glass when you don’t.', 'خصوصية عندما تريدها وزجاج مفتوح عندما لا تحتاجها.')]],
+        results: [tr('Clear ↔ private in a second', 'شفاف ↔ خاص في ثانية'), tr('No blinds to clean', 'لا ستائر للتنظيف'), tr('Can double as a projection screen', 'يمكن استخدامه كشاشة عرض')] },
+      ox: {
+        kicker: tr('Smart Switchable Film', 'الفيلم الذكي القابل للتحويل'),
+        title: tr('One film. <span class="text-grad">Every room that needs privacy.</span>', 'فيلم واحد. <span class="text-grad">لكل غرفة تحتاج خصوصية.</span>'),
+        text: tr('Applied to your existing glass. Power on: clear. Power off: frosted.', 'يُركّب على زجاجك الحالي. عند التشغيل: شفاف. عند الإيقاف: مصنفر.'),
+        items: [
+          { title: tr('Meeting rooms', 'غرف الاجتماعات'), desc: tr('Clear for the team, private for the meeting.', 'شفاف للفريق وخاص للاجتماع.'), img: 'commercial', pos: '75% 40%', layer: OX.smart(), tag: tr('Switching…', 'يتحول…'), stat: [tr('Switches in', 'يتحول خلال'), tr('Under 1 sec', 'أقل من ثانية')] },
+          { title: tr('Bathrooms & bedrooms', 'الحمامات وغرف النوم'), desc: tr('Glass walls without giving up privacy.', 'جدران زجاجية دون التخلي عن الخصوصية.'), img: 'residential', pos: '70% 50%', layer: OX.smart(), tag: tr('Switching…', 'يتحول…'), stat: [tr('Controlled by', 'التحكم'), tr('Switch or app', 'مفتاح أو تطبيق')] },
+          { title: tr('Clinics & offices', 'العيادات والمكاتب'), desc: tr('Private consultations behind open-looking glass.', 'استشارات خاصة خلف زجاج يبدو مفتوحاً.'), img: 'blog-ceramic', pos: '50% 50%', layer: OX.smart(), tag: tr('Switching…', 'يتحول…'), stat: [tr('Privacy', 'الخصوصية'), tr('On demand', 'عند الطلب')] },
+          { title: tr('Shopfronts & screens', 'الواجهات والشاشات'), desc: tr('Frosted mode doubles as a projection screen.', 'الوضع المصنفر يعمل كشاشة عرض.'), img: 'blog-home', pos: '50% 50%', layer: OX.smart(), tag: tr('Switching…', 'يتحول…'), stat: [tr('Frosted mode', 'الوضع المصنفر'), tr('Projection-ready', 'جاهز للعرض')] },
+        ],
+      },
+      middle: () => '',
+      steps: [[tr('Send the glass size', 'أرسل مقاس الزجاج'), tr('Plus where the switch should go.', 'ومكان المفتاح المطلوب.')], [tr('We measure & wire', 'نقيس ونمدد الأسلاك'), tr('Film cut to size, power hidden neatly.', 'فيلم بالمقاس وتوصيل مخفي بدقة.')], [tr('Tap and done', 'لمسة وانتهى'), tr('We show you every control before we leave.', 'نشرح لك كل طرق التحكم قبل المغادرة.')]],
+      cta: [tr('Turn any glass into <span class="text-grad">smart glass.</span>', 'حوّل أي زجاج إلى <span class="text-grad">زجاج ذكي.</span>'), 'frosted'],
+    },
+    'surface-protection-solutions': {
+      kicker: tr('Surface protection film', 'أفلام حماية الأسطح'),
+      h1: [tr('Spill it.', 'اسكبها.'), tr('Your surfaces won’t mind.', 'أسطحك لن تتأثر.')],
+      sub: tr('Invisible film for marble, wood, tabletops, countertops and stainless steel. Stops stains, etching and scratches — for far less than restoring.', 'فيلم غير مرئي للرخام والخشب والطاولات وأسطح المطابخ والستانلس ستيل. يمنع البقع والتآكل والخدوش — بتكلفة أقل بكثير من الترميم.'),
+      facts: [['shield', tr('Invisible gloss or matte', 'لامع أو مطفي غير مرئي')], ['clock', tr('Lasts 7–10 years', 'يدوم ٧–١٠ سنوات')], ['wallet', tr('Cheaper than restoring', 'أرخص من الترميم')]],
+      wa: tr('Hi, I want surface protection film for: ', 'مرحباً، أريد فيلم حماية أسطح لـ: '),
+      stage: { fx: 'shield', img: 'marble', alt: tr('Marble table being protected', 'طاولة رخام تتم حمايتها'), off: tr('Unprotected surface', 'سطح دون حماية'), on: tr('Protection film on', 'مع فيلم الحماية'), metric: tr('Surface', 'السطح'), vals: [tr('Scratched & stained', 'خدوش وبقع'), tr('Protected', 'محمي')] },
+      how: { title: tr('How the film <span class="text-grad">protects your surfaces</span>', 'كيف يحمي الفيلم <span class="text-grad">أسطحك</span>'), outZone: tr('DAILY LIFE', 'الاستخدام اليومي'), inZone: tr('YOUR SURFACE', 'سطحك'), baseLabel: tr('Film layer', 'طبقة الفيلم'), sourceEmoji: 'droplet', insideEmoji: 'rock', layerLabel: tr('Protection film', 'فيلم حماية'), baseFill: '#f1ece4', baseStroke: '#d8cdbd', layerFill: '#c9a27a',
+        rays: [
+          { color: '#e9a63b', label: tr('Lemon & coffee', 'ليمون وقهوة'), inLabel: tr('Etches & stains', 'تآكل وبقع'), film: 'block', filmLabel: tr('Stays on the film', 'يبقى على الفيلم') },
+          { color: '#1d3150', label: tr('Keys & cups', 'مفاتيح وأكواب'), inLabel: tr('Scratches', 'خدوش'), film: 'block', filmLabel: tr('Scratch-guarded', 'محمي من الخدوش') },
+          { color: '#8b5cf6', label: tr('Fingerprints', 'البصمات'), inLabel: tr('Smudges', 'لطخات'), film: 'block', filmLabel: tr('Wipe clean', 'تُمسح بسهولة') },
+        ],
+        meter: ['', tr('High risk', 'خطر عالٍ'), tr('Protected', 'محمي'), tr('Protected', 'محمي')],
+        steps: [[tr('Daily life', 'الاستخدام اليومي'), tr('Surfaces take a beating', 'الأسطح تتعرض للكثير'), tr('Acid, keys, hot cups and fingerprints all leave their mark.', 'الأحماض والمفاتيح والأكواب الساخنة والبصمات كلها تترك أثرها.')], [tr('No film', 'بدون فيلم'), tr('Without film, marks are permanent', 'بدون فيلم، العلامات دائمة'), tr('Lemon etches marble, water rings wood, keys scratch steel — then you pay to restore.', 'الليمون يحفر الرخام والماء يترك حلقات على الخشب والمفاتيح تخدش الستانلس — ثم تدفع للترميم.')], [tr('With film', 'مع الفيلم'), tr('With protection film', 'مع فيلم الحماية'), tr('The film takes the hit. Wipe it clean — the surface underneath stays perfect.', 'الفيلم يتحمل الضرر. امسحه — ويبقى السطح تحته مثالياً.')], [tr('Result', 'النتيجة'), tr('What you save', 'ماذا توفر'), tr('Restoration can cost QAR 120–250/m² every few years. Film is QAR 80–120/m², once.', 'قد يكلف الترميم ١٢٠–٢٥٠ ريال/م² كل بضع سنوات. الفيلم ٨٠–١٢٠ ريال/م² مرة واحدة.')]],
+        results: [tr('Stain, etch & scratch protection', 'حماية من البقع والتآكل والخدوش'), tr('Same natural look', 'نفس المظهر الطبيعي'), tr('Lasts 7–10 years', 'يدوم ٧–١٠ سنوات')], note: tr('Prices from our marble restoration guide.', 'الأسعار من دليل ترميم الرخام لدينا.') },
+      ox: {
+        kicker: tr('Four surfaces', 'أربعة أسطح'),
+        title: tr('Whatever it’s made of, <span class="text-grad">we can protect it.</span>', 'مهما كانت مادته، <span class="text-grad">يمكننا حمايته.</span>'),
+        text: tr('Same invisible film, matched to each surface.', 'نفس الفيلم غير المرئي، مطابق لكل سطح.'),
+        items: [
+          { ...opt(0), img: 'marble', pos: '50% 40%', layer: OX.sheen(), stat: [tr('Lemon & coffee', 'ليمون وقهوة'), tr('No etching', 'دون تآكل')] },
+          { ...opt(1), img: '', layer: OX.wood() + OX.sheen(), stat: [tr('Water & heat', 'الماء والحرارة'), tr('No rings', 'دون حلقات')] },
+          { ...opt(2), img: 'blog-marble', pos: '50% 60%', layer: OX.sheen(), stat: [tr('Daily use', 'الاستخدام اليومي'), tr('Wipe clean', 'يُمسح بسهولة')] },
+          { ...opt(3), img: '', layer: OX.steel(), stat: [tr('Fingerprints', 'البصمات'), tr('Gone', 'اختفت')] },
+        ],
+      },
+      middle: () => finishGrid('marble', tr('Gloss or <span class="text-grad">matte.</span>', 'لامع أو <span class="text-grad">مطفي.</span>'), tr('We match the film to your surface, so nobody can tell it’s there.', 'نطابق الفيلم مع سطحك حتى لا يلاحظه أحد.'), [
+        [tr('Gloss', 'لامع'), tr('For polished marble & steel — keeps the shine', 'للرخام المصقول والستانلس — يحافظ على اللمعة'), 'background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.65) 42%,rgba(255,255,255,.15) 52%,transparent 62%),linear-gradient(0deg,rgba(255,255,255,.08),rgba(255,255,255,.08))'],
+        [tr('Matte', 'مطفي'), tr('For honed stone & wood — no shine added', 'للحجر غير اللامع والخشب — دون لمعة إضافية'), 'background:rgba(238,234,226,.45);backdrop-filter:saturate(.55) contrast(.9);-webkit-backdrop-filter:saturate(.55) contrast(.9)'],
+      ]),
+      steps: [[tr('Send photos of the surface', 'أرسل صور السطح'), tr('Size and material. Fixed price back.', 'المقاس ونوع المادة. نرد بسعر ثابت.')], [tr('We clean & prep', 'نُنظف ونُجهز'), tr('The surface must be spotless first.', 'يجب أن يكون السطح نظيفاً تماماً أولاً.')], [tr('Film fitted invisibly', 'تركيب غير مرئي'), tr('Edges trimmed flush, ready to use.', 'حواف مقصوصة بدقة وجاهز للاستخدام.')]],
+      cta: [tr('Protect it once. <span class="text-grad">Stop paying to restore it.</span>', 'احمه مرة واحدة. <span class="text-grad">وتوقف عن دفع تكاليف الترميم.</span>'), 'marble'],
+    },
+    'decorative-interior-solutions': {
+      kicker: tr('Decorative & interior', 'الديكور والتصميم الداخلي'),
+      h1: [tr('Plain glass?', 'زجاج عادي؟'), tr('Make it yours.', 'اجعله يشبهك.')],
+      sub: tr('Decorative films, office branding, frosted designs and wallpaper — cut to your design and fitted on-site.', 'أفلام ديكورية وهوية بصرية للمكاتب وتصاميم مصنفرة وورق جدران — تُقص حسب تصميمك وتُركّب في موقعك.'),
+      facts: [['edit', tr('Any design or logo', 'أي تصميم أو شعار')], ['check', tr('Proof before we cut', 'نموذج قبل القص')], ['layers', tr('Removable later', 'قابل للإزالة')]],
+      wa: tr('Hi, I want decorative film / branding for: ', 'مرحباً، أريد فيلماً ديكورياً / هوية بصرية لـ: '),
+      stage: { fx: 'pattern', img: 'commercial', pos: '70% 40%', alt: tr('Office glass with branded film', 'زجاج مكتب مع فيلم بالهوية'), off: tr('Plain glass', 'زجاج عادي'), on: tr('Branded with Exotic Tint', 'بهوية من إكزوتك تينت'), metric: tr('Your glass', 'زجاجك'), vals: [tr('Plain', 'عادي'), tr('On brand', 'بهويتك')] },
+      how: { title: tr('How decorative film <span class="text-grad">works for you</span>', 'كيف يعمل الفيلم الديكوري <span class="text-grad">لصالحك</span>'), outZone: tr('PASSERS-BY', 'المارّة'), inZone: tr('YOUR SPACE', 'مساحتك'), baseLabel: tr('Glass', 'الزجاج'), sourceEmoji: 'camera', insideEmoji: 'office', layerLabel: tr('Decorative film', 'فيلم ديكوري'), layerFill: '#bfe5f6',
+        rays: [
+          { color: '#1d3150', label: tr('Eyes', 'الأنظار'), inLabel: tr('See everything', 'يرون كل شيء'), film: 'block', filmLabel: tr('View softened', 'الرؤية مخففة') },
+          { color: '#e9a63b', label: tr('Light', 'الضوء'), inLabel: tr('Light in', 'الضوء يدخل'), film: 'pass', filmLabel: tr('Light still in', 'الضوء يبقى يدخل') },
+          { color: '#0089C2', label: tr('Visitors', 'الزوار'), inLabel: tr('Plain glass', 'زجاج عادي'), film: 'pass', filmLabel: tr('See your brand', 'يرون هويتك') },
+        ],
+        meter: ['', tr('Plain', 'عادي'), tr('On brand', 'بهويتك'), tr('On brand', 'بهويتك')],
+        steps: [[tr('Plain glass', 'زجاج عادي'), tr('Plain glass says nothing', 'الزجاج العادي لا يقول شيئاً'), tr('Bare doors and partitions look unfinished — and show everything.', 'الأبواب والقواطع العارية تبدو غير مكتملة — وتكشف كل شيء.')], [tr('No film', 'بدون فيلم'), tr('No privacy, no identity', 'لا خصوصية ولا هوية'), tr('Visitors see desks and cables, not your brand.', 'يرى الزوار المكاتب والأسلاك، لا هويتك.')], [tr('With film', 'مع الفيلم'), tr('Your design on the glass', 'تصميمك على الزجاج'), tr('Patterns, logos or frosted bands — light still comes in.', 'نقوش أو شعارات أو أشرطة مصنفرة — والضوء يبقى يدخل.')], [tr('Result', 'النتيجة'), tr('What you get', 'ماذا تحصل عليه'), tr('A finished, on-brand space — for a fraction of a fit-out.', 'مساحة مكتملة بهويتك — بجزء من تكلفة التجهيز.')]],
+        results: [tr('Your logo or pattern on glass', 'شعارك أو نقشك على الزجاج'), tr('Privacy where you need it', 'خصوصية حيث تحتاجها'), tr('Removable when you rebrand', 'قابل للإزالة عند تغيير الهوية')] },
+      ox: {
+        kicker: tr('Four ways to finish', 'أربع طرق للتشطيب'),
+        title: tr('Glass, walls, logos. <span class="text-grad">Designed for you.</span>', 'زجاج وجدران وشعارات. <span class="text-grad">مصممة لك.</span>'),
+        text: tr('Send your idea — we prepare a proof before anything is cut.', 'أرسل فكرتك — نجهز نموذجاً قبل قص أي شيء.'),
+        items: [
+          { ...opt(0), img: 'frosted', pos: '80% 50%', layer: '', stat: [tr('Pattern', 'النقش'), tr('Your choice', 'حسب اختيارك')] },
+          { ...opt(1), img: 'commercial', pos: '75% 40%', layer: OX.brand(), stat: [tr('Branding', 'الهوية'), tr('Logo & colours', 'شعار وألوان')] },
+          { ...opt(2), img: '', layer: OX.wall(), stat: [tr('Feature wall', 'جدار مميز'), tr('Fitted in a day', 'تركيب في يوم')] },
+          { ...opt(3), img: 'frosted', pos: '30% 50%', layer: OX.frost('background:linear-gradient(180deg,transparent 0 34%,rgba(255,255,255,.55) 34% 66%,transparent 66%)'), stat: [tr('Privacy band', 'شريط الخصوصية'), tr('At eye level', 'بمستوى العين')] },
+        ],
+      },
+      middle: () => finishGrid('frosted', tr('Pick a <span class="text-grad">frosted style.</span>', 'اختر <span class="text-grad">نمط التصنفير.</span>'), tr('Or send us your own design or logo — we cut it to fit.', 'أو أرسل لنا تصميمك أو شعارك — ونقصّه بالمقاس.'), [
+        [tr('Full frost', 'مصنفر كامل'), tr('Total privacy', 'خصوصية تامة'), 'background:rgba(255,255,255,.5);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)'],
+        [tr('Privacy band', 'شريط خصوصية'), tr('Eye-level strip', 'شريط بمستوى العين'), 'background:linear-gradient(180deg,transparent 0 35%,rgba(255,255,255,.6) 35% 65%,transparent 65%)'],
+        [tr('Gradient', 'متدرج'), tr('Fades to clear', 'يتدرج إلى شفاف'), 'background:linear-gradient(0deg,rgba(255,255,255,.7),transparent 85%)'],
+        [tr('Lines', 'خطوط'), tr('Modern and light', 'عصري وخفيف'), 'background:repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 10px,transparent 10px 22px)'],
+      ]),
+      steps: [[tr('Send size & idea', 'أرسل المقاس والفكرة'), tr('Photos, logo file or a reference.', 'صور أو ملف الشعار أو مثال.')], [tr('Approve a proof', 'وافق على النموذج'), tr('We show you the design before cutting.', 'نعرض عليك التصميم قبل القص.')], [tr('Cut & fitted', 'قص وتركيب'), tr('Precise, bubble-free, on-site.', 'دقيق ودون فقاعات وفي موقعك.')]],
+      cta: [tr('Send your idea. <span class="text-grad">We’ll design it.</span>', 'أرسل فكرتك. <span class="text-grad">ونحن نصممها.</span>'), 'frosted'],
+    },
+    'fabric-material-protection': {
+      kicker: tr('Fabric & material protection', 'حماية الأقمشة والمواد'),
+      h1: [tr('Spills just', 'الانسكابات'), tr('roll away.', 'تنزلق بعيداً.')],
+      sub: tr('Invisible nano coating for sofas, majlis, carpets and curtains. Liquids bead up instead of soaking in.', 'طلاء نانو غير مرئي للكنب والمجالس والسجاد والستائر. السوائل تتجمع قطرات بدل أن تتغلغل.'),
+      facts: [['drop', tr('Liquids bead up', 'السوائل تتجمع قطرات')], ['home', tr('Done at your home', 'في منزلك')], ['check', tr('Same look & feel', 'نفس المظهر والملمس')]],
+      wa: tr('Hi, I want nano coating for: ', 'مرحباً، أريد طلاء نانو لـ: '),
+      stage: { fx: 'bead', img: 'nano', alt: tr('Spill on a coated sofa', 'انسكاب على كنبة مطلية'), off: tr('Untreated fabric', 'قماش غير معالج'), on: tr('Nano coating on', 'مع طلاء النانو'), metric: tr('Spill', 'الانسكاب'), vals: [tr('Soaks in', 'يتغلغل'), tr('Beads up', 'يتجمع قطرات')] },
+      how: { title: tr('How nano coating <span class="text-grad">keeps fabric clean</span>', 'كيف يحافظ النانو <span class="text-grad">على نظافة القماش</span>'), outZone: tr('SPILLS', 'الانسكابات'), inZone: tr('YOUR SOFA', 'كنبتك'), baseLabel: tr('Fabric', 'القماش'), sourceEmoji: 'droplet', insideEmoji: 'couch', layerLabel: tr('Nano coating', 'طلاء نانو'), baseFill: '#efe7dc', baseStroke: '#d8cbb8', layerFill: '#7dd3fc',
+        rays: [
+          { color: '#8a5a2b', label: tr('Coffee & juice', 'قهوة وعصير'), inLabel: tr('Soaks in', 'يتغلغل'), film: 'bounce', filmLabel: tr('Beads up & wipes off', 'يتجمع ويُمسح') },
+          { color: '#e9a63b', label: tr('Oil & dirt', 'زيت وأوساخ'), inLabel: tr('Stains fibres', 'يلطخ الألياف'), film: 'block', filmLabel: tr('Kept on top', 'يبقى على السطح') },
+          { color: '#38bdf8', label: tr('Air', 'الهواء'), inLabel: tr('Breathes', 'يتنفس'), film: 'pass', filmLabel: tr('Still breathes', 'يبقى يتنفس') },
+        ],
+        meter: ['', tr('High risk', 'خطر عالٍ'), tr('Low risk', 'خطر منخفض'), tr('Low risk', 'خطر منخفض')],
+        steps: [[tr('Spills', 'الانسكابات'), tr('Every sofa meets coffee', 'كل كنبة تلتقي بالقهوة'), tr('Kids, guests, majlis evenings — spills are a matter of when.', 'الأطفال والضيوف وسهرات المجلس — الانسكاب مسألة وقت.')], [tr('No coating', 'بدون طلاء'), tr('Without coating, it soaks in', 'بدون طلاء، يتغلغل'), tr('Liquid sinks into the fibres in seconds and leaves a stain.', 'يتغلغل السائل في الألياف خلال ثوانٍ ويترك بقعة.')], [tr('With coating', 'مع الطلاء'), tr('With nano coating', 'مع طلاء النانو'), tr('Each fibre is coated, so liquid sits on top as drops. Blot it and it’s gone.', 'كل ليف مطلي، فيبقى السائل قطرات على السطح. امسحه فيختفي.')], [tr('Result', 'النتيجة'), tr('What you get', 'ماذا تحصل عليه'), tr('Furniture that looks new for longer — with no change to how it feels.', 'أثاث يبدو جديداً لفترة أطول — دون تغيير في ملمسه.')]],
+        results: [tr('Spills wipe away', 'الانسكابات تُمسح'), tr('Fabric still breathes', 'القماش يبقى يتنفس'), tr('Safe for family use', 'آمن للاستخدام العائلي')] },
+      ox: {
+        kicker: tr('Two treatments', 'معالجتان'),
+        title: tr('Coat the fabric. <span class="text-grad">Repel the mess.</span>', 'اطلِ القماش. <span class="text-grad">واطرد الفوضى.</span>'),
+        text: tr('Sofas, majlis, carpets, curtains and cushions — done at your home.', 'الكنب والمجالس والسجاد والستائر والوسائد — في منزلك.'),
+        items: [
+          { ...opt(0), img: 'nano', pos: '40% 60%', layer: OX.beads(9), stat: [tr('Fabric feel', 'ملمس القماش'), tr('Unchanged', 'دون تغيير')] },
+          { ...opt(1), img: 'nano', pos: '75% 70%', layer: OX.beads(6), stat: [tr('Coffee, juice, oil', 'قهوة وعصير وزيت'), tr('Rolls off', 'تنزلق')] },
+        ],
+      },
+      middle: () => spillTest(),
+      steps: [[tr('Tell us what to coat', 'أخبرنا ماذا نطلي'), tr('Sofas, majlis, carpets or curtains.', 'كنب أو مجالس أو سجاد أو ستائر.')], [tr('We clean & coat', 'ننظف ونطلي'), tr('At your home, same day.', 'في منزلك وفي نفس اليوم.')], [tr('Let it cure', 'اتركه يجف'), tr('Ready to use after it dries.', 'جاهز للاستخدام بعد الجفاف.')]],
+      cta: [tr('Coat it once. <span class="text-grad">Stop worrying about spills.</span>', 'اطلِه مرة واحدة. <span class="text-grad">وتوقف عن القلق من الانسكاب.</span>'), 'nano'],
+    },
+  };
+  return C2[slug] || null;
+}
+
+function pageService(page) {
+  const s = page.service;
+  const cfg = premiumConfig(s.slug);
+  const wa = waLink(cfg.wa);
   const hero = `
 <section class="px-2.5 sm:px-3">
   <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
     <div class="pointer-events-none absolute inset-0 grid-lines"></div>
-    <div class="container-site relative grid items-center gap-8 py-10 lg:grid-cols-12 lg:py-8">
+    <div class="container-site relative grid items-center gap-8 py-10 lg:grid-cols-12 lg:py-12">
       <div class="lg:col-span-5">
         <nav class="flex items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
           <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}
           <a href="${href('service/')}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.services)}</a>
         </nav>
-        <p class="mt-6 text-xs font-extrabold uppercase tracking-[0.2em] text-gold-700" data-a="left">${tr('Car window tinting', 'تظليل زجاج السيارات')}</p>
-        <h1 class="mt-3 font-head text-[2.6rem] font-extrabold leading-[1.02] text-ink sm:text-[3.6rem] xl:text-[4.2rem]">
-          <span class="block" data-split>${tr('Get in.', 'اركب.')}</span>
-          <span class="block text-grad" data-a="up">${tr('It’s already cool.', 'وهي باردة أصلاً.')}</span>
+        <p class="mt-6 text-xs font-extrabold uppercase tracking-[0.2em] text-gold-700" data-a="left">${cfg.kicker}</p>
+        <h1 class="mt-3 font-head text-[2.5rem] font-extrabold leading-[1.04] text-ink sm:text-[3.4rem] xl:text-[4rem]">
+          <span class="block" data-split>${cfg.h1[0]}</span>
+          <span class="block text-grad" data-a="up">${cfg.h1[1]}</span>
         </h1>
-        <p class="mt-5 max-w-md text-[1.08rem] leading-relaxed text-muted" data-a="up">${tr('Ceramic film that blocks up to 98% of the sun’s heat. We fit it at your home or office — anywhere in Qatar.', 'فيلم سيراميك يحجب حتى ٩٨٪ من حرارة الشمس. نركّبه في منزلك أو مكتبك — في أي مكان في قطر.')}</p>
+        <p class="mt-5 max-w-md text-[1.08rem] leading-relaxed text-muted" data-a="up">${cfg.sub}</p>
         <div class="mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Get a price', 'اعرف السعر')}</a>
           <a href="tel:${C.site.phoneRaw}" class="btn btn-white">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
         </div>
         <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink-2" data-a="up">
-          <li class="flex items-center gap-2">${icon('clock', 'h-4 w-4 text-gold-600', 2.2)} ${tr('Done in a few hours', 'خلال ساعات قليلة')}</li>
-          <li class="flex items-center gap-2">${icon('truck', 'h-4 w-4 text-gold-600', 2.2)} ${tr('We come to you', 'نأتي إليك')}</li>
-          <li class="flex items-center gap-2">${icon('shield', 'h-4 w-4 text-gold-600', 2.2)} ${tr('Legal shades only', 'درجات مسموحة فقط')}</li>
+          ${cfg.facts.map(([ic, x]) => `<li class="flex items-center gap-2">${icon(ic, 'h-4 w-4 text-gold-600', 2.2)} ${x}</li>`).join('')}
         </ul>
       </div>
-      <div class="relative lg:col-span-7" data-a="up">
-        <div class="car3d relative aspect-[4/3] w-full lg:aspect-[7/5]" data-car>
-          <canvas class="relative h-full w-full" role="img" aria-label="${tr('3D car showing window film keeping the cabin cool', 'سيارة ثلاثية الأبعاد توضح كيف يُبقي الفيلم المقصورة باردة')}"></canvas>
-          <img src="/assets/img/automotive.webp" alt="" class="car-fallback-img absolute inset-[6%] hidden h-[88%] w-[88%] rounded-[24px] object-cover shadow-float">
-          <div class="room-hud car-card absolute end-0 top-[4%] w-[10rem] overflow-hidden rounded-2xl p-3.5 sm:w-48 sm:p-4">
-            <span class="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/80 to-transparent opacity-0" data-c-sweep></span>
-            <p class="relative text-[11px] font-bold uppercase tracking-wider text-muted">${tr('Cabin temperature', 'حرارة المقصورة')}</p>
-            <p class="relative mt-1 font-head text-[2.4rem] font-extrabold leading-none text-ink" dir="ltr"><span data-c-temp>38</span><span class="text-lg text-muted">°C</span></p>
-            <p class="relative mt-2 text-[11px] font-semibold text-muted" data-c-state data-on="${tr('With Exotic Tint', 'مع إكزوتك تينت')}" data-off="${tr('Parked in the sun', 'متوقفة تحت الشمس')}">${tr('Parked in the sun', 'متوقفة تحت الشمس')}</p>
-          </div>
-          <div class="room-hud car-card absolute bottom-[16%] start-0 flex items-center gap-3 rounded-2xl p-2.5 pe-4">
-            <svg class="h-11 w-11 -rotate-90" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="#eceef3" stroke-width="5"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#cuv)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-c-ring/><defs><linearGradient id="cuv"><stop stop-color="#F6C766"/><stop offset="1" stop-color="#C47F1E"/></linearGradient></defs></svg>
-            <div><p class="text-[11px] font-bold uppercase tracking-wider text-muted">${tr('UV blocked', 'حجب الأشعة')}</p><p class="font-head text-xl font-extrabold text-ink" dir="ltr"><span data-c-uv>0</span>%</p></div>
-          </div>
-          <div class="absolute inset-x-0 bottom-0 flex justify-center">
-            <div class="room-hud inline-flex rounded-full p-1.5" role="group">
-              <button type="button" class="room-btn" data-c-mode="off" aria-pressed="true">${icon('sun', 'h-4 w-4', 2.2)} ${tr('No film', 'بدون فيلم')}</button>
-              <button type="button" class="room-btn" data-c-mode="on" aria-pressed="false">${icon('shield', 'h-4 w-4', 2.2)} ${tr('With Exotic Tint', 'مع إكزوتك تينت')}</button>
-            </div>
-          </div>
-        </div>
-        <div class="mx-auto mt-4 flex max-w-xs items-center gap-3" aria-hidden="true">
-          <span class="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-ink-2">${icon('layers', 'h-3.5 w-3.5 text-gold-600', 2.2)}${tr('Applying film', 'تركيب الفيلم')}</span>
-          <span class="h-1.5 flex-1 overflow-hidden rounded-full bg-line"><span class="block h-full w-0 rounded-full bg-grad" data-c-progress></span></span>
-        </div>
-        <p class="mt-2 text-center text-[11px] text-muted">${tr(`Illustrative: ${deg(62)}°C parked cabin vs ${deg(52)}°C with super nano ceramic film.`, `توضيحي: ${deg(62)}° للمقصورة المتوقفة مقابل ${deg(52)}° مع فيلم سوبر نانو سيراميك.`)}</p>
+      <div class="lg:col-span-7">${cfg.stage === 'room' ? roomStage() : fxStage(cfg.stage)}</div>
+    </div>
+    <div class="container-site relative pb-8">
+      <div class="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" data-a="up">
+        ${s.options.map(([n]) => `<span class="inline-flex shrink-0 items-center gap-2 rounded-full border border-white bg-white/80 px-3.5 py-2 text-[13px] font-semibold text-ink shadow-card backdrop-blur"><span class="h-1.5 w-1.5 rounded-full bg-gold-500"></span>${t(n)}</span>`).join('')}
       </div>
     </div>
   </div>
 </section>`;
-
-  /* 2. Same car, five shades */
-  const shades = [
-    [70, tr('Almost clear', 'شبه شفاف'), tr('Windscreen strip, max visibility', 'شريط الزجاج الأمامي، أعلى رؤية')],
-    [50, tr('Light', 'فاتح'), tr('Subtle look, less glare', 'مظهر هادئ ووهج أقل')],
-    [35, tr('Medium', 'متوسط'), tr('Our most popular balance', 'التوازن الأكثر طلباً')],
-    [20, tr('Dark', 'داكن'), tr('Strong privacy for rear glass', 'خصوصية قوية للزجاج الخلفي')],
-    [5, tr('Limo', 'ليموزين'), tr('Maximum privacy', 'أقصى خصوصية')],
-  ];
-  const shadeSec = `
-<section class="py-20 lg:py-28" data-assemble>
-  <div class="container-site">
-    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
-      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.7rem]">${tr('Same car. <span class="text-grad">Five shades.</span>', 'نفس السيارة. <span class="text-grad">خمس درجات.</span>')}</h2>
-      <p class="max-w-sm text-muted">${tr('The % is how much light gets through. Lower = darker and more private. Heat is blocked by the film type, not the shade.', 'النسبة هي مقدار الضوء الذي يمر. أقل = أغمق وأكثر خصوصية. الحرارة يحجبها نوع الفيلم وليس الدرجة.')}</p>
-    </div>
-    <div class="shade-strip mt-10 flex h-[420px] gap-2 overflow-hidden rounded-[28px] sm:h-[460px]" data-a="up" dir="ltr">
-      ${shades
-        .map(
-          ([v, name, use], i) => `<div class="shade group relative flex-1 overflow-hidden rounded-[18px] ${i === 2 ? 'is-on' : ''}" tabindex="0">
-        <img src="/assets/img/automotive.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${18 + i * 16}% 50%" loading="lazy">
-        <div class="absolute inset-0" style="background:rgba(8,12,20,${((100 - v) / 100) * 0.88})"></div>
-        <div class="absolute inset-x-0 bottom-0 p-4 text-white ${L === 'ar' ? 'text-right' : ''}" dir="${L === 'ar' ? 'rtl' : 'ltr'}">
-          <p class="font-head text-3xl font-extrabold leading-none sm:text-4xl" dir="ltr">${v}%</p>
-          <p class="shade-more mt-2 font-head font-bold">${name}</p>
-          <p class="shade-more text-xs text-white/75">${use}</p>
-        </div>
-      </div>`
-        )
-        .join('')}
-    </div>
-    <p class="mt-4 text-center text-sm text-muted">${tr('Not sure which shade is legal for your car? We check before we fit.', 'لست متأكداً من الدرجة المسموحة لسيارتك؟ نتحقق قبل التركيب.')}</p>
-  </div>
-</section>`;
-
-  /* 3. Three films */
-  const films = [
-    { name: tr('Regular', 'عادي'), heat: '20–30%', uv: '40–50%', life: tr('2–4 yrs', '٢–٤ سنوات'), note: tr('Looks dark. Little heat blocked. Can fade purple.', 'يبدو داكناً. يحجب حرارة قليلة. قد يبهت للبنفسجي.') },
-    { name: tr('Nano ceramic', 'نانو سيراميك'), heat: '70–80%', uv: '99%', life: tr('8–10 yrs', '٨–١٠ سنوات'), note: tr('Strong heat block. No phone or GPS signal issues.', 'حجب قوي للحرارة. لا يؤثر على إشارة الجوال أو GPS.') },
-    { name: tr('Super nano ceramic', 'سوبر نانو سيراميك'), heat: '90–98%', uv: '99%+', life: tr('10–15 yrs', '١٠–١٥ سنة'), note: tr('Coolest cabin, even in a light shade.', 'أبرد مقصورة حتى بدرجة فاتحة.'), best: true },
-  ];
-  const filmSec = `
-<section class="px-2.5 sm:px-3">
-  <div class="relative overflow-hidden rounded-[28px] bg-ink" data-assemble>
-    <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
-    <div class="container-site relative py-20 lg:py-24">
-      <h2 class="font-head text-[2rem] font-extrabold leading-tight text-white sm:text-[2.7rem]" data-a="up">${tr('Pick the film, <span class="text-grad">not just the colour.</span>', 'اختر الفيلم، <span class="text-grad">وليس اللون فقط.</span>')}</h2>
-      <div class="mt-10 grid gap-4 lg:grid-cols-3">
-        ${films
-          .map(
-            (f) => `<div class="relative rounded-[22px] p-7 ${f.best ? 'bg-white text-ink shadow-glow' : 'border border-white/10 bg-white/[0.04] text-white'}" data-a="up">
-          ${f.best ? `<span class="absolute end-6 top-6 rounded-full bg-grad px-3 py-1 text-[11px] font-extrabold uppercase text-ink">${tr('Recommended', 'موصى به')}</span>` : ''}
-          <p class="font-head text-xl font-bold">${f.name}</p>
-          <p class="mt-6 text-xs font-bold uppercase tracking-wider ${f.best ? 'text-muted' : 'text-white/50'}">${tr('Heat blocked', 'الحرارة المحجوبة')}</p>
-          <p class="font-head text-5xl font-extrabold ${f.best ? 'text-grad' : ''}" dir="ltr">${f.heat}</p>
-          <div class="mt-6 grid grid-cols-2 gap-3 border-t ${f.best ? 'border-line' : 'border-white/10'} pt-5 text-sm">
-            <div><p class="${f.best ? 'text-muted' : 'text-white/50'}">UV</p><p class="font-bold" dir="ltr">${f.uv}</p></div>
-            <div><p class="${f.best ? 'text-muted' : 'text-white/50'}">${tr('Lasts', 'يدوم')}</p><p class="font-bold">${f.life}</p></div>
-          </div>
-          <p class="mt-5 text-sm ${f.best ? 'text-ink-2' : 'text-white/60'}">${f.note}</p>
-        </div>`
-          )
-          .join('')}
-      </div>
-    </div>
-  </div>
-</section>`;
-
-  /* 4. Three steps — quiet, typographic */
-  const steps3 = [
-    [tr('Send your car model', 'أرسل طراز سيارتك'), tr('On WhatsApp. We reply with a fixed price.', 'عبر واتساب. نرد بسعر ثابت.')],
-    [tr('We come to you', 'نأتي إليك'), tr('Home, office or parking — any day, 8 AM to 6 PM.', 'المنزل أو المكتب أو الموقف — أي يوم من ٨ ص إلى ٦ م.')],
-    [tr('Drive away cooler', 'انطلق بسيارة أبرد'), tr('Fitted in a few hours, checked before we leave.', 'تركيب خلال ساعات قليلة وفحص قبل المغادرة.')],
-  ];
   const stepSec = `
 <section class="py-20 lg:py-28" data-assemble>
   <div class="container-site">
@@ -1964,30 +2221,21 @@ function pageAutomotive(page) {
       <a href="${wa}" target="_blank" rel="noopener" class="inline-flex w-max items-center gap-2 text-sm font-bold text-ink underline decoration-gold-400 decoration-2 underline-offset-8 hover:text-gold-700">${tr('Start on WhatsApp', 'ابدأ عبر واتساب')} ${arrow('h-4 w-4')}</a>
     </div>
     <ol class="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
-      ${steps3
-        .map(
-          ([s1, s2], i) => `<li class="border-t-2 ${i === 0 ? 'border-gold-500' : 'border-line'} pt-6" data-a="up">
+      ${cfg.steps.map(([a, d], i) => `<li class="border-t-2 ${i === 0 ? 'border-gold-500' : 'border-line'} pt-6" data-a="up">
         <p class="font-head text-sm font-extrabold tracking-wider text-gold-600">${num(pad(i + 1))}</p>
-        <h3 class="mt-3 font-head text-2xl font-bold text-ink">${s1}</h3>
-        <p class="mt-2 max-w-xs text-muted">${s2}</p>
-      </li>`
-        )
-        .join('')}
+        <h3 class="mt-3 font-head text-2xl font-bold text-ink">${a}</h3>
+        <p class="mt-2 max-w-xs text-muted">${d}</p>
+      </li>`).join('')}
     </ol>
   </div>
 </section>`;
-
-  /* 5. FAQ — same premium layout as the rest of the site */
-  const faqSec = faqSection(s.faq, tr('Quick <span class="text-grad">answers</span>', 'إجابات <span class="text-grad">سريعة</span>'));
-
-  /* 6. CTA */
   const cta = `
 <section class="px-2.5 pb-16 sm:px-3">
   <div class="relative overflow-hidden rounded-[28px] bg-ink">
-    <img src="/assets/img/automotive.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" loading="lazy">
+    <img src="/assets/img/${cfg.cta[1]}.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" loading="lazy">
     <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/30 rtl:bg-gradient-to-l"></div>
     <div class="container-site relative flex flex-col items-start justify-between gap-6 py-16 lg:flex-row lg:items-center lg:py-20">
-      <h2 class="max-w-xl font-head text-[2.1rem] font-extrabold leading-tight text-white sm:text-5xl">${tr('Send your car model. <span class="text-grad">Get a price in minutes.</span>', 'أرسل طراز سيارتك. <span class="text-grad">واحصل على السعر خلال دقائق.</span>')}</h2>
+      <h2 class="max-w-xl font-head text-[2.1rem] font-extrabold leading-tight text-white sm:text-5xl">${cfg.cta[0]}</h2>
       <div class="flex flex-wrap gap-3">
         <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} WhatsApp</a>
         <a href="tel:${C.site.phoneRaw}" class="btn btn-glass">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
@@ -1995,118 +2243,38 @@ function pageAutomotive(page) {
     </div>
   </div>
 </section>`;
-
   return layout(
     page,
     {
-      title: tr('Car Window Tinting in Qatar | Exotic Tint Qatar', 'تظليل زجاج السيارات في قطر | إكزوتك تينت قطر'),
-      description: tr('Ceramic car window tint that blocks up to 98% of solar heat and 99% of UV. Fitted at your home or office anywhere in Qatar.', 'تظليل سيراميك لزجاج السيارات يحجب حتى ٩٨٪ من حرارة الشمس و٩٩٪ من الأشعة. نركّبه في منزلك أو مكتبك في أي مكان في قطر.'),
-      image: s.img,
-      jsonld: { '@context': 'https://schema.org', '@type': 'Service', name: t(s.title), description: t(s.summary), areaServed: 'Qatar', provider: { '@type': 'LocalBusiness', name: 'Exotic Tint Qatar', telephone: C.site.phoneRaw } },
-    },
-    hero + carExplainer() + shadeSec + filmSec + stepSec + faqSec + cta
-  );
-}
-
-function pageService(page) {
-  if (page.service.slug === 'automotive-window-tinting') return pageAutomotive(page);
-  const s = page.service;
-  const v = SV[s.slug];
-  const related = C.services.filter((x) => x !== s);
-  const body = `
-${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full" style="background:${v.acc};color:${v.on}">${icon(s.icon, 'h-4 w-4', 2.2)}</span>${t(s.title)}`,
-  title: t(s.headline).replace(/(\S+\.?)$/, '<span class="text-grad">$1</span>'),
-  text: t(s.summary),
-  crumbs: [[t(C.ui.nav.services), href('service/')], [t(s.title)]],
-  image: s.img,
-  alt: t(s.title),
-  chips: {
-    top: `<span class="ico">${icon('star', 'h-5 w-5', 2.2)}</span><span><span class="block text-xs text-muted">${tr('Highlight', 'الميزة')}</span><span class="block font-head text-base font-extrabold text-ink">${t(v.badge)}</span></span>`,
-    bottom: chipHeat().bottom,
-  },
-})}
-<section class="py-20 lg:py-28">
-  <div class="container-site grid gap-12 lg:grid-cols-12">
-    <div class="lg:col-span-5">
-      ${sectionHead({ eyebrow: tr('Overview', 'نظرة عامة'), title: tr(`What is <span class="text-grad">${t(s.title).toLowerCase()}</span>?`, `ما هو <span class="text-grad">${t(s.title)}</span>؟`) })}
-      <div class="mt-8 flex items-center gap-4 rounded-[22px] p-5" style="background:${v.bg}" ${reveal(100)}>
-        ${img3d(v.emoji, 'h-20 w-20 drop-shadow-xl')}
-        <div><p class="font-head text-lg font-bold text-ink">${t(s.short)}</p><p class="text-sm text-muted">${tr('Installed on-site across Qatar', 'يُركّب في موقعك في كل قطر')}</p></div>
-      </div>
-    </div>
-    <div class="space-y-5 text-[1.1rem] leading-relaxed text-muted lg:col-span-7" ${reveal(100)}>
-      <p class="font-head text-[1.35rem] font-semibold leading-snug text-ink">${t(s.intro)}</p>
-      <p>${t(s.whatIs)}</p>
-    </div>
-  </div>
-</section>
-<section class="pb-20 lg:pb-28">
-  <div class="container-site">
-    ${sectionHead({ eyebrow: tr('Benefits', 'المزايا'), title: tr('Why it’s worth it <span class="text-grad">in Qatar</span>', 'لماذا يستحق ذلك <span class="text-grad">في قطر</span>'), center: true })}
-    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      ${s.benefits.map(([b, d], i) => `<div class="card p-7 transition hover:-translate-y-1" ${reveal(i * 60)}><div class="flex items-center justify-between"><span class="ico">${icon('check', 'h-5 w-5', 2.6)}</span><span class="font-head text-3xl font-extrabold text-line">${num(pad(i + 1))}</span></div><h3 class="mt-5 font-head text-xl font-bold text-ink">${t(b)}</h3><p class="mt-2 leading-relaxed text-muted">${t(d)}</p></div>`).join('')}
-    </div>
-  </div>
-</section>
-<section class="pb-20 lg:pb-28">
-  <div class="container-site">
-    <div class="relative overflow-hidden rounded-[28px] p-6 sm:p-10 lg:p-14" style="background:${v.bg}">
-      <div class="pointer-events-none absolute inset-0 grid-lines opacity-60"></div>
-      <div class="relative">
-        ${sectionHead({ eyebrow: tr('Best uses', 'أفضل الاستخدامات'), title: tr('Made for <span class="text-grad">real life</span>', 'مصمم <span class="text-grad">لحياتك اليومية</span>') })}
-        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          ${s.uses.map(([u, d], i) => `<div class="rounded-[22px] border border-white bg-white/80 p-6 shadow-card backdrop-blur" ${reveal(i * 70)}><span class="font-head text-sm font-extrabold" style="color:${v.color}">${num(pad(i + 1))}</span><h3 class="mt-3 font-head text-xl font-bold text-ink">${t(u)}</h3><p class="mt-2 text-sm leading-relaxed text-muted">${t(d)}</p></div>`).join('')}
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-${processTimeline()}
-${howItWorks()}
-<div class="h-20 lg:h-28"></div>
-${s.slug === 'automotive-window-tinting' || s.slug.includes('residential') || s.slug.includes('commercial') ? filmTech() : ''}
-${testimonials()}
-${faqSection(s.faq, tr(`${t(s.title)} <span class="text-grad">FAQ</span>`, `أسئلة حول <span class="text-grad">${t(s.title)}</span>`))}
-<section class="pb-20 lg:pb-28">
-  <div class="container-site">
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-      ${sectionHead({ eyebrow: tr('Explore more', 'اكتشف المزيد'), title: tr('Other <span class="text-grad">services</span>', 'خدمات <span class="text-grad">أخرى</span>') })}
-      <div class="flex gap-3">
-        <button type="button" class="grid h-12 w-12 place-items-center rounded-full border border-line bg-white text-ink shadow-card" data-slider-prev aria-label="${tr('Previous', 'السابق')}">${icon('arrowLeft', 'h-5 w-5 rtl:-scale-x-100', 2.2)}</button>
-        <button type="button" class="grid h-12 w-12 place-items-center rounded-full bg-grad text-ink shadow-gold" data-slider-next aria-label="${tr('Next', 'التالي')}">${arrow('h-5 w-5')}</button>
-      </div>
-    </div>
-    <div class="no-scrollbar -mx-4 mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 pt-2" data-slider>${related.map((r) => serviceCard(r)).join('')}</div>
-  </div>
-</section>
-${areasSection()}
-${ctaBanner()}
-${quoteSection()}`;
-  return layout(
-    page,
-    {
-      title: tr(`${t(s.title)} in Qatar | Exotic Tint Qatar`, `${t(s.title)} في قطر | إكزوتك تينت قطر`),
+      title: tr(`${t(s.title)} in Qatar | ${t(C.site.name)}`, `${t(s.title)} في قطر | ${t(C.site.name)}`),
       description: t(s.summary),
       image: s.img,
-      jsonld: { '@context': 'https://schema.org', '@type': 'Service', name: t(s.title), description: t(s.summary), areaServed: 'Qatar', provider: { '@type': 'LocalBusiness', name: 'Exotic Tint Qatar', telephone: C.site.phoneRaw } },
+      jsonld: {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: t(s.title),
+        description: t(s.summary),
+        areaServed: 'Qatar',
+        provider: { '@type': 'LocalBusiness', name: t(C.site.name), telephone: C.site.phoneRaw },
+        hasOfferCatalog: { '@type': 'OfferCatalog', name: t(s.title), itemListElement: s.options.map(([n, d]) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: t(n), description: t(d) } })) },
+      },
     },
-    body
+    hero + howItWorksFor(cfg.how) + optionExplorer({ ...cfg.ox, wa }) + cfg.middle(s) + stepSec + faqSection(s.faq, tr('Quick <span class="text-grad">answers</span>', 'إجابات <span class="text-grad">سريعة</span>')) + cta
   );
 }
 
 function pageContact(page) {
   const cards = [
-    ['phone', t(C.ui.callUs), `<span dir="ltr">${C.site.phone}</span>`, `tel:${C.site.phoneRaw}`, 'linear-gradient(160deg,#FFF0D6,#FFFAF1)'],
+    ['phone', t(C.ui.callUs), `<span dir="ltr">${C.site.phone}</span>`, `tel:${C.site.phoneRaw}`, 'linear-gradient(160deg,#E3F4FC,#F5FBFE)'],
     ['wa', 'WhatsApp', tr('Chat with a specialist', 'تحدث مع مختص'), `https://wa.me/${C.site.whatsapp}`, 'linear-gradient(160deg,#E2F8EA,#F6FDF8)'],
     ['mail', tr('Email us', 'راسلنا'), C.site.email, `mailto:${C.site.email}`, 'linear-gradient(160deg,#E6EFFF,#F7FAFF)'],
     ['instagram', 'Instagram', '@exotic_tint_qatar', C.site.instagram, 'linear-gradient(160deg,#FCE7F3,#FFF7FB)'],
   ];
   const body = `
 ${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('chat', 'h-4 w-4', 2.2)}</span>${tr('Contact', 'تواصل معنا')}`,
+  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('chat', 'h-4 w-4', 2.2)}</span>${tr('Contact', 'تواصل معنا')}`,
   title: tr('Contact us &amp; <span class="text-grad">enjoy your time off</span>', 'تواصل معنا <span class="text-grad">واستمتع بوقتك</span>'),
-  text: tr('Reach out for expert advice and personalised tinting solutions in Doha. Whether it’s car, home or commercial tinting, we’re here to help with precision and care.', 'تواصل معنا للحصول على استشارة متخصصة وحلول تظليل مخصصة في الدوحة. سواء كان تظليل سيارة أو منزل أو منشأة تجارية، نحن هنا لمساعدتك بدقة وعناية.'),
+  text: tr('Reach out for expert advice in Doha. Whether it’s window film, smart glass or surface protection, we’re here to help with precision and care.', 'تواصل معنا للحصول على استشارة متخصصة في الدوحة. سواء كانت أفلام نوافذ أو زجاجاً ذكياً أو حماية أسطح، نحن هنا لمساعدتك بدقة وعناية.'),
   crumbs: [[t(C.ui.nav.contact)]],
   image: 'frosted',
   alt: tr('Frosted film on office glass', 'فيلم مصنفر على زجاج مكتب'),
@@ -2148,7 +2316,7 @@ ${faqSection(C.homeFaq)}`;
   return layout(
     page,
     {
-      title: tr('Contact Exotic Tint Qatar — Free Window Tint Estimate', 'تواصل مع إكزوتك تينت قطر — تقدير مجاني للتظليل'),
+      title: tr('Contact Exotic Tint for Trading and Contracting — Free Window Tint Estimate', 'تواصل مع إكزوتك تينت للتجارة والمقاولات — تقدير مجاني للتظليل'),
       description: tr(`Call ${C.site.phone} or WhatsApp us for a free flat-rate estimate. Window tinting and protection films across Qatar, 7 days a week.`, `اتصل على ${C.site.phone} أو راسلنا على واتساب لتقدير مجاني بسعر ثابت. تظليل وأفلام حماية في كل قطر، ٧ أيام في الأسبوع.`),
       image: 'frosted',
     },
@@ -2159,7 +2327,7 @@ ${faqSection(C.homeFaq)}`;
 function pageReviews(page) {
   const body = `
 ${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('star', 'h-4 w-4', 2.2)}</span>${tr('Reviews', 'التقييمات')}`,
+  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('star', 'h-4 w-4', 2.2)}</span>${tr('Reviews', 'التقييمات')}`,
   title: tr('What our clients <span class="text-grad">say about us</span>', 'ماذا يقول <span class="text-grad">عملاؤنا عنا</span>'),
   text: tr('Drivers, homeowners and businesses across Qatar trust Exotic Tint for heat-rejection film, frosted designs, marble protection and nano coating.', 'يثق بنا السائقون وأصحاب المنازل والشركات في أنحاء قطر في أفلام العزل الحراري والتصاميم المصنفرة وحماية الرخام وطلاء النانو.'),
   crumbs: [[tr('Reviews', 'التقييمات')]],
@@ -2178,9 +2346,9 @@ ${pageHero({
         <div class="relative flex items-center justify-between">${starsRow()}<span class="ico !h-11 !w-11">${icon('quote', 'h-5 w-5', 2)}</span></div>
         <blockquote class="relative mt-6 font-head text-xl font-semibold leading-snug text-ink">${t(r.text)}</blockquote>
         <figcaption class="relative mt-7 flex items-center gap-3 border-t border-dashed border-line pt-6">
-          <span class="grid h-12 w-12 place-items-center rounded-full bg-grad font-head font-extrabold text-ink">${r.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</span>
+          <span class="grid h-12 w-12 place-items-center rounded-full bg-grad font-head font-extrabold text-white">${r.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</span>
           <span class="flex-1"><span class="block font-head font-bold text-ink">${r.name}</span><span class="block text-sm text-muted">${t(r.role)}</span></span>
-          <span class="rounded-full border border-[#f3d7a6] bg-tint px-3 py-1 text-xs font-bold text-gold-700">${t(r.service)}</span>
+          <span class="rounded-full border border-[#bfe5f6] bg-tint px-3 py-1 text-xs font-bold text-gold-700">${t(r.service)}</span>
         </figcaption>
       </figure>`
         )
@@ -2193,7 +2361,7 @@ ${statsStrip()}
 ${gallery()}
 ${ctaBanner()}
 ${quoteSection()}`;
-  return layout(page, { title: tr('Client Reviews — Exotic Tint Qatar', 'آراء العملاء — إكزوتك تينت قطر'), description: tr('Read what drivers, homeowners and businesses in Qatar say about Exotic Tint Qatar.', 'اقرأ آراء السائقين وأصحاب المنازل والشركات في قطر عن إكزوتك تينت قطر.'), image: 'residential' }, body);
+  return layout(page, { title: tr('Client Reviews — Exotic Tint for Trading and Contracting', 'آراء العملاء — إكزوتك تينت للتجارة والمقاولات'), description: tr('Read what homeowners and businesses in Qatar say about Exotic Tint for Trading and Contracting.', 'اقرأ آراء السائقين وأصحاب المنازل والشركات في قطر عن إكزوتك تينت للتجارة والمقاولات.'), image: 'residential' }, body);
 }
 
 function postCard(p, i) {
@@ -2212,7 +2380,7 @@ function postCard(p, i) {
 function pageBlogs(page) {
   const body = `
 ${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('edit', 'h-4 w-4', 2.2)}</span>${tr('Blog', 'المدونة')}`,
+  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('edit', 'h-4 w-4', 2.2)}</span>${tr('Blog', 'المدونة')}`,
   title: tr('Tint &amp; protection <span class="text-grad">guides for Qatar</span>', 'أدلة التظليل والحماية <span class="text-grad">في قطر</span>'),
   text: tr('Honest, practical advice on window film, heat rejection and surface protection — written for Gulf weather.', 'نصائح عملية وصادقة عن أفلام النوافذ والعزل الحراري وحماية الأسطح — مكتوبة لطقس الخليج.'),
   crumbs: [[tr('Blog', 'المدونة')]],
@@ -2229,7 +2397,7 @@ ${blogSection()}
 </section>
 ${ctaBanner()}
 ${quoteSection()}`;
-  return layout(page, { title: tr('Blog — Window Tint & Protection Guides | Exotic Tint Qatar', 'المدونة — أدلة التظليل والحماية | إكزوتك تينت قطر'), description: tr('Guides on window tinting, nano ceramic film and marble protection in Qatar.', 'أدلة عن تظليل النوافذ وأفلام النانو سيراميك وحماية الرخام في قطر.'), image: 'blog-ceramic' }, body);
+  return layout(page, { title: tr('Blog — Window Tint & Protection Guides | Exotic Tint for Trading and Contracting', 'المدونة — أدلة التظليل والحماية | إكزوتك تينت للتجارة والمقاولات'), description: tr('Guides on window tinting, nano ceramic film and marble protection in Qatar.', 'أدلة عن تظليل النوافذ وأفلام النانو سيراميك وحماية الرخام في قطر.'), image: 'blog-ceramic' }, body);
 }
 
 function renderBlocks(blocks) {
@@ -2239,7 +2407,7 @@ function renderBlocks(blocks) {
       if (b.h) return `<h2 id="s${++h2}" class="mt-12 scroll-mt-32 font-head text-[1.7rem] font-extrabold leading-tight text-ink">${t(b.h)}</h2>`;
       if (b.p) return `<p class="mt-5 text-[1.08rem] leading-[1.85] text-ink-2/85">${t(b.p)}</p>`;
       if (b.list) return `<ul class="mt-4 space-y-2.5">${b.list.map((x) => `<li class="flex gap-3 text-[1.05rem] leading-relaxed text-ink-2/90"><span class="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(x)}</li>`).join('')}</ul>`;
-      if (b.callout) return `<div class="mt-6 flex gap-4 rounded-2xl border border-[#f3d7a6] bg-tint p-5">${img3d('bulb', 'h-10 w-10 shrink-0')}<p class="font-semibold leading-relaxed text-ink">${t(b.callout)}</p></div>`;
+      if (b.callout) return `<div class="mt-6 flex gap-4 rounded-2xl border border-[#bfe5f6] bg-tint p-5">${img3d('bulb', 'h-10 w-10 shrink-0')}<p class="font-semibold leading-relaxed text-ink">${t(b.callout)}</p></div>`;
       if (b.table)
         return `<div class="no-scrollbar mt-6 overflow-x-auto rounded-2xl border border-line shadow-card"><table class="w-full min-w-[520px] text-start text-sm"><thead class="bg-ink text-white"><tr>${b.table.head.map((x, i) => `<th class="px-4 py-3.5 text-start font-head font-bold ${i === b.table.head.length - 1 ? 'text-gold-300' : ''}">${t(x)}</th>`).join('')}</tr></thead><tbody>${b.table.rows.map((r, ri) => `<tr class="${ri % 2 ? 'bg-tint-2' : 'bg-white'}">${r.map((c, ci) => `<td class="border-t border-line px-4 py-3.5 ${ci === 0 ? 'font-semibold text-ink' : 'text-ink-2'} ${ci === r.length - 1 && ci ? 'font-bold text-gold-700' : ''}">${t(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
       return '';
@@ -2261,11 +2429,11 @@ function pagePost(page) {
         <a href="${href('blogs/')}" class="font-semibold hover:text-gold-700">${tr('Blog', 'المدونة')}</a>
       </nav>
       <div class="mt-8 max-w-4xl">
-        <span class="chip"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-ink">${icon('edit', 'h-4 w-4', 2.2)}</span>${t(p.cat)}</span>
+        <span class="chip"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('edit', 'h-4 w-4', 2.2)}</span>${t(p.cat)}</span>
         <h1 class="mt-5 text-balance font-head text-[2.2rem] font-extrabold leading-[1.1] text-ink sm:text-[3rem]">${t(p.title)}</h1>
         <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted">${t(p.excerpt)}</p>
         <div class="mt-7 flex flex-wrap items-center gap-5 text-sm text-muted">
-          <span class="flex items-center gap-2.5"><img src="/assets/img/logo-original.webp" alt="" class="h-10 w-10 rounded-full bg-white object-contain p-0.5 shadow"><b class="text-ink">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</b></span>
+          <span class="flex items-center gap-2.5">${mark('h-10 w-10 shadow')}<b class="text-ink">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</b></span>
           <span class="flex items-center gap-1.5">${icon('calendar', 'h-4 w-4')} ${fmtDate(p.date)}</span>
           <span class="flex items-center gap-1.5">${icon('clock', 'h-4 w-4')} ${num(p.read)} ${tr('min read', 'دقائق قراءة')}</span>
         </div>
@@ -2281,7 +2449,7 @@ function pagePost(page) {
       <div class="relative mt-12 overflow-hidden rounded-[28px] bg-grad p-8 shadow-glow">
         ${img3d('sparkles', 'absolute -bottom-4 end-4 h-24 w-24')}
         <p class="font-head text-2xl font-extrabold text-ink">${tr('Ready to upgrade your glass?', 'مستعد لترقية زجاجك؟')}</p>
-        <p class="mt-1 max-w-md text-ink/75">${tr('Contact Exotic Tint Qatar for a free consultation and flat-rate quote.', 'تواصل مع إكزوتك تينت قطر لاستشارة مجانية وعرض سعر ثابت.')}</p>
+        <p class="mt-1 max-w-md text-ink/75">${tr('Contact Exotic Tint for Trading and Contracting for a free consultation and flat-rate quote.', 'تواصل مع إكزوتك تينت للتجارة والمقاولات لاستشارة مجانية وعرض سعر ثابت.')}</p>
         <div class="mt-5 flex flex-wrap gap-3"><a href="#quote" class="btn btn-dark">${t(C.ui.quote)} ${arrow()}</a><a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-4 w-4 text-[#25D366]')} WhatsApp</a></div>
       </div>
     </article>
@@ -2314,7 +2482,7 @@ ${quoteSection()}`;
       title: `${t(p.title)} | ${t(C.site.name)}`,
       description: t(p.excerpt),
       image: p.img,
-      jsonld: { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: t(p.title), description: t(p.excerpt), datePublished: p.date, image: `${C.site.domain}/assets/img/${p.img}.webp`, author: { '@type': 'Organization', name: 'Exotic Tint Qatar' }, publisher: { '@type': 'Organization', name: 'Exotic Tint Qatar', logo: { '@type': 'ImageObject', url: `${C.site.domain}/assets/img/logo-original.webp` } } },
+      jsonld: { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: t(p.title), description: t(p.excerpt), datePublished: p.date, image: `${C.site.domain}/assets/img/${p.img}.webp`, author: { '@type': 'Organization', name: 'Exotic Tint for Trading and Contracting' }, publisher: { '@type': 'Organization', name: 'Exotic Tint for Trading and Contracting', logo: { '@type': 'ImageObject', url: `${C.site.domain}/assets/img/logo-original.webp` } } },
     },
     body
   );
@@ -2348,18 +2516,25 @@ function write(file, html) {
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'main.js'), path.join(DIST, 'assets', 'js', 'main.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'motion.js'), path.join(DIST, 'assets', 'js', 'motion.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'room3d.js'), path.join(DIST, 'assets', 'js', 'room3d.js'));
-  fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'car3d.js'), path.join(DIST, 'assets', 'js', 'car3d.js'));
+  fs.rmSync(path.join(DIST, 'assets', 'js', 'car3d.js'), { force: true });
   fs.rmSync(path.join(DIST, 'assets', 'img', 'favicon.svg'), { force: true });
-  // Old WordPress URL kept alive → points to the new commercial service page
-  const to = '/service/commercial-window-tinting-services/';
-  write(path.join(DIST, 'commercial-window-tinting', 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Redirecting…</title><link rel="canonical" href="${C.site.domain}${to}"><meta http-equiv="refresh" content="0; url=${to}"><meta name="robots" content="noindex"></head><body><a href="${to}">Commercial Window Tinting</a></body></html>`);
+  // Old URLs kept alive → point to the new main service pages
+  const redirect = (from, to, label) => write(from, `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Redirecting…</title><link rel="canonical" href="${C.site.domain}${to}"><meta http-equiv="refresh" content="0; url=${to}"><meta name="robots" content="noindex"></head><body><a href="${to}">${label}</a></body></html>`);
+  redirect(path.join(DIST, 'commercial-window-tinting', 'index.html'), '/service/architectural-window-film-solutions/', 'Architectural Window Film Solutions');
+  for (const [old, to] of Object.entries(C.redirects)) {
+    for (const lang of LANGS) {
+      const pre = lang === 'ar' ? '/ar' : '';
+      const dest = pre + '/service/' + (to ? to + '/' : '');
+      redirect(path.join(DIST, ...(lang === 'ar' ? ['ar'] : []), 'service', old, 'index.html'), dest, 'Exotic Tint');
+    }
+  }
   write(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${C.site.domain}/sitemap.xml\n`);
   const urls = PAGES.flatMap((p) => [`${C.site.domain}/${p.path}`, `${C.site.domain}/ar/${p.path}`]);
   write(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`);
   L = 'en';
   write(
     path.join(DIST, '404.html'),
-    layout({ key: '404', path: '' }, { title: 'Page not found — Exotic Tint Qatar', description: 'Page not found' }, pageHero({ chip: '404', title: 'This page has been <span class="text-grad">tinted out.</span>', text: 'The page you’re looking for doesn’t exist. <a class="font-semibold text-gold-700 underline" href="/">Go back home</a> · <a class="font-semibold text-gold-700 underline" href="/ar/">العودة للرئيسية</a>' }))
+    layout({ key: '404', path: '' }, { title: 'Page not found — Exotic Tint for Trading and Contracting', description: 'Page not found' }, pageHero({ chip: '404', title: 'This page has been <span class="text-grad">tinted out.</span>', text: 'The page you’re looking for doesn’t exist. <a class="font-semibold text-gold-700 underline" href="/">Go back home</a> · <a class="font-semibold text-gold-700 underline" href="/ar/">العودة للرئيسية</a>' }))
   );
   console.log(`Built ${count} pages (${LANGS.join(', ')}) → dist/`);
 })();
