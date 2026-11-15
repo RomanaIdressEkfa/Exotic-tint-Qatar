@@ -561,7 +561,6 @@ function howItWorks() {
               <h3 class="hx-h">${title}</h3>
               <p class="hx-p">${line}</p>
             </div>
-            <span class="hx-idx">${num(pad(n))}</span>
             <span class="hx-bar"><span></span></span>
           </li>`;
   const link = () => `<li class="hx-link" data-hf-link aria-hidden="true"></li>`;
@@ -577,7 +576,6 @@ function howItWorks() {
                 </div>
               </div></div>
               ${chip('hx-c1', waIcon('h-4 w-4'), tr('Sent on', 'أُرسلت عبر'), 'WhatsApp')}
-              ${chip('hx-c2', icon('clock', 'h-4 w-4', 2.2), tr('We reply in', 'نرد خلال'), tr('Minutes', 'دقائق'))}
             </div>`;
   const opt = (k, l, tag) => `<div class="hf-opt hf-o${k}"><span class="hf-radio"></span><span class="flex-1">${l}</span><span class="hf-tag">${tag}</span></div>`;
   const pane2 = `
@@ -588,7 +586,6 @@ function howItWorks() {
                 <div class="hf-price"><span>${tr('Your quote', 'عرض السعر')}</span><b>${icon('wallet', 'h-4 w-4', 2.2)} ${tr('Fixed price', 'سعر ثابت')}</b></div>
               </div></div>
               ${chip('hx-c1', icon('thermo', 'h-4 w-4', 2.2), tr('Heat blocked', 'حجب الحرارة'), tr('Up to 98%', 'حتى ٩٨٪'))}
-              ${chip('hx-c2', icon('wallet', 'h-4 w-4', 2.2), tr('Your quote', 'عرض السعر'), tr('Fixed price', 'سعر ثابت'))}
             </div>`;
   const pane3 = `
             <div class="hx-pane" data-hf-pane>
@@ -599,9 +596,7 @@ function howItWorks() {
                   <span class="hf-temp" dir="ltr"><span class="hf-t1">46°</span><span class="hf-t2">32°</span></span>
                 </div>
               </div></div>
-              ${chip('hx-c1', icon('truck', 'h-4 w-4', 2.2), tr('We come to', 'نأتي إلى'), tr('Your home', 'منزلك'))}
-              ${chip('hx-c2', icon('thermo', 'h-4 w-4', 2.2), tr('Room temperature', 'حرارة الغرفة'), '<span class="hx-temp" dir="ltr"><s>46°</s><b>32°</b></span>')}
-              <div class="hx-done">${icon('check', 'h-4 w-4', 3)} ${tr('Installed', 'تم التركيب')}</div>
+              ${chip('hx-c1', icon('thermo', 'h-4 w-4', 2.2), tr('Room temperature', 'حرارة الغرفة'), '<span class="hx-temp" dir="ltr"><s>46°</s><b>32°</b></span>')}
             </div>`;
   const s3d = JSON.stringify({
     online: tr('online', 'متصل'),
@@ -622,7 +617,6 @@ function howItWorks() {
         <div class="lg:col-span-5" data-a="up">
           <span class="eyebrow hx-eyebrow">${tr('How it works', 'كيف نعمل')}</span>
           <h2 class="hx-title">${tr('3 simple <em>steps</em>', '٣ <em>خطوات بسيطة</em>')}</h2>
-          <p class="hx-lead">${tr('Send a photo, pick your film — we handle the rest.', 'أرسل صورة، اختر الفيلم — ونتولى الباقي.')}</p>
           <ol class="hx-list">
             ${item(1, waIcon('h-5 w-5'), tr('Send a photo', 'أرسل صورة'), tr('On WhatsApp, in seconds', 'عبر واتساب في ثوانٍ'))}
             ${link()}
@@ -632,7 +626,6 @@ function howItWorks() {
           </ol>
           <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
             <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Start on WhatsApp', 'ابدأ عبر واتساب')}</a>
-            <span class="hx-note">${icon('shield', 'h-4 w-4', 2.2)} ${tr('Free estimate — no hidden fees', 'تقدير مجاني — دون رسوم خفية')}</span>
           </div>
         </div>
         <div class="lg:col-span-7" data-a="up">
@@ -710,72 +703,54 @@ function difference() {
 }
 
 function tintStudio() {
+  // One large window you look through; the shade picker floats on the glass.
   const shades = [
-    { v: 70, privacy: 1, best: tr('Clear views · homes & offices', 'رؤية واضحة · منازل ومكاتب') },
-    { v: 50, privacy: 2, best: tr('Bright rooms with less glare', 'غرف مضيئة بوهج أقل') },
-    { v: 35, privacy: 3, best: tr('Balanced everyday comfort', 'راحة يومية متوازنة') },
-    { v: 20, privacy: 4, best: tr('Bedrooms & street-facing rooms', 'غرف النوم والغرف المطلة على الشارع') },
-    { v: 5, privacy: 5, best: tr('Maximum, full privacy', 'خصوصية قصوى وكاملة') },
+    { v: 70, best: tr('Clear views', 'رؤية واضحة') },
+    { v: 50, best: tr('Less glare, bright rooms', 'وهج أقل وغرف مضيئة') },
+    { v: 35, best: tr('Everyday comfort', 'راحة يومية') },
+    { v: 20, best: tr('Bedrooms & street-facing', 'غرف النوم والمطلة على الشارع') },
+    { v: 5, best: tr('Full privacy', 'خصوصية كاملة') },
   ];
   const scenes = [
-    ['home', tr('Home', 'منزل'), 'residential'],
-    ['building', tr('Office', 'مكتب'), 'frosted'],
+    ['residential', tr('Home', 'منزل')],
+    ['frosted', tr('Office', 'مكتب')],
   ];
+  const start = 2;
+  const sw = (s, i) => `<button type="button" role="radio" aria-checked="${i === start}" class="ts-sw" data-shade="${i}"><span class="ts-dot" style="--a:${(((100 - s.v) / 100) * 0.92).toFixed(2)}"></span><span dir="ltr">${s.v}%</span></button>`;
   return `
 <section class="pb-20 lg:pb-28">
   <div class="container-site">
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-      ${sectionHead({
-        eyebrow: tr('Tint studio', 'استوديو التظليل'),
-        title: tr('Preview your privacy <span class="text-grad">in seconds</span>', 'جرّب مستوى خصوصيتك <span class="text-grad">في ثوانٍ</span>'),
-        text: tr('Move the slider to see how each shade looks — lower percentage means more privacy.', 'حرّك المؤشر لترى شكل كل درجة — كلما قلت النسبة زادت الخصوصية.'),
-      })}
-      <div class="inline-flex w-max rounded-2xl border border-line bg-white p-1.5 shadow-card" role="tablist" data-scenes ${reveal(100)}>
-        ${scenes.map(([ic, l, img], i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-scene="${img}" class="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-white aria-selected:shadow-gold">${icon(ic, 'h-4 w-4', 2.2)} ${l}</button>`).join('')}
+    <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+      <div ${reveal()}>
+        <span class="eyebrow">${tr('Tint studio', 'استوديو التظليل')}</span>
+        <h2 class="ts-title">${tr('See the shade<br>before we fit it.', 'شاهد الدرجة<br>قبل التركيب.')}</h2>
+      </div>
+      <div class="ts-tabs" role="tablist" data-scenes ${reveal(80)}>
+        ${scenes.map(([img, l], i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-scene="${img}">${l}</button>`).join('')}
       </div>
     </div>
-    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-2" data-tint-lab data-shades='${esc(JSON.stringify(shades))}' data-assemble>
-      <div class="relative bg-white p-6 sm:p-10" data-a="left">
-        <div class="pointer-events-none absolute inset-0 dots opacity-40 [mask-image:linear-gradient(180deg,#000,transparent_60%)]"></div>
-        <div class="relative">
-          <div class="flex items-center justify-between gap-4">
-            <span class="flex items-center gap-3 font-head text-lg font-bold text-ink"><span class="ico ico-soft !h-10 !w-10">${icon('sun', 'h-[18px] w-[18px]', 2.2)}</span>${tr('Tint shade (VLT)', 'درجة التظليل (VLT)')}</span>
-            <span class="rounded-2xl border border-line bg-white px-5 py-2.5 font-head text-xl font-extrabold text-ink shadow-card" dir="ltr"><span data-out="vlt">35</span>%</span>
-          </div>
-          <input type="range" min="0" max="4" step="1" value="2" class="range mt-8" aria-label="${tr('Tint shade', 'درجة التظليل')}" data-shade-range dir="ltr">
-          <div class="mt-3 flex justify-between text-xs font-semibold text-[#9aa5b8]" dir="ltr">${shades.map((s) => `<span>${s.v}%</span>`).join('')}</div>
-          <div class="my-8 border-t border-dashed border-line"></div>
-          <div class="flex items-center justify-between gap-4">
-            <span class="flex items-center gap-3 font-head text-lg font-bold text-ink"><span class="ico ico-soft !h-10 !w-10">${icon('eyeoff', 'h-[18px] w-[18px]', 2.2)}</span>${tr('Privacy level', 'مستوى الخصوصية')}</span>
-            <span class="flex w-32 gap-1.5 sm:w-40" data-out="privacy">${'<span class="h-2.5 flex-1 rounded-full bg-line"></span>'.repeat(5)}</span>
-          </div>
-          <div class="my-8 border-t border-dashed border-line"></div>
-          <div class="flex items-center gap-3"><span class="ico ico-soft !h-10 !w-10">${icon('check', 'h-[18px] w-[18px]', 2.4)}</span><span><span class="block text-sm text-muted">${tr('Best for', 'الأنسب لـ')}</span><span class="block font-head text-lg font-bold text-ink" data-out="best">${shades[2].best}</span></span></div>
-          <p class="mt-8 flex gap-2 rounded-2xl border border-[#d3e8fd] bg-tint p-4 text-sm text-muted">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}${tr('Visual preview only. Our ceramic films block 99% of UV in every shade — we help you pick the right one for each room.', 'معاينة بصرية فقط. أفلام السيراميك لدينا تحجب ٩٩٪ من الأشعة بكل الدرجات — ونساعدك على اختيار الأنسب لكل غرفة.')}</p>
-        </div>
+    <div class="ts-stage mt-10" data-tint-lab data-shades='${esc(JSON.stringify(shades))}' ${reveal(120)}>
+      <img src="/assets/img/residential.webp" alt="${tr('Tint preview', 'معاينة التظليل')}" class="ts-img" data-scene-img loading="lazy">
+      <div class="ts-tint" data-tint-overlay></div>
+      <div class="ts-sheen" aria-hidden="true"></div>
+      <div class="ts-read">
+        <p class="ts-num" dir="ltr"><span data-out="vlt">35</span><small>%</small></p>
+        <p class="ts-cap">${tr('of daylight comes in', 'من ضوء النهار يدخل')}</p>
+        <p class="ts-best" data-out="best">${shades[start].best}</p>
       </div>
-      <div class="relative p-6 sm:p-10 navy-bg" data-a="right">
-        <div class="flex items-center gap-2 text-white/80"><span class="font-semibold">${tr('Your preview', 'المعاينة')}</span><span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-bold uppercase text-emerald-300">${tr('Live', 'مباشر')}</span></div>
-        <p class="mt-2 font-head text-5xl font-extrabold text-white" dir="ltr"><span data-out="vlt2">35</span>% <span class="text-2xl text-white/60">VLT</span></p>
-        <div class="relative mt-6 aspect-[16/10] overflow-hidden rounded-2xl border-4 border-white/10">
-          <img src="/assets/img/residential.webp" alt="${tr('Tint preview', 'معاينة التظليل')}" class="h-full w-full object-cover transition-opacity duration-300" data-scene-img loading="lazy">
-          <div class="absolute inset-0 transition-[background-color] duration-500" data-tint-overlay style="background-color:rgba(10,16,28,.6)"></div>
-          <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
-        </div>
-        <div class="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.05] text-sm">
-          <div class="flex justify-between border-b border-dashed border-white/10 px-5 py-3.5 text-white/80"><span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-white/40"></span>${tr('Light let in', 'الضوء النافذ')}</span><b class="text-white" dir="ltr"><span data-out="vlt3">35</span>%</b></div>
-          <div class="flex justify-between border-b border-dashed border-white/10 px-5 py-3.5 text-white/80"><span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-gold-400"></span>${tr('Light blocked', 'الضوء المحجوب')}</span><b class="text-white" dir="ltr"><span data-out="block">65</span>%</b></div>
-          <div class="flex justify-between bg-white/[0.05] px-5 py-3.5 font-semibold text-white"><span>${tr('UV blocked', 'الأشعة المحجوبة')}</span><b class="text-gold-300">99%</b></div>
-        </div>
-        <div class="mt-6 grid gap-3 sm:grid-cols-2">
-          <a href="#quote" class="btn btn-primary">${tr('Get this shade', 'اطلب هذه الدرجة')} ${arrow()}</a>
-          <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-glass">${waIcon('h-4 w-4')} ${tr('Ask an expert', 'اسأل خبيراً')}</a>
-        </div>
+      <span class="ts-uv">${tr('UV blocked', 'حجب الأشعة')} <b dir="ltr">99%</b></span>
+      <div class="ts-bar" role="radiogroup" aria-label="${tr('Tint shade', 'درجة التظليل')}" dir="ltr">
+        ${shades.map(sw).join('')}
       </div>
+    </div>
+    <div class="mt-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center" ${reveal(160)}>
+      <p class="text-sm text-muted">${tr('Lower % = more privacy. Visual preview only.', 'نسبة أقل = خصوصية أكثر. معاينة بصرية فقط.')}</p>
+      <a href="${waHello()}" target="_blank" rel="noopener" class="ts-link">${tr('Ask which shade fits your room', 'اسألنا عن الدرجة المناسبة لغرفتك')} ${arrow('h-4 w-4')}</a>
     </div>
   </div>
 </section>`;
 }
+
 
 /* Tint explained + money-saved calculator
    Film figures come from the client's article "Super Nano Ceramic vs Nano Ceramic vs Regular Tint".

@@ -530,8 +530,6 @@ function init() {
       tl.to([lineMat, trailMat], { opacity: 1, duration: 0.2 }, 1.2);
       tl.fromTo(scanner.position, { y: wT + 0.05 }, { y: wB - 0.05, duration: 1.3, ease: 'power1.inOut' }, 1.2);
       tl.to([lineMat, trailMat], { opacity: 0, duration: 0.3 }, 2.4);
-      tl.fromTo(dims.scale, { x: 0.001, y: 0.001 }, { x: DIMS_S.x, y: DIMS_S.y, duration: 0.6, ease: 'back.out(2)' }, 2.3);
-      tl.to(dims.material, { opacity: 1, duration: 0.3 }, 2.3);
       tl.call(() => drawScreen(2), null, 1.9);
       tl.call(() => drawScreen(3), null, 2.6);
       tl.call(() => drawScreen(4), null, 3.5);

@@ -86,34 +86,46 @@
   var lab = $('[data-tint-lab]');
   if (lab) {
     var shades = JSON.parse(lab.getAttribute('data-shades'));
-    var range = $('[data-shade-range]', lab);
     var overlay = $('[data-tint-overlay]', lab);
-    var bars = $$('[data-out="privacy"] span', lab);
-    var out = function (k) { return $$('[data-out="' + k + '"]', lab); };
-    var render = function () {
-      var i = Number(range.value);
+    var sws = $$('[data-shade]', lab);
+    var vlt = $('[data-out="vlt"]', lab), best = $('[data-out="best"]', lab);
+    var cur = -1;
+    var flip = function (el) { el.classList.remove('is-flip'); void el.offsetWidth; el.classList.add('is-flip'); };
+    var render = function (i, quiet) {
+      if (i === cur) return;
+      cur = i;
       var s = shades[i];
-      range.style.setProperty('--fill', (i / (shades.length - 1)) * 100 + '%');
-      overlay.style.backgroundColor = 'rgba(10,16,28,' + (((100 - s.v) / 100) * 0.92).toFixed(2) + ')';
-      out('vlt').concat(out('vlt2'), out('vlt3')).forEach(function (o) { o.textContent = s.v; });
-      out('block').forEach(function (o) { o.textContent = 100 - s.v; });
-      out('best').forEach(function (o) { o.textContent = s.best; });
-      bars.forEach(function (b, n) { b.className = 'h-2.5 flex-1 rounded-full transition ' + (n < s.privacy ? 'bg-grad' : 'bg-line'); });
+      overlay.style.opacity = (((100 - s.v) / 100) * 0.92).toFixed(2);
+      sws.forEach(function (b, n) { b.setAttribute('aria-checked', String(n === i)); b.tabIndex = n === i ? 0 : -1; });
+      vlt.textContent = s.v;
+      best.textContent = s.best;
+      if (!quiet) { flip(vlt.parentNode); flip(best); }
     };
-    range.addEventListener('input', render);
-    render();
+    sws.forEach(function (b, n) {
+      b.addEventListener('click', function () { render(n); });
+      b.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        var k = Math.max(0, Math.min(sws.length - 1, n + d));
+        render(k);
+        sws[k].focus();
+      });
+    });
+    render(sws.findIndex ? sws.findIndex(function (b) { return b.getAttribute('aria-checked') === 'true'; }) : 2, true);
 
     var sceneImg = $('[data-scene-img]', lab);
     var tabs = $$('[data-scene]');
     tabs.forEach(function (tab) {
       tab.addEventListener('click', function () {
+        if (tab.getAttribute('aria-selected') === 'true') return;
         tabs.forEach(function (x) { x.setAttribute('aria-selected', String(x === tab)); });
-        sceneImg.style.opacity = '0';
+        lab.classList.add('is-swap');
         setTimeout(function () {
           // Keep whatever base path the page was built with (works on GitHub Pages sub-paths too)
+          sceneImg.onload = function () { lab.classList.remove('is-swap'); };
           sceneImg.src = sceneImg.getAttribute('src').replace(/[^/]+\.webp$/, tab.getAttribute('data-scene') + '.webp');
-          sceneImg.onload = function () { sceneImg.style.opacity = '1'; };
-        }, 200);
+        }, 350);
       });
     });
   }
