@@ -445,10 +445,11 @@
     var cool = spend * m.share / 100, month = cool * f.ac / 100;
     range.style.setProperty('--fill', ((spend - m.min) / (m.max - m.min)) * 100 + '%');
     q('[data-sav-spend]').textContent = fmt(spend);
-    q('[data-sav-cool]').textContent = fmt(cool);
-    q('[data-sav-month]').textContent = fmt(month);
-    q('[data-sav-year]').textContent = fmt(month * 12);
-    q('[data-sav-ac2]').textContent = fmt(f.ac);
+    var set = function (s, v) { var el = q(s); if (el) el.textContent = v; };
+    set('[data-sav-cool]', fmt(cool));
+    set('[data-sav-month]', fmt(month));
+    set('[data-sav-year]', fmt(month * 12));
+    set('[data-sav-ac2]', fmt(f.ac));
   }
   function pickFilm(i) {
     film = i;

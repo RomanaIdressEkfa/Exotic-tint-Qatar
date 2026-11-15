@@ -765,90 +765,73 @@ function savings() {
     { id: 'super', name: tr('Super nano ceramic', 'سوبر نانو سيراميك'), heat: 94, heatTxt: '90–98%', uv: '99%+', uvN: 99, ac: 30 },
   ];
   const modes = {
-    home: { label: tr('My monthly Kahramaa bill', 'فاتورة كهرماء الشهرية'), min: 300, max: 5000, step: 100, val: 1500, share: 60 },
+    home: { label: tr('Monthly Kahramaa bill', 'فاتورة كهرماء الشهرية'), min: 300, max: 5000, step: 100, val: 1500, share: 60 },
     office: { label: tr('Monthly office electricity bill', 'فاتورة كهرباء المكتب الشهرية'), min: 1000, max: 30000, step: 500, val: 6000, share: 50 },
   };
   const qar = tr('QAR', 'ر.ق');
+  const f = films[2];
+  const row = (label, val, bar, w) => `
+          <div class="te-row">
+            <div class="flex items-baseline justify-between gap-4"><span class="te-label">${label}</span><span class="te-val" dir="ltr">${val}</span></div>
+            <div class="te-track"><span ${bar} style="width:${w}%"></span></div>
+          </div>`;
   return `
-<section id="savings" class="pb-20 lg:pb-28" data-assemble>
+<section id="savings" class="pb-20 lg:pb-28">
   <div class="container-site">
-    ${sectionHead({
-      eyebrow: tr('Tint, explained', 'التظليل ببساطة'),
-      title: tr('Darker isn’t cooler. <span class="text-grad">The right film is.</span>', 'الأغمق ليس الأبرد. <span class="text-grad">الفيلم الصحيح هو الأبرد.</span>'),
-      text: tr('The shade you choose is about privacy. What cuts the heat — and your electricity bill — is the film technology inside.', 'درجة التظليل تتعلق بالخصوصية. أما ما يخفض الحرارة — وفاتورة الكهرباء — فهو تقنية الفيلم نفسها.'),
-      center: true,
-    })}
-    <div class="mt-12 grid gap-5 lg:grid-cols-12" data-sav data-films='${esc(JSON.stringify(films))}' data-modes='${esc(JSON.stringify(modes))}'>
+    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-end" ${reveal()}>
+      <div>
+        <span class="eyebrow">${tr('Tint, explained', 'التظليل ببساطة')}</span>
+        <h2 class="ts-title">${tr('Darker isn’t cooler.<br>The right film is.', 'الأغمق ليس الأبرد.<br>الفيلم الصحيح هو الأبرد.')}</h2>
+      </div>
+      <p class="max-w-sm text-[1.02rem] leading-relaxed text-muted">${tr('The shade is about privacy. The film inside is what cuts the heat — and the bill.', 'الدرجة تتعلق بالخصوصية. أما الفيلم نفسه فهو ما يخفض الحرارة — والفاتورة.')}</p>
+    </div>
 
-      <!-- LEFT: what sunlight is made of, and what each film stops -->
-      <div class="card p-6 sm:p-8 lg:col-span-7" data-a="left">
-        <p class="flex items-center gap-3 font-head text-lg font-bold text-ink"><span class="ico ico-soft !h-10 !w-10">${icon('sun', 'h-[18px] w-[18px]', 2.2)}</span>${tr('What hits your glass', 'ما الذي يصل إلى زجاجك')}</p>
-        <div class="mt-5 flex h-12 overflow-hidden rounded-2xl text-xs font-extrabold text-white">
-          <div class="flex items-center justify-center bg-gradient-to-r from-ink to-ink-3" style="width:53%">${tr('Heat (infrared) 53%', 'حرارة ٥٣٪')}</div>
-          <div class="flex items-center justify-center bg-gradient-to-r from-gold-200 to-gold-50 text-ink" style="width:44%">${tr('Light 44%', 'ضوء ٤٤٪')}</div>
-          <div class="flex items-center justify-center bg-gold-500" style="width:3%" title="UV 3%"></div>
-        </div>
-        <div class="mt-2 grid grid-cols-3 gap-3 text-[13px] leading-snug text-muted">
-          <p><b class="text-ink">${tr('Heat', 'الحرارة')}</b> — ${tr('makes rooms hot and the AC work hard.', 'تسخّن الغرف وترهق المكيف.')}</p>
-          <p><b class="text-gold-600">${tr('Light', 'الضوء')}</b> — ${tr('what you see. The shade % controls this (privacy).', 'ما تراه. نسبة التظليل تتحكم به (الخصوصية).')}</p>
-          <p><b class="text-gold-700">UV</b> — ${tr('burns skin and fades interiors.', 'يحرق البشرة ويُبهت الأثاث.')}</p>
+    <div class="te-card mt-10" data-sav data-films='${esc(JSON.stringify(films))}' data-modes='${esc(JSON.stringify(modes))}' ${reveal(100)}>
+      <div class="te-left">
+        <p class="te-k">${tr('Sunlight on your glass', 'أشعة الشمس على زجاجك')}</p>
+        <div class="te-sun" dir="ltr"><span style="width:53%"></span><span style="width:44%"></span><span style="width:3%"></span></div>
+        <div class="te-legend">
+          <span><i class="bg-ink"></i>${tr('Heat', 'حرارة')} <b dir="ltr">53%</b></span>
+          <span><i class="bg-[#9cc9f5]"></i>${tr('Light', 'ضوء')} <b dir="ltr">44%</b></span>
+          <span><i class="bg-[#3b9bff]"></i>UV <b dir="ltr">3%</b></span>
         </div>
 
-        <div class="my-7 border-t border-dashed border-line"></div>
-        <p class="font-head text-lg font-bold text-ink">${tr('How much each film stops', 'كم يحجب كل فيلم')}</p>
-        <div class="mt-4 inline-flex flex-wrap gap-1.5 rounded-2xl border border-line bg-white p-1.5 shadow-card" role="tablist">
-          ${films.map((f, i) => `<button type="button" role="tab" aria-selected="${i === 2}" data-sav-film="${i}" class="rounded-xl px-4 py-2.5 text-sm font-bold text-muted transition aria-selected:bg-grad aria-selected:text-white aria-selected:shadow-gold">${f.name}</button>`).join('')}
+        <div class="te-tabs mt-10" role="tablist">
+          ${films.map((x, i) => `<button type="button" role="tab" aria-selected="${i === 2}" data-sav-film="${i}">${x.name}</button>`).join('')}
         </div>
-        <div class="mt-6 space-y-5">
-          <div>
-            <div class="flex items-center justify-between text-sm font-bold"><span class="text-ink">${tr('Heat blocked', 'الحرارة المحجوبة')}</span><span class="text-ink" dir="ltr" data-sav-heat>${films[2].heatTxt}</span></div>
-            <div class="mt-2 h-3 overflow-hidden rounded-full bg-gold-50"><div class="h-full rounded-full bg-gradient-to-r from-ink-3 to-ink transition-[width] duration-700" style="width:${films[2].heat}%" data-sav-heatbar></div></div>
-          </div>
-          <div>
-            <div class="flex items-center justify-between text-sm font-bold"><span class="text-ink">${tr('UV blocked', 'الأشعة المحجوبة')}</span><span class="text-gold-700" dir="ltr" data-sav-uv>${films[2].uv}</span></div>
-            <div class="mt-2 h-3 overflow-hidden rounded-full bg-gold-50"><div class="h-full rounded-full bg-gold-300 transition-[width] duration-700" style="width:${films[2].uvN}%" data-sav-uvbar></div></div>
-          </div>
-          <div>
-            <div class="flex items-center justify-between text-sm font-bold"><span class="text-ink">${tr('AC workload cut', 'تخفيض حمل المكيف')}</span><span class="text-gold-700" dir="ltr"><span data-sav-ac>${films[2].ac}</span>%</span></div>
-            <div class="mt-2 h-3 overflow-hidden rounded-full bg-gold-50"><div class="h-full rounded-full bg-grad transition-[width] duration-700" style="width:${films[2].ac * 2}%" data-sav-acbar></div></div>
-          </div>
+        <div class="mt-2">
+          ${row(tr('Heat blocked', 'الحرارة المحجوبة'), `<span data-sav-heat>${f.heatTxt}</span>`, 'data-sav-heatbar class="bg-ink"', f.heat)}
+          ${row(tr('UV blocked', 'الأشعة المحجوبة'), `<span data-sav-uv>${f.uv}</span>`, 'data-sav-uvbar class="bg-[#3b9bff]"', f.uvN)}
+          ${row(tr('Less work for your AC', 'حمل أقل على المكيف'), `<span data-sav-ac>${f.ac}</span>%`, 'data-sav-acbar class="bg-[#9cc9f5]"', f.ac * 2)}
         </div>
-        <p class="mt-6 flex gap-2 rounded-2xl border border-[#d3e8fd] bg-tint p-4 text-sm text-ink-2">${icon('info', 'mt-0.5 h-4 w-4 shrink-0 text-gold-700', 2.2)}<span>${tr('Any shade — light or dark — can come in nano or super nano ceramic. So you can keep a <b>light, bright shade</b> and still block most of the heat.', 'يمكن لأي درجة — فاتحة أو داكنة — أن تكون نانو أو سوبر نانو سيراميك. لذلك يمكنك اختيار <b>درجة فاتحة ومشرقة</b> مع حجب معظم الحرارة.')}</span></p>
+        <p class="te-foot">${tr('Every shade, light or dark, comes in ceramic — keep it bright and still stop the heat.', 'كل درجة، فاتحة أو داكنة، متوفرة بالسيراميك — احتفظ بالإضاءة وأوقف الحرارة.')}</p>
       </div>
 
-      <!-- RIGHT: money saved -->
-      <div class="relative overflow-hidden rounded-[22px] p-6 navy-bg sm:p-8 lg:col-span-5" data-a="right">
-        <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
-        <div class="relative">
-          <p class="font-head text-lg font-bold text-white">${tr('How much will you save?', 'كم ستوفر؟')}</p>
-          <div class="mt-4 grid grid-cols-2 gap-1 rounded-2xl bg-white/10 p-1" role="tablist">
-            <button type="button" role="tab" aria-selected="true" data-sav-mode="home" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('home', 'h-4 w-4', 2.2)} ${tr('Home', 'منزل')}</button>
-            <button type="button" role="tab" aria-selected="false" data-sav-mode="office" class="flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white/70 transition aria-selected:bg-white aria-selected:text-ink">${icon('building', 'h-4 w-4', 2.2)} ${tr('Office', 'مكتب')}</button>
+      <div class="te-right">
+        <div class="flex items-center justify-between gap-4">
+          <p class="te-k !text-white/60">${tr('What you could save', 'كم يمكنك أن توفر')}</p>
+          <div class="te-tabs te-tabs-dark" role="tablist">
+            <button type="button" role="tab" aria-selected="true" data-sav-mode="home">${tr('Home', 'منزل')}</button>
+            <button type="button" role="tab" aria-selected="false" data-sav-mode="office">${tr('Office', 'مكتب')}</button>
           </div>
-          <div class="mt-6 flex items-end justify-between gap-3">
-            <label class="text-sm font-semibold text-white/75" for="sav-spend" data-sav-label>${modes.home.label}</label>
-            <span class="font-head text-xl font-extrabold text-white" dir="ltr"><span data-sav-spend>1,500</span> <span class="text-sm text-white/60">${qar}</span></span>
+        </div>
+        <p class="te-big" dir="ltr"><span data-sav-year>0</span><small>${qar}</small></p>
+        <p class="text-sm text-white/60">${tr('per year', 'سنوياً')} · <span dir="ltr"><span data-sav-month>0</span> ${qar}</span> ${tr('a month', 'شهرياً')}</p>
+        <div class="mt-auto pt-10">
+          <div class="flex items-end justify-between gap-3">
+            <label class="text-sm text-white/70" for="sav-spend" data-sav-label>${modes.home.label}</label>
+            <span class="font-head text-lg font-extrabold text-white" dir="ltr"><span data-sav-spend>1,500</span> <span class="text-sm font-semibold text-white/50">${qar}</span></span>
           </div>
-          <input id="sav-spend" type="range" class="range mt-3" min="${modes.home.min}" max="${modes.home.max}" step="${modes.home.step}" value="${modes.home.val}" data-sav-range dir="ltr">
-
-          <div class="mt-7 rounded-2xl bg-white p-5 text-center">
-            <p class="text-xs font-bold uppercase tracking-wider text-muted">${tr('You could save about', 'يمكنك توفير حوالي')}</p>
-            <p class="mt-1 font-head text-5xl font-extrabold text-ink" dir="ltr"><span data-sav-year>0</span> <span class="text-xl text-muted">${qar}</span></p>
-            <p class="text-sm font-semibold text-gold-700">${tr('per year', 'سنوياً')} · <span dir="ltr"><span data-sav-month>0</span> ${qar}</span> ${tr('per month', 'شهرياً')}</p>
-          </div>
-
-          <div class="mt-5 space-y-2 text-sm text-white/75">
-            <p class="flex justify-between gap-3"><span>${tr('Spent on cooling (AC)', 'ما يُنفق على التبريد')}</span><b class="text-white" dir="ltr"><span data-sav-cool>0</span> ${qar}/${tr('mo', 'شهر')}</b></p>
-            <p class="flex justify-between gap-3"><span>${tr('AC workload cut by', 'تخفيض حمل المكيف')}</span><b class="text-white" dir="ltr"><span data-sav-ac2>30</span>%</b></p>
-          </div>
-          <a href="#quote" class="btn btn-primary mt-6 w-full">${tr('Start saving — free quote', 'ابدأ التوفير — عرض مجاني')} ${arrow()}</a>
-          <p class="mt-4 text-[11px] leading-relaxed text-white/50" data-sav-note data-home="${esc(tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.'))}" data-office="${esc(tr('Estimate. Assumes cooling is about 50% of an office’s electricity bill in Qatar. Real savings depend on the building, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٥٠٪ من فاتورة كهرباء المكتب في قطر. التوفير الفعلي يعتمد على المبنى والزجاج والفيلم.'))}">${tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.')}</p>
+          <input id="sav-spend" type="range" class="range range-dark mt-4" min="${modes.home.min}" max="${modes.home.max}" step="${modes.home.step}" value="${modes.home.val}" data-sav-range dir="ltr">
+          <a href="#quote" class="te-cta">${tr('Get a free quote', 'احصل على عرض مجاني')} ${arrow('h-4 w-4')}</a>
+          <p class="mt-4 text-[11px] leading-relaxed text-white/40" data-sav-note data-home="${esc(tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.'))}" data-office="${esc(tr('Estimate. Assumes cooling is about 50% of an office’s electricity bill in Qatar. Real savings depend on the building, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٥٠٪ من فاتورة كهرباء المكتب في قطر. التوفير الفعلي يعتمد على المبنى والزجاج والفيلم.'))}">${tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.')}</p>
         </div>
       </div>
     </div>
   </div>
 </section>`;
 }
+
 
 function statsStrip() {
   const items = [
