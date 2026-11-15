@@ -130,15 +130,43 @@ const PAGES = [
 ];
 
 /* ----------------------------------------------------------------- layout */
+const BRAND = () => tr('Exotic Tint Qatar', 'إكزوتك تينت قطر');
+function seoTitle(s) {
+  return String(s)
+    .replace(/ [|—–-] Exotic Tint for Trading and Contracting$/, ' | ' + BRAND())
+    .replace(/ [|—–-] إكزوتك تينت للتجارة والمقاولات$/, ' | ' + BRAND())
+    .replace(/^(.{50,}) \| (?:Exotic Tint Qatar|إكزوتك تينت قطر)$/, '$1');
+}
+function seoDesc(s) {
+  s = String(s).replace(/\s+/g, ' ').trim();
+  if (s.length <= 158) return s;
+  const cut = s.slice(0, 155);
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:—–-]$/, '') + '…';
+}
+function crumbs(page, meta) {
+  if (page.key === 'home' || page.key === '404') return null;
+  const items = [[t(C.ui.nav.home), C.site.domain + base(L)]];
+  if (page.key === 'service') items.push([t(C.ui.nav.services), C.site.domain + base(L) + 'service/']);
+  if (page.key === 'post') items.push([tr('Blog', 'المدونة'), C.site.domain + base(L) + 'blogs/']);
+  items.push([meta.crumb || seoTitle(meta.title).split(' | ')[0], C.site.domain + base(L) + page.path]);
+  return { '@type': 'BreadcrumbList', itemListElement: items.map(([name, item], i) => ({ '@type': 'ListItem', position: i + 1, name, item })) };
+}
 function head(page, meta) {
   const canonical = C.site.domain + base(L) + page.path;
+  const title = seoTitle(meta.title), desc = seoDesc(meta.description);
+  const graph = [];
+  if (meta.jsonld) graph.push(meta.jsonld);
+  const bc = crumbs(page, meta);
+  if (bc) graph.push({ '@context': 'https://schema.org', ...bc });
+  if (page.key === 'home') graph.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: t(C.site.name), alternateName: BRAND(), url: C.site.domain + base(L), inLanguage: L === 'ar' ? 'ar-QA' : 'en-QA' });
   return `<!doctype html>
 <html lang="${L}" dir="${L === 'ar' ? 'rtl' : 'ltr'}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(meta.title)}</title>
-<meta name="description" content="${esc(meta.description)}">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
+<meta name="robots" content="${page.key === '404' ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'}">
 <meta name="theme-color" content="#ffffff">
 <link rel="canonical" href="${canonical}">
 <link rel="alternate" hreflang="en" href="${C.site.domain}/${page.path}">
@@ -146,21 +174,26 @@ function head(page, meta) {
 <link rel="alternate" hreflang="x-default" href="${C.site.domain}/${page.path}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(t(C.site.name))}">
-<meta property="og:title" content="${esc(meta.title)}">
-<meta property="og:description" content="${esc(meta.description)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${canonical}">
 <meta property="og:image" content="${C.site.domain}/assets/img/${meta.image || 'residential'}.webp">
 <meta property="og:locale" content="${L === 'ar' ? 'ar_QA' : 'en_QA'}">
+<meta property="og:image:alt" content="${esc(title)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(desc)}">
 <link rel="icon" href="/assets/img/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+${(page.key === 'home' || page.service) ? '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>' : ''}
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Urbanist:wght@500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
 <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
 ${(page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions')) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
-${meta.jsonld ? `<script type="application/ld+json">${JSON.stringify(meta.jsonld)}</script>` : ''}
+${graph.map((g) => `<script type="application/ld+json">${JSON.stringify(g)}</script>`).join('\n')}
 </head>`;
 }
 
@@ -435,7 +468,7 @@ function serviceCard(s, { grid = false } = {}) {
   return `
 <a href="${href('service/' + s.slug + '/')}" class="svc2 group flex flex-col overflow-hidden rounded-[26px] border border-line bg-white p-2 shadow-card transition duration-500 hover:-translate-y-1.5 hover:border-transparent hover:shadow-soft ${grid ? 'h-full' : 'w-[290px] shrink-0 snap-start sm:w-[320px]'}">
   <div class="relative aspect-[4/3] overflow-hidden rounded-[20px]">
-    <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+    <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
     <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent"></div>
     <span class="glass-hud absolute start-3 top-3 grid h-10 w-10 place-items-center rounded-xl text-white">${icon(s.icon, 'h-5 w-5', 2)}</span>
     <span class="absolute end-3 top-3 rounded-full bg-white/90 px-2.5 py-1 font-head text-xs font-extrabold text-ink backdrop-blur">${num(pad(i + 1))}</span>
@@ -455,26 +488,25 @@ function serviceCard(s, { grid = false } = {}) {
 
 /* Services overview — five clean cards (photo, icon badge, name); sits above the expanding slider */
 function servicesGrid() {
+  const R = { 'architectural-window-film-solutions': 'twin', 'smart-glass-privacy-solutions': 'smart', 'surface-protection-solutions': 'spill', 'decorative-interior-solutions': 'decor', 'fabric-material-protection': 'fabric' };
+  const tile = (s, i) => {
+    const n = s.options.length;
+    return `
+      <a href="${href('service/' + s.slug + '/')}" class="sv2-tile${i === 0 ? ' sv2-big' : ''}" ${reveal(i * 60)}>
+        <div class="sv2-top"><span class="sv2-n" dir="ltr">${pad(i + 1)}</span><span class="sv2-count">${n} ${n === 1 ? tr('solution', 'حل') : tr('solutions', 'حلول')}</span></div>
+        <h3 class="sv2-h">${t(s.title)}</h3>
+        <img src="/assets/img/svc3d-${R[s.slug]}.webp" alt="${esc(t(s.title))} — ${esc(t(s.short))}" class="sv2-img" loading="lazy" decoding="async" width="560" height="700">
+        <span class="sv2-go" aria-hidden="true">${arrow('h-4 w-4')}</span>
+      </a>`;
+  };
   return `
-<section class="pb-20 lg:pb-28" data-assemble>
+<section class="pb-20 lg:pb-28">
   <div class="container-site">
-    <div class="text-center" data-a="up">
-      <span class="eyebrow center">${tr('What we do', 'ماذا نقدم')}</span>
-      <h2 class="mt-3 font-head text-[2rem] font-extrabold leading-tight text-ink sm:text-[2.6rem]">${tr('Premium Tinting &amp; <span class="text-grad">Protection Solutions</span>', 'حلول <span class="text-grad">تظليل وحماية فاخرة</span>')}</h2>
+    <div class="flex items-end justify-between gap-4" ${reveal()}>
+      <h2 class="sv2-title">${tr('Our services', 'خدماتنا')}</h2>
+      <a href="${href('service/')}" class="lb-all">${tr('View all', 'عرض الكل')} <span>${arrow('h-4 w-4')}</span></a>
     </div>
-    <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5 [&>*:last-child]:col-span-2 [&>*:last-child]:aspect-[2/1] md:[&>*:last-child]:col-span-1 md:[&>*:last-child]:aspect-[4/5]">
-      ${C.services
-        .map(
-          (s) => `<a href="${href('service/' + s.slug + '/')}" class="sg-tile group" data-a="up">
-        <img src="/assets/img/svc3d-${{ 'architectural-window-film-solutions': 'twin', 'smart-glass-privacy-solutions': 'smart', 'surface-protection-solutions': 'spill', 'decorative-interior-solutions': 'decor', 'fabric-material-protection': 'fabric' }[s.slug]}.webp" alt="${esc(t(s.title))}" class="sg-img" loading="lazy">
-        <div class="sg-bar">
-          <h3 class="sg-h">${t(s.title)}</h3>
-          <span class="sg-go">${arrow('h-3.5 w-3.5')}</span>
-        </div>
-      </a>`
-        )
-        .join('')}
-    </div>
+    <div class="sv2 mt-10">${C.services.map(tile).join('')}</div>
   </div>
 </section>`;
 }
@@ -484,7 +516,7 @@ function servicesSlider() {
     const v = SV[s.slug];
     return `
       <article class="xp-panel ${i === 0 ? 'is-active' : ''}" data-xp-panel tabindex="0" aria-label="${esc(t(s.title))}">
-        <img src="/assets/img/${s.img}.webp" alt="" class="xp-img absolute inset-0 h-full w-full object-cover" loading="lazy">
+        <img src="/assets/img/${s.img}.webp" alt="" class="xp-img absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async">
         <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/5"></div>
 
         <!-- collapsed -->
@@ -561,7 +593,7 @@ function howItWorks() {
                 <div class="hf-phone-body">
                   <div class="hf-typing"><span></span><span></span><span></span></div>
                   <div class="hf-bubble hf-b1">${tr('Villa · 14 windows', 'فيلا · ١٤ نافذة')}</div>
-                  <div class="hf-bubble hf-b2"><img src="/assets/img/residential.webp" alt="" loading="lazy"></div>
+                  <div class="hf-bubble hf-b2"><img src="/assets/img/residential.webp" alt="" loading="lazy" decoding="async"></div>
                   <div class="hf-seen">${icon('check', 'h-3.5 w-3.5', 3)}${icon('check', 'h-3.5 w-3.5 -ms-2', 3)}</div>
                 </div>
               </div></div>
@@ -708,7 +740,7 @@ function whyChoose() {
     </div>
     <div class="wb2 mt-9">
       <a href="${href('contact/')}" class="wb2-hero" ${reveal(60)}>
-        <img src="/assets/img/bl-villa.webp" alt="${tr('Modern villa in Qatar', 'فيلا حديثة في قطر')}" loading="lazy">
+        <img src="/assets/img/bl-villa.webp" alt="${tr('Modern villa in Qatar', 'فيلا حديثة في قطر')}" loading="lazy" decoding="async">
         <div class="wb2-glass">
           <span class="wb2-k">${icon('pin', 'h-4 w-4', 2.2)} ${tr('On-site, across Qatar', 'في الموقع، في أنحاء قطر')}</span>
           <p class="wb2-big">${tr('We come to you.', 'نأتي إليك.')}</p>
@@ -773,7 +805,7 @@ function latestBlog() {
   const pics = { 'blog-ceramic': 'bl-ceramic', 'blog-marble': 'bl-marble', 'blog-home': 'bl-villa' };
   const card = (p, i) => `
       <a href="${href(p.slug + '/')}" class="lb-card" ${reveal(i * 80)}>
-        <div class="lb-img"><img src="/assets/img/${pics[p.img] || p.img}.webp" alt="${esc(t(p.title))}" loading="lazy"></div>
+        <div class="lb-img"><img src="/assets/img/${pics[p.img] || p.img}.webp" alt="${esc(t(p.title))}" loading="lazy" decoding="async"></div>
         <p class="lb-cat">${t(p.cat)}</p>
         <h3 class="lb-h">${t(p.title)}</h3>
         <p class="lb-meta">${fmtDate(p.date)} · ${num(p.read)} ${tr('min read', 'دقائق قراءة')}</p>
@@ -796,7 +828,7 @@ function latestBlog() {
 /* Homepage 3D sections (scenes in src/assets/js/home3d.js) — each with its own layout */
 const h3Stage = (key, fallback, overlay = '', cls = '') => `
       <div class="h3-stage ${cls}" data-h3="${key}" ${reveal(80)}>
-        <img class="h3-fb" src="/assets/img/${fallback}.webp" alt="" loading="lazy">
+        <img class="h3-fb" src="/assets/img/${fallback}.webp" alt="" loading="lazy" decoding="async">
         <canvas aria-hidden="true"></canvas>
         ${overlay}
       </div>`;
@@ -967,7 +999,7 @@ function tintStudio() {
       </div>
     </div>
     <div class="ts-stage mt-10" data-tint-lab data-shades='${esc(JSON.stringify(shades))}' ${reveal(120)}>
-      <img src="/assets/img/residential.webp" alt="${tr('Tint preview', 'معاينة التظليل')}" class="ts-img" data-scene-img loading="lazy">
+      <img src="/assets/img/residential.webp" alt="${tr('Tint preview', 'معاينة التظليل')}" class="ts-img" data-scene-img loading="lazy" decoding="async">
       <div class="ts-tint" data-tint-overlay></div>
       <div class="ts-film" data-tint-film aria-hidden="true"><img alt="" src="/assets/img/residential.webp"><span></span></div>
       <span class="ts-line" data-tint-line aria-hidden="true"></span>
@@ -1189,7 +1221,7 @@ function whyUs() {
   <div class="container-site">
     <div class="relative overflow-hidden rounded-[30px] navy-bg p-6 shadow-float sm:p-9 lg:p-10" data-a="up">
       <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
-      <img src="/assets/img/residential.webp" alt="" class="pointer-events-none absolute inset-y-0 end-0 hidden h-full w-1/2 object-cover opacity-[0.13] [mask-image:linear-gradient(to_left,#000,transparent)] rtl:[mask-image:linear-gradient(to_right,#000,transparent)] lg:block" loading="lazy">
+      <img src="/assets/img/residential.webp" alt="" class="pointer-events-none absolute inset-y-0 end-0 hidden h-full w-1/2 object-cover opacity-[0.13] [mask-image:linear-gradient(to_left,#000,transparent)] rtl:[mask-image:linear-gradient(to_right,#000,transparent)] lg:block" loading="lazy" decoding="async">
       <div class="pointer-events-none absolute -start-20 -top-24 h-64 w-64 rounded-full bg-gold-400/25 blur-3xl"></div>
       <div class="relative grid items-end gap-6 lg:grid-cols-12">
         <div class="lg:col-span-7">
@@ -1256,7 +1288,7 @@ function bookFast() {
                 <p class="mx-auto w-max rounded-lg bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-muted">${tr('TODAY', 'اليوم')}</p>
                 ${bubble(true, tr('Hi! I need heat film for my villa windows 🏡☀️', 'مرحباً! أحتاج فيلماً حرارياً لنوافذ الفيلا 🏡☀️'), '10:02')}
                 ${bubble(false, tr('Welcome to Exotic Tint! Send us a photo and we’ll recommend the best film 👌', 'أهلاً بك في إكزوتك تينت! أرسل لنا صورة وسنوصي بأفضل فيلم 👌'), '10:03')}
-                <div class="flex justify-end" data-chat-msg><div class="h-24 w-36 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/residential.webp" alt="" class="h-full w-full object-cover" loading="lazy"></div></div>
+                <div class="flex justify-end" data-chat-msg><div class="h-24 w-36 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/residential.webp" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async"></div></div>
                 ${bubble(false, tr('Super nano ceramic is perfect ✅ We can install tomorrow at 10 AM in Lusail.', 'السوبر نانو سيراميك مثالي ✅ يمكننا التركيب غداً الساعة ١٠ صباحاً في لوسيل.'), '10:05')}
                 ${bubble(true, tr('Booked! Thank you 🙏', 'تم الحجز! شكراً لكم 🙏'), '10:05')}
                 <div class="typing hidden w-max rounded-2xl rounded-es-md bg-white px-4 py-3 shadow-sm" data-typing><span></span><span></span><span></span></div>
@@ -1314,7 +1346,7 @@ function gallery() {
   const tile = (slug, cls, from) => {
     const s = svc(slug);
     return `<a href="${href('service/' + s.slug + '/')}" class="group relative overflow-hidden rounded-[22px] shadow-card ${cls}" data-a="${from}">
-      <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+      <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async">
       <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-80 transition group-hover:opacity-100"></div>
       <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
         <div><span class="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-ink">${t(s.short)}</span><p class="mt-2 font-head text-lg font-bold text-white">${t(s.title)}</p></div>
@@ -1412,7 +1444,7 @@ function blogSection() {
     </div>
     <div class="mt-10 grid gap-5 lg:grid-cols-12">
       <a href="${href(f.slug + '/')}" class="group relative min-h-[460px] overflow-hidden rounded-[28px] shadow-soft lg:col-span-7" ${reveal()}>
-        <img src="/assets/img/${f.img}.webp" alt="${esc(t(f.title))}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+        <img src="/assets/img/${f.img}.webp" alt="${esc(t(f.title))}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent"></div>
         <span class="absolute start-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-gold-700 shadow">${icon('star', 'h-3.5 w-3.5', 2.4)} ${tr('Editor’s pick', 'اختيار المحرر')}</span>
         <span class="absolute end-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">${icon('clock', 'h-3.5 w-3.5', 2.4)} ${num(f.read)} ${tr('min read', 'دقائق قراءة')}</span>
@@ -1430,7 +1462,7 @@ function blogSection() {
         ${rest
           .map(
             (p, i) => `<a href="${href(p.slug + '/')}" class="group flex gap-4 rounded-[22px] sm:gap-5 border border-line bg-white p-4 shadow-card transition hover:-translate-y-1 hover:shadow-soft" ${reveal(i * 90)}>
-          <div class="relative w-24 shrink-0 overflow-hidden rounded-2xl min-[400px]:w-32 sm:w-40"><img src="/assets/img/${p.img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy"></div>
+          <div class="relative w-24 shrink-0 overflow-hidden rounded-2xl min-[400px]:w-32 sm:w-40"><img src="/assets/img/${p.img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async"></div>
           <div class="flex min-w-0 flex-1 flex-col py-1">
             <span class="w-max rounded-full bg-tint px-2.5 py-1 text-[11px] font-bold uppercase text-gold-700">${t(p.cat)}</span>
             <h3 class="mt-2 line-clamp-3 font-head text-lg font-bold leading-snug text-ink">${t(p.title)}</h3>
@@ -1479,7 +1511,7 @@ function ctaBanner() {
       </div>
       <div class="relative mx-auto w-full max-w-sm lg:col-span-5" ${reveal(150)}>
         <div class="absolute inset-[-10%] rounded-full border border-dashed border-gold-400/30"></div>
-        <div class="arch relative aspect-[4/5] !border-white/10"><img src="/assets/img/frosted.webp" alt="${tr('Frosted film on office glass', 'فيلم مصنفر على زجاج مكتب')}" class="h-full w-full object-cover" loading="lazy"></div>
+        <div class="arch relative aspect-[4/5] !border-white/10"><img src="/assets/img/frosted.webp" alt="${tr('Frosted film on office glass', 'فيلم مصنفر على زجاج مكتب')}" class="h-full w-full object-cover" loading="lazy" decoding="async"></div>
         ${img3d('sparkles', 'floaty absolute -end-6 -top-4 h-20 w-20 drop-shadow-2xl')}
         <div class="float-chip floaty-2 absolute -start-6 bottom-12 flex items-center gap-3 p-3 pe-5"><span class="ico">${icon('shield', 'h-5 w-5', 2.2)}</span><span><span class="block text-xs text-muted">${tr('Every job', 'كل عمل')}</span><span class="block font-head font-extrabold text-ink">${tr('Quality guaranteed', 'جودة مضمونة')}</span></span></div>
       </div>
@@ -1564,7 +1596,7 @@ function showcase() {
       <div class="relative" data-tm data-scenes='${esc(JSON.stringify(scenes.map((s) => ({ img: s.img, from: s.from, to: s.to }))))}'>
         <div class="pointer-events-none absolute -inset-5 rounded-[40px] bg-gradient-to-br from-gold-200/60 via-transparent to-[#c7d5ee]/60 blur-2xl"></div>
         <div class="relative aspect-[4/3] overflow-hidden rounded-[30px] border-[6px] border-white bg-ink shadow-float sm:aspect-[16/11]" dir="ltr">
-          <img src="/assets/img/${scenes[0].img}.webp" alt="${tr('Window film demonstration', 'عرض توضيحي لفيلم النوافذ')}" class="absolute inset-0 h-full w-full object-cover transition-opacity duration-500" data-tm-img loading="lazy">
+          <img src="/assets/img/${scenes[0].img}.webp" alt="${tr('Window film demonstration', 'عرض توضيحي لفيلم النوافذ')}" class="absolute inset-0 h-full w-full object-cover transition-opacity duration-500" data-tm-img loading="lazy" decoding="async">
           <div class="tm-glare absolute inset-0" style="background:radial-gradient(70% 80% at 88% 8%,rgba(255,240,200,.95),rgba(255,190,90,.5) 35%,transparent 70%),linear-gradient(180deg,rgba(255,210,130,.28),rgba(255,170,80,.12))"></div>
           <div class="tm-film absolute inset-0" style="background:linear-gradient(115deg,rgba(14,26,46,.55),rgba(22,40,70,.4) 50%,rgba(14,26,46,.55))">
             <div class="absolute inset-0 bg-[linear-gradient(115deg,transparent_40%,rgba(255,255,255,.12)_48%,transparent_56%)]"></div>
@@ -1781,7 +1813,7 @@ function pageHome(page) {
   return layout(
     page,
     {
-      title: tr('Exotic Tint for Trading and Contracting — Premium Window Tinting & Protective Films in Doha', 'إكزوتك تينت للتجارة والمقاولات — تظليل نوافذ وأفلام حماية فاخرة في الدوحة'),
+      title: tr('Window Tinting & Protective Films in Doha, Qatar | Exotic Tint', 'تظليل النوافذ وأفلام الحماية في الدوحة، قطر | إكزوتك تينت'),
       description: tr(
         'Architectural window films, smart switchable glass, surface protection, decorative films and fabric nano coating across Qatar. 99% UV protection, on-site installation, free estimates.',
         'أفلام نوافذ معمارية وزجاج ذكي قابل للتحويل وحماية أسطح وأفلام ديكورية وطلاء نانو للأقمشة في جميع أنحاء قطر. حماية ٩٩٪ من الأشعة وتركيب في موقعك وتقديرات مجانية.'
@@ -1830,9 +1862,9 @@ ${pageHero({
 <section class="py-20 lg:py-28">
   <div class="container-site grid items-center gap-12 lg:grid-cols-2">
     <div class="grid grid-cols-2 gap-4" ${reveal()}>
-      <img src="/assets/img/marble.webp" alt="${tr('Marble protection film installation', 'تركيب فيلم حماية الرخام')}" class="aspect-[3/4] w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy">
+      <img src="/assets/img/marble.webp" alt="${tr('Marble protection film installation', 'تركيب فيلم حماية الرخام')}" class="aspect-[3/4] w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy" decoding="async">
       <div class="mt-10 space-y-4">
-        <img src="/assets/img/frosted.webp" alt="${tr('Decorative frosted film', 'فيلم مصنفر زخرفي')}" class="aspect-square w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy">
+        <img src="/assets/img/frosted.webp" alt="${tr('Decorative frosted film', 'فيلم مصنفر زخرفي')}" class="aspect-square w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy" decoding="async">
         <div class="rounded-[22px] bg-grad p-5 text-white shadow-gold"><span class="block font-head text-4xl font-extrabold">${num(6)}</span><span class="text-sm font-semibold">${tr('Specialist services under one roof', 'خدمات متخصصة تحت سقف واحد')}</span></div>
       </div>
     </div>
@@ -1859,7 +1891,7 @@ ${storiesSection()}`;
   return layout(
     page,
     {
-      title: tr('About Exotic Tint for Trading and Contracting — Window Tint & Protection Specialists', 'عن إكزوتك تينت للتجارة والمقاولات — مختصو التظليل والحماية'),
+      title: tr('About Us — Window Tint & Protection Specialists | Exotic Tint Qatar', 'من نحن — مختصو التظليل والحماية | إكزوتك تينت قطر'),
       description: tr('Meet Exotic Tint for Trading and Contracting: skilled professionals delivering on-site window tinting, frosted film, marble protection and nano coating across Doha, Lusail and Al Rayyan.', 'تعرّف على إكزوتك تينت للتجارة والمقاولات: محترفون يقدمون خدمات التظليل والأفلام المصنفرة وحماية الرخام وطلاء النانو في موقعك.'),
       image: 'commercial',
     },
@@ -1957,7 +1989,7 @@ ${quoteSection()}`;
   return layout(
     page,
     {
-      title: tr('Window Tinting & Protection Services in Qatar | Exotic Tint for Trading and Contracting', 'خدمات التظليل والحماية في قطر | إكزوتك تينت للتجارة والمقاولات'),
+      title: tr('Window Tinting & Protection Services in Qatar | Exotic Tint', 'خدمات التظليل والحماية في قطر | إكزوتك تينت'),
       description: tr('Architectural window films, smart switchable glass, surface protection, decorative films and fabric nano coating in Qatar.', 'أفلام النوافذ المعمارية والزجاج الذكي وحماية الأسطح والأفلام الديكورية وطلاء النانو للأقمشة في قطر.'),
       image: 'residential',
     },
@@ -2123,7 +2155,7 @@ function optionExplorer({ kicker, title, text, items, wa }) {
         <div class="order-1 lg:order-2 lg:col-span-7">
           <div class="ox-stage glow-card relative aspect-[4/3] overflow-hidden rounded-[24px] bg-[#e8eef6]" dir="ltr">
             ${items.map((it, i) => `<div class="ox-panel ${i === 0 ? 'is-on' : ''}" data-ox-panel="${i}" ${i ? 'aria-hidden="true"' : ''}>
-              ${it.img ? `<img src="/assets/img/${it.img}.webp" alt="" class="ox-img absolute inset-0 h-full w-full object-cover" style="object-position:${it.pos || '50% 50%'}" loading="lazy">` : ''}
+              ${it.img ? `<img src="/assets/img/${it.img}.webp" alt="" class="ox-img absolute inset-0 h-full w-full object-cover" style="object-position:${it.pos || '50% 50%'}" loading="lazy" decoding="async">` : ''}
               <div class="ox-layer absolute inset-0">${it.layer || ''}</div>
               <span class="ox-edge" aria-hidden="true"></span>
               <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent"></div>
@@ -2176,7 +2208,7 @@ function shadeStrip(img, title, text) {
     </div>
     <div class="shade-strip mt-10 flex h-[420px] gap-2 overflow-hidden rounded-[28px] sm:h-[460px]" data-a="up" dir="ltr">
       ${shades.map(([v, n, u], i) => `<div class="shade group relative flex-1 overflow-hidden rounded-[18px] ${i === 2 ? 'is-on' : ''}" tabindex="0">
-        <img src="/assets/img/${img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${18 + i * 16}% 50%" loading="lazy">
+        <img src="/assets/img/${img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${18 + i * 16}% 50%" loading="lazy" decoding="async">
         <div class="absolute inset-0" style="background:rgba(8,12,20,${((100 - v) / 100) * 0.85})"></div>
         <div class="absolute inset-x-0 bottom-0 p-4 text-white ${L === 'ar' ? 'text-right' : ''}" dir="${L === 'ar' ? 'rtl' : 'ltr'}">
           <p class="font-head text-3xl font-extrabold leading-none sm:text-4xl" dir="ltr">${v}%</p>
@@ -2200,7 +2232,7 @@ function finishGrid(img, title, text, items) {
     </div>
     <div class="mt-10 grid gap-3 ${items.length === 2 ? 'sm:grid-cols-2' : 'grid-cols-2 lg:grid-cols-4'}">
       ${items.map(([n, note, overlay]) => `<div class="group relative ${items.length === 2 ? 'aspect-[4/3]' : 'aspect-[3/4]'} overflow-hidden rounded-[22px]" data-a="up">
-        <img src="/assets/img/${img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+        <img src="/assets/img/${img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
         <div class="absolute inset-0" style="${overlay}"></div>
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 to-transparent p-4 pt-16">
           <p class="font-head text-lg font-bold text-white">${n}</p>
@@ -2227,7 +2259,7 @@ function spillTest() {
     </div>
     <div class="mt-10 grid gap-4 md:grid-cols-3">
       ${drinks.map(([n, c], k) => `<div class="spill relative aspect-[4/3] overflow-hidden rounded-[22px]" data-a="up" style="--liq:${c}">
-        <img src="/assets/img/nano.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${20 + k * 30}% 70%" loading="lazy">
+        <img src="/assets/img/nano.webp" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:${20 + k * 30}% 70%" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-[#e9e4dc]/70"></div>
         ${[[30, 45, 34], [55, 40, 26], [44, 62, 30], [68, 60, 20], [24, 66, 18]].map(([x, y, s2], j) => `<span class="spill-drop" style="left:${x}%;top:${y}%;width:${s2}px;height:${s2 * 0.82}px;--d:${j * 0.15 + k * 0.4}s"></span>`).join('')}
         <span class="absolute start-4 top-4 rounded-full bg-white px-3 py-1 text-sm font-bold text-ink shadow">${n}</span>
@@ -2705,7 +2737,7 @@ function topicSections(s) {
       return `
     <div class="tr-row${i % 2 ? ' tr-rev' : ''}" ${reveal()}>
       <figure class="tr-pic fx-${fx}" data-fx>
-        <img src="/assets/img/${img}.webp" alt="${esc(name)}" loading="lazy">
+        <img src="/assets/img/${img}.webp" alt="${esc(name)}" loading="lazy" decoding="async">
         <span class="fx-layer" aria-hidden="true"></span><span class="fx-edge" aria-hidden="true"></span><span class="fx-sheen" aria-hidden="true"></span>${fx === 'gloss' ? '<span class="fx-drop d1"></span><span class="fx-drop d2"></span><span class="fx-drop d3"></span>' : ''}
         <span class="fx-chip fx-a">${l0}</span><span class="fx-chip fx-b">${l1}</span>
       </figure>
@@ -2772,7 +2804,7 @@ function pageService(page) {
   const cta = `
 <section class="px-2.5 pb-16 sm:px-3">
   <div class="relative overflow-hidden rounded-[28px] bg-ink">
-    <img src="/assets/img/${cfg.cta[1]}.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" loading="lazy">
+    <img src="/assets/img/${cfg.cta[1]}.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" loading="lazy" decoding="async">
     <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/30 rtl:bg-gradient-to-l"></div>
     <div class="container-site relative flex flex-col items-start justify-between gap-6 py-16 lg:flex-row lg:items-center lg:py-20">
       <h2 class="max-w-xl font-head text-[2.1rem] font-extrabold leading-tight text-white sm:text-5xl">${cfg.cta[0]}</h2>
@@ -2786,7 +2818,7 @@ function pageService(page) {
   return layout(
     page,
     {
-      title: tr(`${t(s.title)} in Qatar | ${t(C.site.name)}`, `${t(s.title)} في قطر | ${t(C.site.name)}`),
+      title: tr(`${t(s.title)} in Qatar | Exotic Tint`, `${t(s.title)} في قطر | إكزوتك تينت`),
       description: t(s.summary),
       image: s.img,
       jsonld: {
@@ -2839,7 +2871,7 @@ ${mapSection()}`;
   return layout(
     page,
     {
-      title: tr('Contact Exotic Tint for Trading and Contracting — Free Window Tint Estimate', 'تواصل مع إكزوتك تينت للتجارة والمقاولات — تقدير مجاني للتظليل'),
+      title: tr('Contact Us — Free Window Tint Estimate | Exotic Tint Qatar', 'تواصل معنا — تقدير مجاني للتظليل | إكزوتك تينت قطر'),
       description: tr(`Call ${C.site.phone} or WhatsApp us for a free flat-rate estimate. Window tinting and protection films across Qatar, 7 days a week.`, `اتصل على ${C.site.phone} أو راسلنا على واتساب لتقدير مجاني بسعر ثابت. تظليل وأفلام حماية في كل قطر، ٧ أيام في الأسبوع.`),
       image: 'frosted',
     },
@@ -2885,7 +2917,7 @@ ${reviewUs()}`;
 
 function postCard(p, i) {
   return `<a href="${href(p.slug + '/')}" class="group flex flex-col overflow-hidden rounded-[28px] border border-line bg-white shadow-card transition hover:-translate-y-1.5 hover:shadow-soft" ${reveal(i * 80)}>
-    <div class="relative aspect-[16/10] overflow-hidden"><img src="/assets/img/${p.img}.webp" alt="${esc(t(p.title))}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+    <div class="relative aspect-[16/10] overflow-hidden"><img src="/assets/img/${p.img}.webp" alt="${esc(t(p.title))}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
       <span class="absolute start-4 top-4 rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase text-gold-700 shadow">${t(p.cat)}</span></div>
     <div class="flex flex-1 flex-col p-6">
       <p class="flex items-center gap-2 text-xs text-muted">${icon('calendar', 'h-3.5 w-3.5')} ${fmtDate(p.date)} · ${num(p.read)} ${tr('min read', 'دقائق قراءة')}</p>
@@ -2982,7 +3014,7 @@ function pagePost(page) {
           <a href="tel:${C.site.phoneRaw}" class="btn btn-primary mt-4 !py-2.5 text-sm">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
         </div>
         <div class="card p-5"><p class="font-head text-lg font-bold text-ink">${tr('More articles', 'مقالات أخرى')}</p>
-          ${others.map((o) => `<a href="${href(o.slug + '/')}" class="group mt-4 flex gap-3"><img src="/assets/img/${o.img}.webp" alt="" class="h-16 w-16 shrink-0 rounded-xl object-cover" loading="lazy"><span class="line-clamp-3 text-sm font-semibold leading-snug text-ink group-hover:text-gold-700">${t(o.title)}</span></a>`).join('')}
+          ${others.map((o) => `<a href="${href(o.slug + '/')}" class="group mt-4 flex gap-3"><img src="/assets/img/${o.img}.webp" alt="" class="h-16 w-16 shrink-0 rounded-xl object-cover" loading="lazy" decoding="async"><span class="line-clamp-3 text-sm font-semibold leading-snug text-ink group-hover:text-gold-700">${t(o.title)}</span></a>`).join('')}
         </div>
       </div>
     </aside>
@@ -3044,12 +3076,14 @@ function write(file, html) {
     }
   }
   write(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${C.site.domain}/sitemap.xml\n`);
-  const urls = PAGES.flatMap((p) => [`${C.site.domain}/${p.path}`, `${C.site.domain}/ar/${p.path}`]);
-  write(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`);
+  const today = new Date().toISOString().slice(0, 10);
+  const alt = (p) => `<xhtml:link rel="alternate" hreflang="en" href="${C.site.domain}/${p.path}"/><xhtml:link rel="alternate" hreflang="ar" href="${C.site.domain}/ar/${p.path}"/><xhtml:link rel="alternate" hreflang="x-default" href="${C.site.domain}/${p.path}"/>`;
+  const urls = PAGES.flatMap((p) => [[`${C.site.domain}/${p.path}`, p], [`${C.site.domain}/ar/${p.path}`, p]]);
+  write(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.map(([u, p]) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod><changefreq>${p.key === 'home' ? 'weekly' : 'monthly'}</changefreq><priority>${p.key === 'home' ? '1.0' : p.key === 'service' || p.key === 'services' ? '0.9' : '0.7'}</priority>${alt(p)}</url>`).join('\n')}\n</urlset>\n`);
   L = 'en';
   write(
     path.join(DIST, '404.html'),
-    layout({ key: '404', path: '' }, { title: 'Page not found — Exotic Tint for Trading and Contracting', description: 'Page not found' }, pageHero({ chip: '404', title: 'This page has been <span class="text-grad">tinted out.</span>', text: 'The page you’re looking for doesn’t exist. <a class="font-semibold text-gold-700 underline" href="/">Go back home</a> · <a class="font-semibold text-gold-700 underline" href="/ar/">العودة للرئيسية</a>' }))
+    layout({ key: '404', path: '' }, { title: 'Page not found | Exotic Tint Qatar', description: 'This page does not exist. Explore window tinting, smart glass and surface protection services from Exotic Tint Qatar.' }, pageHero({ chip: '404', title: 'This page has been <span class="text-grad">tinted out.</span>', text: 'The page you’re looking for doesn’t exist. <a class="font-semibold text-gold-700 underline" href="/">Go back home</a> · <a class="font-semibold text-gold-700 underline" href="/ar/">العودة للرئيسية</a>' }))
   );
   console.log(`Built ${count} pages (${LANGS.join(', ')}) → dist/`);
 })();

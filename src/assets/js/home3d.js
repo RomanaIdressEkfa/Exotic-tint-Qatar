@@ -80,7 +80,7 @@ function makeStage(host, cfg) {
   if (host.dataset.cam) cfg = Object.assign({}, cfg, JSON.parse(host.dataset.cam));
   const canvas = host.querySelector('canvas');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: host.hasAttribute('data-capture') });
-  renderer.setPixelRatio(host.hasAttribute('data-capture') ? 3 : Math.min(window.devicePixelRatio, 1.75));
+  renderer.setPixelRatio(host.hasAttribute('data-capture') ? 3 : Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = cfg.exposure || 1;
@@ -588,7 +588,14 @@ function fabricScene(host) {
 const hosts = document.querySelectorAll('[data-h3]');
 if (hosts.length && gsap && webgl()) {
   const map = { twin, smart: smartRoom, spill, decor: decorScene, fabric: fabricScene };
-  hosts.forEach((h) => map[h.dataset.h3] && map[h.dataset.h3](h));
+  hosts.forEach((h) => {
+    const fn = map[h.dataset.h3];
+    if (!fn) return;
+    if (h.hasAttribute('data-capture')) return fn(h);
+    // create the WebGL scene only when the section is about to scroll into view
+    const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); fn(h); } }, { rootMargin: '600px 0px' });
+    io.observe(h);
+  });
 } else {
   hosts.forEach((h) => h.classList.add('h3-fallback'));
 }
