@@ -105,6 +105,7 @@ function makeStage(host, cfg) {
   const rbox = (w, h, d, r = 0.06) => new RoundedBoxGeometry(w, h, d, 3, Math.min(r, w / 2 - 0.001, h / 2 - 0.001, d / 2 - 0.001));
   const frames = [];
   const look = { x: 0, y: 0 };
+  const dolly = { x: 0, y: 0, z: 0, tx: 0, ty: 0, tz: 0 };
   if (window.matchMedia('(pointer: fine)').matches) {
     host.addEventListener('pointermove', (e) => {
       const r = host.getBoundingClientRect();
@@ -118,18 +119,20 @@ function makeStage(host, cfg) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.fov = w / h < 1 ? cfg.fovTall || 44 : cfg.fov || 30;
+    // keep a minimum horizontal view so wide scenes never get cut off on narrow screens
+    if (cfg.minHFov) camera.fov = Math.max(camera.fov, (2 * Math.atan(Math.tan((cfg.minHFov * Math.PI) / 360) / (w / h)) * 180) / Math.PI);
     camera.updateProjectionMatrix();
   }
   resize();
   new ResizeObserver(resize).observe(host);
-  const api = { THREE, renderer, scene, camera, root, add, rbox, frames, look, onStart: null };
+  const api = { THREE, renderer, scene, camera, root, add, rbox, frames, look, dolly, onStart: null };
   let running = false, started = false, raf = 0;
   const clock = new THREE.Clock();
   function frame() {
     if (!running) return;
     const t = clock.getElapsedTime();
-    camera.position.set(base.x + look.x * 1.4, base.y - look.y * 0.9 + Math.sin(t * 0.5) * 0.06, base.z);
-    camera.lookAt(target);
+    camera.position.set(base.x + dolly.x + look.x * 1.4, base.y + dolly.y - look.y * 0.9 + Math.sin(t * 0.5) * 0.06, base.z + dolly.z);
+    camera.lookAt(target.x + dolly.tx, target.y + dolly.ty, target.z + dolly.tz);
     for (let i = 0; i < frames.length; i++) frames[i](t);
     renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
@@ -189,7 +192,7 @@ const plant = (S, x, z, s, G, parent) => {
    1. Same sun, two rooms
    ====================================================================== */
 function twin(host) {
-  const S = makeStage(host, { cam: [0, 7.4, 14.6], target: [0, 1.25, -0.4], fov: 30, fovTall: 56 });
+  const S = makeStage(host, { cam: [0, 7.4, 14.6], target: [0, 1.25, -0.4], fov: 30, fovTall: 56, minHFov: 50 });
   const G = plinth(S, 13.4, 6.6);
   const sun = lights(S, [3, 11, -12], '#ffd29a', 2.6);
 
@@ -463,7 +466,17 @@ function spill(host) {
   const splashM = M('#8b1426', { roughness: 0.05, envMapIntensity: 1.6 });
   const splash = Array.from({ length: 9 }, () => { const s = S.add(new THREE.SphereGeometry(0.035, 12, 10), splashM, [0.9, topY + 0.05, 0.5], { cast: false }); s.visible = false; return s; });
   const stepEls = host.closest('[data-h3-wrap]').querySelectorAll('[data-h3-step]');
-  const step = (k) => stepEls.forEach((el, i) => { el.classList.toggle('is-on', i === k); el.classList.toggle('is-done', i < k); });
+  const wrapEl = host.closest('[data-h3-wrap]');
+  const capN = wrapEl.querySelector('[data-sp-n]'), capT = wrapEl.querySelector('[data-sp-t]'), cap = capT && capT.parentNode;
+  const step = (k) => {
+    stepEls.forEach((el, i) => { el.classList.toggle('is-on', i === k); el.classList.toggle('is-done', i < k); });
+    if (cap && stepEls[k]) {
+      cap.classList.remove('is-swap'); void cap.offsetWidth; cap.classList.add('is-swap');
+      capN.textContent = '0' + (k + 1);
+      capT.textContent = stepEls[k].dataset.label;
+    }
+    if (cap) cap.classList.toggle('is-done', k >= stepEls.length);
+  };
   let tl = null;
   function play() {
     if (tl) tl.kill();
@@ -481,7 +494,10 @@ function spill(host) {
     });
     // 1) film goes on
     tl.set(sheenMat, { opacity: 1 }, 0.2).fromTo(sheen.position, { x: -2.4 }, { x: 2.4, duration: 1.1, ease: 'power2.inOut' }, 0.2).to(sheenMat, { opacity: 0, duration: 0.2 }, 1.2);
-    tl.to(filmMat, { opacity: 0.1, duration: 0.8 }, 0.4);
+    tl.to(filmMat, { opacity: 0.16, duration: 0.8 }, 0.4);
+    tl.set(S.dolly, { x: 0, y: 0, z: 0, tx: 0, ty: 0, tz: 0 }, 0)
+      .to(S.dolly, { x: -1.6, y: -1.7, z: -3.0, tx: 0.5, ty: 0.15, tz: 0.2, duration: 1.3, ease: 'power2.inOut' }, 1.4)
+      .to(S.dolly, { x: 0, y: 0, z: 0, tx: 0, ty: 0, tz: 0, duration: 1.4, ease: 'power2.inOut' }, 5.2);
     // 2) the glass tips over
     tl.to(glassPivot.rotation, { z: -1.45, duration: 0.45, ease: 'power2.in' }, 1.8);
     tl.to(glassPivot.position, { x: 0.62, duration: 0.45 }, 1.8);
@@ -535,7 +551,7 @@ function decorScene(host) {
   [-3.9, -1.3, 1.3, 3.9].forEach((x) => S.add(S.rbox(0.09, H, 0.09, 0.03), metal, [x, G + 0.1 + H / 2, z]));
   S.add(S.rbox(7.9, 0.09, 0.09, 0.03), metal, [0, G + 0.1 + H, z]);
   // logo on the middle pane
-  const logo = canvasTex(256, 256, (g, w) => { g.fillStyle = 'rgba(255,255,255,.95)'; g.beginPath(); g.arc(w / 2, w / 2, w * 0.42, 0, Math.PI * 2); g.fill(); g.globalCompositeOperation = 'destination-out'; g.font = `800 ${w * 0.3}px Urbanist, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('ET', w / 2, w / 2 + 6); });
+  const logo = canvasTex(256, 256, (g, w) => { g.fillStyle = 'rgba(255,255,255,.95)'; g.beginPath(); g.arc(w / 2, w / 2, w * 0.42, 0, Math.PI * 2); g.fill(); g.globalCompositeOperation = 'destination-out'; g.font = `800 ${w * 0.3}px 'Albert Sans', sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('ET', w / 2, w / 2 + 6); });
   S.add(new THREE.PlaneGeometry(0.75, 0.75), new THREE.MeshBasicMaterial({ map: logo, transparent: true, depthWrite: false, toneMapped: false }), [0, G + 2.35, z + 0.04], { cast: false, receive: false }).renderOrder = 6;
   // office behind and in front
   const wal = M('#ffffff', { map: walnut(), roughness: 0.45 });

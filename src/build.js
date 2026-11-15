@@ -189,7 +189,7 @@ function head(page, meta) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 ${(page.key === 'home' || page.service) ? '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>' : ''}
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Urbanist:wght@500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
 <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
 ${(page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions')) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
@@ -883,31 +883,229 @@ function homeSmart() {
 </section>`;
 }
 
-/* 3 · step tracker synced with the spill animation */
+/* 3 · the 3D scene explains itself: live caption on top, 4-step timeline at the bottom */
 function homeSpill() {
   const steps = [
-    [tr('Film goes on', 'تركيب الفيلم'), tr('An invisible layer seals the marble.', 'طبقة غير مرئية تحمي الرخام.')],
-    [tr('Something spills', 'انسكاب'), tr('Wine, coffee, lemon — it happens.', 'نبيذ، قهوة، ليمون — يحدث.')],
-    [tr('It beads up', 'يتجمع'), tr("Liquid can't soak in or etch the stone.", 'لا يتسرب السائل ولا يحفر الحجر.')],
-    [tr('One wipe — gone', 'مسحة واحدة'), tr('No stain, no ring, no polishing bill.', 'لا بقع ولا حلقات ولا تلميع.')],
+    [tr('Film on', 'تركيب الفيلم'), tr('Film goes on', 'تركيب الفيلم')],
+    [tr('Spill', 'انسكاب'), tr('Something spills', 'انسكاب')],
+    [tr('Beads up', 'يتجمع'), tr("It beads up — can't soak in", 'يتجمع — لا يتسرب')],
+    [tr('Wiped', 'مسح'), tr('One wipe — gone', 'مسحة واحدة — اختفى')],
   ];
+  const surf = [['🪨', tr('Marble', 'الرخام')], ['🪵', tr('Wood', 'الخشب')], ['🍽️', tr('Countertops', 'الأسطح')], ['✨', tr('Steel', 'الستيل')]];
+  const overlay = `
+        <div class="sp3-now" aria-live="polite"><span class="sp3-now-n" data-sp-n dir="ltr">01</span><span data-sp-t>${steps[0][1]}</span></div>
+        <div class="sp3-time">${steps.map(([s, long], i) => `<div class="sp3-seg" data-h3-step data-label="${esc(long)}" style="--d:${[1.6, 1.2, 0.9, 1.75][i]}s"><span>${s}</span><i><b></b></i></div>`).join('')}</div>`;
   return `
 <section class="py-14 lg:py-20">
   <div class="container-site">
-    <div class="sp2" data-h3-wrap>
-      <div class="sp2-text" ${reveal()}>
+    <div class="sp3" data-h3-wrap>
+      <div class="sp3-text" ${reveal()}>
         <span class="eyebrow">${tr('Surface protection', 'حماية الأسطح')}</span>
         <h2 class="h3-title">${tr('Spill it. <span class="text-grad">Wipe it.</span>', 'اسكبه. <span class="text-grad">امسحه.</span>')}</h2>
-        <p class="h3-line">${tr('Clear protection film for marble, wood, countertops and steel.', 'فيلم حماية شفاف للرخام والخشب والأسطح والستيل.')}</p>
-        <ol class="sp2-steps">
-          ${steps.map(([a, b], i) => `<li data-h3-step><span class="sp2-n" dir="ltr">${pad(i + 1)}</span><span><b>${a}</b><span>${b}</span></span><span class="sp2-bar"><i></i></span></li>`).join('')}
-        </ol>
-        <button type="button" class="ts-link mt-6 text-sm" data-h3-again>${tr('Spill again', 'اسكب مرة أخرى')} ${arrow('h-4 w-4')}</button>
+        <p class="h3-line">${tr('A clear film seals the surface, so liquids sit on top and wipe straight off — no stains, no etching.', 'فيلم شفاف يغلق السطح، فتبقى السوائل فوقه وتُمسح فوراً — بلا بقع ولا تآكل.')}</p>
+        <div class="sp3-surf">${surf.map(([e, l]) => `<span><b aria-hidden="true"></b>${l}</span>`).join('')}</div>
+        <button type="button" class="sp3-replay" data-h3-again><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> ${tr('Replay', 'إعادة')}</button>
       </div>
-      ${h3Stage('spill', 'tp-counter', `<div class="h3-chip h3-cr"><span class="h3-chip-l">${tr('Marble', 'الرخام')}</span><span class="h3-chip-v">${tr('Protected', 'محمي')}</span></div>`, 'sp2-stage')}
+      ${h3Stage('spill', 'tp-counter', overlay, 'sp3-stage')}
     </div>
   </div>
 </section>`;
+}
+
+/* Knowledge rows: photo on one side, H2 + paragraphs with bold key phrases on the other (sides alternate).
+   Topics deliberately differ from the service cards above: heat, film types, process, coverage, pricing. */
+function seoRows() {
+  const post = POSTS.find((p) => p.slug.startsWith('super-nano-ceramic')) || POSTS[0];
+  const rows = [
+    {
+      img: 'bl-villa', chip: ['45°C+', tr('Qatar summers', 'صيف قطر')],
+      h: tr('Why Window Film Matters in Qatar’s Heat', 'لماذا أفلام النوافذ مهمة في حرارة قطر'),
+      p: [
+        tr('With summer temperatures above 45°C, untreated glass lets <strong>solar heat</strong> and <strong>UV rays</strong> pour into homes and offices. Rooms overheat, the AC works harder and furniture fades.', 'مع تجاوز حرارة الصيف ٤٥ درجة، يسمح الزجاج غير المعالج بدخول <strong>حرارة الشمس</strong> و<strong>الأشعة فوق البنفسجية</strong> إلى المنازل والمكاتب. ترتفع حرارة الغرف، ويعمل المكيف بجهد أكبر، ويبهت الأثاث.'),
+        tr('<strong>Heat rejection window film</strong> stops up to 98% of that heat at the glass and blocks 99% of UV — while keeping your daylight and your view.', '<strong>أفلام العزل الحراري</strong> توقف حتى ٩٨٪ من تلك الحرارة عند الزجاج وتحجب ٩٩٪ من الأشعة — مع الحفاظ على ضوء النهار والإطلالة.'),
+      ],
+      link: [href('service/architectural-window-film-solutions/'), tr('See window films', 'شاهد أفلام النوافذ')],
+    },
+    {
+      img: 'bl-ceramic', chip: [tr('Nano ceramic', 'نانو سيراميك'), tr('No fading', 'لا يبهت')],
+      h: tr('Nano Ceramic vs Regular Tint', 'النانو سيراميك أم التظليل العادي'),
+      p: [
+        tr('<strong>Regular dyed tint</strong> mainly darkens the glass. <strong>Nano ceramic film</strong> uses ceramic particles to reject infrared heat without heavy darkening, so rooms stay bright and cool.', '<strong>التظليل العادي</strong> يُعتم الزجاج بشكل أساسي. أما <strong>فيلم النانو سيراميك</strong> فيستخدم جزيئات سيراميكية لصد الحرارة دون تعتيم كبير، فتبقى الغرف مضيئة وباردة.'),
+        tr('Ceramic film does not interfere with <strong>phone or GPS signals</strong>, and it will not fade or turn purple over time.', 'فيلم السيراميك لا يؤثر على <strong>إشارة الجوال أو الـ GPS</strong>، ولا يبهت أو يتغير لونه مع الوقت.'),
+      ],
+      link: [href(post.slug + '/'), tr('Read the full comparison', 'اقرأ المقارنة الكاملة')],
+    },
+    {
+      img: 'commercial', chip: ['7/7', tr('8 AM – 6 PM', '٨ ص – ٦ م')],
+      h: tr('How Window Film Installation Works', 'كيف يتم تركيب أفلام النوافذ'),
+      p: [
+        tr('Send photos or sizes of your glass on <strong>WhatsApp</strong> and we reply with a <strong>free estimate</strong>. Booking takes less than 60 seconds.', 'أرسل صور أو مقاسات الزجاج عبر <strong>واتساب</strong> وسنرد بـ<strong>تقدير مجاني</strong>. الحجز يستغرق أقل من ٦٠ ثانية.'),
+        tr('Our team then comes to you for <strong>on-site installation</strong> at your home, office or building — seven days a week.', 'ثم يأتي فريقنا إليك لـ<strong>التركيب في الموقع</strong> في منزلك أو مكتبك أو مبناك — سبعة أيام في الأسبوع.'),
+      ],
+      link: [waHello(), tr('Start on WhatsApp', 'ابدأ عبر واتساب'), true],
+    },
+    {
+      img: 'residential', chip: [tr('On-site', 'في الموقع'), tr('Across Qatar', 'في أنحاء قطر')],
+      h: tr('Window Tinting Across Doha &amp; Qatar', 'تظليل النوافذ في الدوحة وأنحاء قطر'),
+      p: [
+        tr('We install in <strong>Doha</strong>, <strong>Lusail</strong>, <strong>The Pearl</strong>, <strong>West Bay</strong>, <strong>Al Rayyan</strong>, <strong>Al Gharrafa</strong>, <strong>Al Kheesa</strong>, <strong>Al Wakra</strong> and the surrounding areas.', 'نقوم بالتركيب في <strong>الدوحة</strong> و<strong>لوسيل</strong> و<strong>اللؤلؤة</strong> و<strong>الخليج الغربي</strong> و<strong>الريان</strong> و<strong>الغرافة</strong> و<strong>الخيسة</strong> و<strong>الوكرة</strong> والمناطق المحيطة.'),
+        tr('Villas, apartments, offices and commercial buildings — the work is done at your property, so there is nothing to bring to a workshop.', 'فلل وشقق ومكاتب ومبانٍ تجارية — يتم العمل في عقارك، فلا حاجة لإحضار شيء إلى ورشة.'),
+      ],
+      link: [href('contact/'), tr('Contact us', 'تواصل معنا')],
+    },
+    {
+      img: 'cs-office', chip: [tr('Flat rate', 'سعر ثابت')],
+      h: tr('Clear Pricing, Free Estimate', 'أسعار واضحة وتقدير مجاني'),
+      p: [
+        tr('Every job is quoted at an affordable <strong>flat rate</strong> with <strong>no hidden fees</strong>. The price depends on the film you choose and the size of your glass.', 'كل عمل يُسعّر بـ<strong>سعر ثابت</strong> مناسب <strong>دون رسوم خفية</strong>. يعتمد السعر على نوع الفيلم ومساحة الزجاج.'),
+        tr('We accept secure <strong>cashless payment</strong>, and the estimate is always free.', 'نقبل <strong>الدفع الإلكتروني</strong> الآمن، والتقدير مجاني دائماً.'),
+      ],
+      link: [href('contact/') + '#quote', tr('Get a free quote', 'احصل على عرض مجاني')],
+    },
+  ];
+  return knowledgeRows({
+    title: tr('Window Tinting in Qatar: <span class="text-grad">What to Know</span>', 'تظليل النوافذ في قطر: <span class="text-grad">ما يجب معرفته</span>'),
+    intro: tr('Straight answers on heat, film types, installation, coverage and pricing — from the team that installs <strong>window film in Doha</strong> seven days a week.', 'إجابات واضحة عن الحرارة وأنواع الأفلام والتركيب والتغطية والأسعار — من الفريق الذي يركّب <strong>أفلام النوافذ في الدوحة</strong> سبعة أيام في الأسبوع.'),
+    rows,
+  });
+}
+
+/* Shared renderer for knowledge rows (homepage + service pages) */
+function knowledgeRows({ title, intro, rows }) {
+  const row = (r, i) => `
+    <article class="sr-row${i % 2 ? ' sr-rev' : ''}" ${reveal()}>
+      <div class="sr-img">
+        <img src="/assets/img/${r.img}.webp" alt="${esc(r.h.replace(/&amp;/g, '&'))}" loading="lazy" decoding="async">
+        <span class="sr-no" dir="ltr">${pad(i + 1)}</span>
+        <span class="sr-chip"><b>${r.chip[0]}</b>${r.chip[1] ? `<span>${r.chip[1]}</span>` : ''}</span>
+      </div>
+      <div class="sr-text">
+        <h3 class="sr-h">${r.h}</h3>
+        ${r.p.map((x) => `<p class="sr-p">${x}</p>`).join('')}
+        <a href="${r.link[0]}"${r.link[2] ? ' target="_blank" rel="noopener"' : ''} class="sr-link">${r.link[1]} ${arrow('h-4 w-4')}</a>
+      </div>
+    </article>`;
+  return `
+<section class="py-14 lg:py-20">
+  <div class="container-site">
+    <div class="sr-head" ${reveal()}>
+      <h2 class="sr-title">${title}</h2>
+      ${intro ? `<p class="sr-intro">${intro}</p>` : ''}
+    </div>
+    <div class="sr-list">${rows.map(row).join('')}</div>
+  </div>
+</section>`;
+}
+
+
+/* Service-page knowledge rows: answers people search for, specific to each service */
+function serviceKnowledge(s) {
+  const wa = waHello();
+  const quote = [href('contact/') + '#quote', tr('Get a free quote', 'احصل على عرض مجاني')];
+  const T = {
+    'architectural-window-film-solutions': {
+      title: tr('Window Film for Homes &amp; Buildings: <span class="text-grad">What to Know</span>', 'أفلام النوافذ للمنازل والمباني: <span class="text-grad">ما يجب معرفته</span>'),
+      rows: [
+        { img: 'tp-solar', chip: [tr('Up to 98%', 'حتى ٩٨٪'), tr('heat blocked', 'حرارة محجوبة')],
+          h: tr('How Solar Control Film Cools a Room', 'كيف يبرّد فيلم التحكم الحراري الغرفة'),
+          p: [tr('Most of the heat that comes through glass is <strong>infrared</strong>. A <strong>nano ceramic solar control film</strong> reflects and absorbs it at the window, so far less heat reaches the room.', 'معظم الحرارة التي تمر عبر الزجاج هي <strong>أشعة تحت حمراء</strong>. <strong>فيلم النانو سيراميك للتحكم الحراري</strong> يعكسها ويمتصها عند النافذة، فيصل إلى الغرفة قدر أقل بكثير من الحرارة.'),
+              tr('Daylight still comes in, so rooms stay bright — and the AC has less work to do.', 'ويبقى ضوء النهار يدخل، فتبقى الغرف مشرقة — ويعمل المكيف أقل.')],
+          link: quote },
+        { img: 'tp-safety', chip: [tr('Safety', 'أمان'), tr('Holds glass', 'يمسك الزجاج')],
+          h: tr('Safety &amp; Security Film for Glass', 'أفلام الأمان والحماية للزجاج'),
+          p: [tr('<strong>Safety film</strong> bonds to the glass, so if a pane breaks the pieces stay together instead of falling into the room.', '<strong>فيلم الأمان</strong> يلتصق بالزجاج، فإذا انكسر اللوح بقيت القطع متماسكة بدل أن تسقط في الغرفة.'),
+              tr('Thicker <strong>security films</strong> also slow down break-ins — useful for ground-floor villas, shopfronts and offices.', 'كما أن <strong>أفلام الحماية</strong> الأسمك تُبطئ محاولات الاقتحام — وهي مفيدة للفلل الأرضية والمحلات والمكاتب.')],
+          link: quote },
+        { img: 'tp-privacy', chip: [tr('Privacy', 'خصوصية'), tr('By day', 'نهاراً')],
+          h: tr('Privacy, Reflective or Blackout?', 'خصوصية أم عاكس أم تعتيم؟'),
+          p: [tr('<strong>Reflective film</strong> gives a mirror look from outside during the day. <strong>Privacy film</strong> darkens the view in. <strong>Blackout film</strong> stops all light — for bedrooms, cinemas and storage.', '<strong>الفيلم العاكس</strong> يعطي مظهر مرآة من الخارج نهاراً. <strong>فيلم الخصوصية</strong> يحجب الرؤية إلى الداخل. <strong>فيلم التعتيم</strong> يوقف الضوء كلياً — لغرف النوم والسينما والتخزين.'),
+              tr('Tell us the room and we recommend the right one — many buildings mix several.', 'أخبرنا عن الغرفة ونوصي بالمناسب — كثير من المباني تجمع عدة أنواع.')],
+          link: [wa, tr('Ask on WhatsApp', 'اسأل عبر واتساب'), true] },
+      ],
+    },
+    'smart-glass-privacy-solutions': {
+      title: tr('Smart Switchable Film: <span class="text-grad">What to Know</span>', 'الفيلم الذكي القابل للتحويل: <span class="text-grad">ما يجب معرفته</span>'),
+      rows: [
+        { img: 'tp-smart', chip: [tr('On / Off', 'تشغيل / إيقاف'), tr('In a second', 'في ثانية')],
+          h: tr('How Smart Film Switches', 'كيف يتحول الفيلم الذكي'),
+          p: [tr('With the power <strong>off</strong>, the film scatters light and the glass looks frosted. Switch it <strong>on</strong> and it turns clear in about a second.', 'عند <strong>إيقاف</strong> الكهرباء يشتت الفيلم الضوء فيبدو الزجاج مصنفراً. وعند <strong>التشغيل</strong> يصبح شفافاً خلال ثانية تقريباً.'),
+              tr('Control it with a <strong>wall switch</strong>, a remote or a smart-home app — one room or several zones.', 'تحكم به عبر <strong>مفتاح جداري</strong> أو ريموت أو تطبيق المنزل الذكي — لغرفة واحدة أو عدة مناطق.')],
+          link: quote },
+        { img: 'frosted', chip: [tr('No new glass', 'دون زجاج جديد')],
+          h: tr('Fitted on Your Existing Glass', 'يُركّب على زجاجك الحالي'),
+          p: [tr('Smart film is a <strong>self-adhesive film</strong>, so we apply it to the glass you already have — no glazing work and no replacing panels.', 'الفيلم الذكي <strong>فيلم لاصق</strong>، لذا نركّبه على الزجاج الموجود لديك — دون أعمال زجاج ودون تغيير الألواح.'),
+              tr('The power connection is run neatly along the frame and hidden wherever possible.', 'ويُمدّ توصيل الكهرباء بعناية على طول الإطار ويُخفى قدر الإمكان.')],
+          link: quote },
+        { img: 'cs-office', chip: [tr('Offices', 'مكاتب'), tr('Clinics', 'عيادات')],
+          h: tr('Where Smart Glass Works Best', 'أين يناسب الزجاج الذكي أكثر'),
+          p: [tr('<strong>Meeting rooms</strong> and offices that need privacy only at times, <strong>clinics</strong>, bathrooms and bedrooms with glass walls, and shopfronts.', '<strong>غرف الاجتماعات</strong> والمكاتب التي تحتاج الخصوصية أحياناً، و<strong>العيادات</strong>، والحمامات وغرف النوم ذات الجدران الزجاجية، وواجهات المحلات.'),
+              tr('In frosted mode the glass can also act as a <strong>projection screen</strong>.', 'وفي الوضع المصنفر يمكن استخدام الزجاج كـ<strong>شاشة عرض</strong>.')],
+          link: [wa, tr('Ask on WhatsApp', 'اسأل عبر واتساب'), true] },
+      ],
+    },
+    'surface-protection-solutions': {
+      title: tr('Surface Protection Film: <span class="text-grad">What to Know</span>', 'أفلام حماية الأسطح: <span class="text-grad">ما يجب معرفته</span>'),
+      rows: [
+        { img: 'bl-marble', chip: [tr('Marble', 'رخام'), tr('No etching', 'دون تآكل')],
+          h: tr('Why Marble Needs Protection', 'لماذا يحتاج الرخام إلى حماية'),
+          p: [tr('Marble is softer than it looks. <strong>Lemon, vinegar and coffee</strong> etch dull marks into it, and keys and cups leave <strong>scratches</strong>.', 'الرخام أنعم مما يبدو. <strong>الليمون والخل والقهوة</strong> تترك آثار تآكل باهتة، والمفاتيح والأكواب تترك <strong>خدوشاً</strong>.'),
+              tr('A clear <strong>marble protection film</strong> takes the damage instead, and wipes clean.', '<strong>فيلم حماية الرخام</strong> الشفاف يتحمل الضرر بدلاً منه، ويُمسح بسهولة.')],
+          link: quote },
+        { img: 'tp-wood', chip: [tr('Wood &amp; steel', 'خشب وستانلس')],
+          h: tr('Wood, Countertops &amp; Stainless Steel', 'الخشب وأسطح المطابخ والستانلس'),
+          p: [tr('On <strong>wood</strong> the film stops water rings and heat marks. On <strong>countertops</strong> and dining tables it takes daily wear.', 'على <strong>الخشب</strong> يمنع الفيلم حلقات الماء وآثار الحرارة. وعلى <strong>أسطح المطابخ</strong> وطاولات الطعام يتحمل الاستخدام اليومي.'),
+              tr('On <strong>stainless steel</strong> — lifts, appliances, doors — it keeps fingerprints and scratches off.', 'وعلى <strong>الستانلس ستيل</strong> — المصاعد والأجهزة والأبواب — يمنع البصمات والخدوش.')],
+          link: quote },
+        { img: 'cs-marble', chip: [tr('QAR 80–120/m²', '٨٠–١٢٠ ريال/م²'), tr('once', 'مرة واحدة')],
+          h: tr('Film vs Restoration: The Cost', 'الفيلم أم الترميم: التكلفة'),
+          p: [tr('Marble <strong>restoration</strong> can cost <strong>QAR 120–250/m²</strong> and often needs repeating every few years.', 'قد يكلف <strong>ترميم</strong> الرخام <strong>١٢٠–٢٥٠ ريال/م²</strong> وغالباً يتكرر كل بضع سنوات.'),
+              tr('Protection film is around <strong>QAR 80–120/m²</strong>, lasts <strong>7–10 years</strong>, and peels off cleanly if you ever want it removed.', 'فيلم الحماية حوالي <strong>٨٠–١٢٠ ريال/م²</strong>، ويدوم <strong>٧–١٠ سنوات</strong>، ويُزال بسهولة إذا أردت ذلك.')],
+          link: [href('cost-of-marble-restoration-vs-prevention/'), tr('Read the cost guide', 'اقرأ دليل التكلفة')] },
+      ],
+    },
+    'decorative-interior-solutions': {
+      title: tr('Decorative Film &amp; Branding: <span class="text-grad">What to Know</span>', 'الأفلام الديكورية والهوية: <span class="text-grad">ما يجب معرفته</span>'),
+      rows: [
+        { img: 'tp-decor', chip: [tr('Proof first', 'نموذج أولاً')],
+          h: tr('From Your Idea to the Glass', 'من فكرتك إلى الزجاج'),
+          p: [tr('Send a <strong>logo, pattern or reference photo</strong>. We prepare a proof, and only cut once you approve it.', 'أرسل <strong>شعاراً أو نقشاً أو صورة مرجعية</strong>. نجهز نموذجاً، ولا نقص إلا بعد موافقتك.'),
+              tr('Films are cut precisely and fitted on-site, bubble-free.', 'تُقص الأفلام بدقة وتُركّب في موقعك دون فقاعات.')],
+          link: [wa, tr('Send your design', 'أرسل تصميمك'), true] },
+        { img: 'tp-frosted', chip: [tr('Light still in', 'الضوء يدخل')],
+          h: tr('Frosted Designs for Privacy', 'تصاميم مصنفرة للخصوصية'),
+          p: [tr('<strong>Frosted bands</strong>, lines or full frost give privacy in meeting rooms, clinics and bathrooms — while <strong>daylight still passes through</strong>.', '<strong>الأشرطة المصنفرة</strong> أو الخطوط أو التصنفير الكامل تمنح الخصوصية في غرف الاجتماعات والعيادات والحمامات — مع <strong>مرور ضوء النهار</strong>.'),
+              tr('It removes cleanly later, so it suits rented offices too.', 'ويُزال بسهولة لاحقاً، فيناسب المكاتب المستأجرة أيضاً.')],
+          link: quote },
+        { img: 'tp-wallpaper', chip: [tr('Feature walls', 'جدران مميزة')],
+          h: tr('Wallpaper Installation', 'تركيب ورق الجدران'),
+          p: [tr('<strong>Feature walls</strong> for majlis, bedrooms, offices and showrooms — we can supply the wallpaper, or install one you already have.', '<strong>جدران مميزة</strong> للمجالس وغرف النوم والمكاتب والمعارض — يمكننا توريد ورق الجدران أو تركيب ورق لديك.'),
+              tr('Most walls are finished in a day.', 'معظم الجدران تُنجز في يوم.')],
+          link: quote },
+      ],
+    },
+    'fabric-material-protection': {
+      title: tr('Fabric Nano Coating: <span class="text-grad">What to Know</span>', 'طلاء النانو للأقمشة: <span class="text-grad">ما يجب معرفته</span>'),
+      rows: [
+        { img: 'tp-sofa', chip: [tr('Invisible', 'غير مرئي')],
+          h: tr('How Nano Coating Protects Fabric', 'كيف يحمي طلاء النانو القماش'),
+          p: [tr('The coating wraps <strong>each fibre</strong>, so liquids sit on top as drops instead of soaking in.', 'يغلّف الطلاء <strong>كل ليف</strong>، فتبقى السوائل قطرات على السطح بدل أن تتغلغل.'),
+              tr('The fabric <strong>still breathes</strong> and keeps the same look and feel.', 'ويبقى القماش <strong>يتنفس</strong> ويحافظ على نفس المظهر والملمس.')],
+          link: quote },
+        { img: 'tp-stain', chip: [tr('Blot it', 'امسحه')],
+          h: tr('Coffee, Juice and Oil', 'القهوة والعصير والزيت'),
+          p: [tr('Everyday spills — <strong>coffee, juice, tea and oil</strong> — bead up and can be blotted away before they stain.', 'الانسكابات اليومية — <strong>القهوة والعصير والشاي والزيت</strong> — تتجمع قطرات ويمكن مسحها قبل أن تترك بقعة.'),
+              tr('Ideal for homes with children, guests and busy majlis evenings.', 'مثالي للمنازل التي فيها أطفال وضيوف وسهرات مجلس.')],
+          link: quote },
+        { img: 'nano', chip: [tr('Same day', 'نفس اليوم')],
+          h: tr('What We Coat', 'ماذا نطلي'),
+          p: [tr('<strong>Sofas, majlis seating, carpets, curtains</strong> and cushions — coated at your home in a single visit.', '<strong>الكنب وجلسات المجالس والسجاد والستائر</strong> والوسائد — نطليها في منزلك بزيارة واحدة.'),
+              tr('Once cured it is <strong>safe for everyday family use</strong>.', 'وبعد الجفاف يصبح <strong>آمناً للاستخدام العائلي اليومي</strong>.')],
+          link: [wa, tr('Ask on WhatsApp', 'اسأل عبر واتساب'), true] },
+      ],
+    },
+  };
+  const k = T[s.slug];
+  return k ? knowledgeRows({ title: k.title, intro: '', rows: k.rows }) : '';
 }
 
 function difference() {
@@ -1842,6 +2040,7 @@ function pageHome(page) {
         homeTwin(),
         homeSmart(),
         homeSpill(),
+        seoRows(),
       ]
         .map((html, i) => `<div class="home-band ${i % 2 ? 'band-ice' : 'bg-white'} py-12 lg:py-16">${html}</div>`)
         .join('')
@@ -1865,7 +2064,7 @@ ${pageHero({
       <img src="/assets/img/marble.webp" alt="${tr('Marble protection film installation', 'تركيب فيلم حماية الرخام')}" class="aspect-[3/4] w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy" decoding="async">
       <div class="mt-10 space-y-4">
         <img src="/assets/img/frosted.webp" alt="${tr('Decorative frosted film', 'فيلم مصنفر زخرفي')}" class="aspect-square w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy" decoding="async">
-        <div class="rounded-[22px] bg-grad p-5 text-white shadow-gold"><span class="block font-head text-4xl font-extrabold">${num(6)}</span><span class="text-sm font-semibold">${tr('Specialist services under one roof', 'خدمات متخصصة تحت سقف واحد')}</span></div>
+        <div class="rounded-[22px] bg-grad p-5 text-white shadow-gold"><span class="block font-head text-4xl font-extrabold">${num(C.services.length)}</span><span class="text-sm font-semibold">${tr('Specialist services under one roof', 'خدمات متخصصة تحت سقف واحد')}</span></div>
       </div>
     </div>
     <div>
@@ -2522,12 +2721,12 @@ const TW_SCENES = {
     <path ${K('k-draw', 1.4, 1)} pathLength="1" d="M186 64 L170 262" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
     <path ${K('k-draw', 1.5, 1)} pathLength="1" d="M214 64 L232 262" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
     <path d="M20 268 H380" stroke="#d6e2ef" stroke-width="2"/>${sofa(60, 234)}
-    <g ${K('k-out', 2.3, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#fed7aa" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${HEAT}" font-family="Urbanist,sans-serif">46°</text></g>
-    <g ${K('k-fade', 2.5, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#bfdbfe" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${BLUE}" font-family="Urbanist,sans-serif">32°</text></g>`,
+    <g ${K('k-out', 2.3, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#fed7aa" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${HEAT}" font-family="Albert Sans,sans-serif">46°</text></g>
+    <g ${K('k-fade', 2.5, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#bfdbfe" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${BLUE}" font-family="Albert Sans,sans-serif">32°</text></g>`,
 
   smartOff: () => smartBase(false) + crystals(false) + switchG(false),
   smartOn: () => smartBase('on') + crystals(true) + switchG(true) + `<path ${K('k-draw', 0.5, 0.7)} pathLength="1" d="M318 246 H296 V200" stroke="${BLUE}" stroke-width="3" fill="none" stroke-dasharray="1"/>`,
-  smartClear: () => smartBase('clear') + switchG(true, true) + check(300, 60, 0.9) + `<g ${K('k-fade', 0.5, 0.5)}><rect x="160" y="236" width="80" height="30" rx="15" fill="${NAVY}"/><text x="200" y="256" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="Urbanist,sans-serif">&lt; 1s</text></g>`,
+  smartClear: () => smartBase('clear') + switchG(true, true) + check(300, 60, 0.9) + `<g ${K('k-fade', 0.5, 0.5)}><rect x="160" y="236" width="80" height="30" rx="15" fill="${NAVY}"/><text x="200" y="256" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="Albert Sans,sans-serif">&lt; 1s</text></g>`,
 
   marble: () => `
     <polygon points="50,170 350,170 392,254 8,254" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
@@ -2831,7 +3030,7 @@ function pageService(page) {
         hasOfferCatalog: { '@type': 'OfferCatalog', name: t(s.title), itemListElement: s.options.map(([n, d]) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: t(n), description: t(d) } })) },
       },
     },
-    hero + topicSections(s) + cfg.middle(s)
+    hero + topicSections(s) + cfg.middle(s) + serviceKnowledge(s)
   );
 }
 
@@ -2845,7 +3044,7 @@ function pageContact(page) {
   const body = `
 ${pageHero({
   chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('chat', 'h-4 w-4', 2.2)}</span>${tr('Contact', 'تواصل معنا')}`,
-  title: tr('Contact us &amp; <span class="text-grad">enjoy your time off</span>', 'تواصل معنا <span class="text-grad">واستمتع بوقتك</span>'),
+  title: tr('Get a free estimate <span class="text-grad">in minutes</span>', 'احصل على تقدير مجاني <span class="text-grad">خلال دقائق</span>'),
   text: tr('Reach out for expert advice in Doha. Whether it’s window film, smart glass or surface protection, we’re here to help with precision and care.', 'تواصل معنا للحصول على استشارة متخصصة في الدوحة. سواء كانت أفلام نوافذ أو زجاجاً ذكياً أو حماية أسطح، نحن هنا لمساعدتك بدقة وعناية.'),
   crumbs: [[t(C.ui.nav.contact)]],
   image: 'frosted',

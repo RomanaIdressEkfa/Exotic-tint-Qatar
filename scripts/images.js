@@ -49,13 +49,56 @@ async function brandRecolor(input, navyText) {
   return sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } }).png().toBuffer();
 }
 
+// Turn the white background of the light logo into transparency.
+// Only near-white pixels connected to the image edge are removed (flood fill), so the silver
+// buildings and white window details inside the logo stay solid. Edges get soft alpha.
+async function keyWhite(input) {
+  const { data, info } = await sharp(input).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height, N = W * H;
+  const light = (i) => Math.min(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
+  const sat = (i) => Math.max(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]) - light(i);
+  const isBg = (i) => light(i) > 228 && sat(i) < 22;
+  const bg = new Uint8Array(N), stack = [];
+  for (let x = 0; x < W; x++) { stack.push(x, (H - 1) * W + x); }
+  for (let y = 0; y < H; y++) { stack.push(y * W, y * W + W - 1); }
+  while (stack.length) {
+    const i = stack.pop();
+    if (bg[i] || !isBg(i)) continue;
+    bg[i] = 1;
+    const x = i % W, y = (i / W) | 0;
+    if (x > 0) stack.push(i - 1); if (x < W - 1) stack.push(i + 1);
+    if (y > 0) stack.push(i - W); if (y < H - 1) stack.push(i + W);
+  }
+  const px = Buffer.alloc(N * 4);
+  for (let i = 0; i < N; i++) {
+    let a = 255;
+    if (bg[i]) a = 0;
+    else {
+      // anti-aliased rim: a light pixel touching the background becomes partly transparent
+      const x = i % W, y = (i / W) | 0;
+      const nb = (x > 0 && bg[i - 1]) || (x < W - 1 && bg[i + 1]) || (y > 0 && bg[i - W]) || (y < H - 1 && bg[i + W]);
+      if (nb) a = Math.max(0, Math.min(255, Math.round((255 - light(i)) * 3.2)));
+    }
+    let r = data[i * 3], g = data[i * 3 + 1], b = data[i * 3 + 2];
+    if (a > 0 && a < 255) { // un-premultiply from white so edges don't keep a white halo
+      const k = a / 255;
+      r = Math.max(0, Math.min(255, (r - 255 * (1 - k)) / k));
+      g = Math.max(0, Math.min(255, (g - 255 * (1 - k)) / k));
+      b = Math.max(0, Math.min(255, (b - 255 * (1 - k)) / k));
+    }
+    px[i * 4] = r; px[i * 4 + 1] = g; px[i * 4 + 2] = b; px[i * 4 + 3] = a;
+  }
+  return sharp(px, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
+}
+
 (async () => {
   const raw = path.join(root, 'src', 'raw');
   for (const f of fs.readdirSync(raw)) {
     const name = path.parse(f).name;
     const src = path.join(raw, f);
     if (name === 'logo-light') {
-      await sharp(await brandRecolor(src, true)).flatten({ background: '#ffffff' }).trim({ background: '#ffffff', threshold: 40 }).resize({ height: 240 }).webp({ quality: 92 }).toFile(path.join(out, name + '.webp'));
+      const flat = await sharp(await brandRecolor(src, true)).flatten({ background: '#ffffff' }).png().toBuffer();
+      await sharp(await keyWhite(flat)).trim().resize({ height: 240 }).webp({ quality: 92, alphaQuality: 100 }).toFile(path.join(out, name + '.webp'));
     } else if (name === 'logo-dark') {
       const keyed = await brandRecolor(await keyBlack(src), false);
       await sharp(keyed).trim().resize({ height: 240 }).webp({ quality: 92, alphaQuality: 100 }).toFile(path.join(out, name + '.webp'));

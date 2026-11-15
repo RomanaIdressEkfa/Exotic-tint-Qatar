@@ -703,7 +703,10 @@
   }
   if (reduce) { stage = 5; paint(); return; }
   var ST = window.ScrollTrigger, sec = box.closest('section');
-  if (ST && window.gsap && sec && window.matchMedia('(min-width: 1024px) and (min-height: 700px)').matches) {
+  var desk = window.matchMedia('(min-width: 1024px) and (min-height: 700px)').matches;
+  // phones: pin too, as long as the compact section fits on screen under the header
+  var phoneFit = !desk && sec && sec.offsetHeight <= window.innerHeight - 90;
+  if (ST && window.gsap && sec && (desk || phoneFit)) {
     window.gsap.registerPlugin(ST);
     var show = function (i) {
       if (i === shown) return;
@@ -717,7 +720,7 @@
     // scroll 1 → step 1, scroll 2 → step 2, scroll 3 → step 3, then the page moves on
     st = ST.create({
       trigger: sec,
-      start: 'center center',
+      start: desk ? 'center center' : 'top 84px',
       end: function () { return '+=' + Math.round(window.innerHeight * 1.4); },
       pin: true,
       anticipatePin: 1,
