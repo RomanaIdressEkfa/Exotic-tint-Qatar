@@ -498,7 +498,7 @@ function init() {
     gsap.to(spotMat, { opacity: on ? 0.28 : 0.55, duration: 1.6 * d, delay: 0.3 * d });
     gsap.to(spotMat.color, { r: on ? 0.55 : 1, g: on ? 0.75 : 0.6, b: on ? 1 : 0.24, duration: 1.6 * d, delay: 0.3 * d });
     gsap.to(sunSprite.material, { opacity: on ? 0.45 : 1, duration: 1.6 * d });
-    gsap.to(reading, { t: on ? 36 : 46, uv: on ? 99 : 0, duration: 2 * d, delay: 0.4 * d, ease: 'power2.out', onUpdate: paintHud });
+    gsap.to(reading, { t: on ? 36 : 46, uv: on ? 99 : 0, duration: 0.8 * d, delay: 0.1 * d, ease: 'power2.out', onUpdate: paintHud });
   }
 
   /* ---------- intro: the room assembles ---------- */

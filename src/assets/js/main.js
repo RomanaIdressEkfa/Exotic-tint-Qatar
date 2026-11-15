@@ -634,7 +634,9 @@
     box.__hx = { stage: stage, active: active, flowing: flowing };
     box.dispatchEvent(new CustomEvent('hx:stage', { detail: box.__hx }));
   }
+  var st = null, shown = -1; // scroll mode (desktop): the section pins and each scroll shows the next step
   function go(i) {
+    if (st) { window.scrollTo({ top: st.start + ((st.end - st.start) * i) / 2, behavior: 'smooth' }); return; }
     clearTimeout(timer);
     each(steps, function (s) { s.classList.remove('is-on', 'is-done'); });
     each(panes, function (p) { p.classList.remove('is-on', 'is-done'); });
@@ -653,6 +655,31 @@
     timer = setTimeout(next, DUR[stage]);
   }
   if (reduce) { stage = 5; paint(); return; }
+  var ST = window.ScrollTrigger, sec = box.closest('section');
+  if (ST && window.gsap && sec && window.matchMedia('(min-width: 1024px) and (min-height: 700px)').matches) {
+    window.gsap.registerPlugin(ST);
+    var show = function (i) {
+      if (i === shown) return;
+      shown = i;
+      each(steps, function (s) { s.classList.remove('is-on', 'is-done'); });
+      each(panes, function (p) { p.classList.remove('is-on', 'is-done'); });
+      void box.offsetWidth;
+      stage = i * 2;
+      paint();
+    };
+    // scroll 1 → step 1, scroll 2 → step 2, scroll 3 → step 3, then the page moves on
+    st = ST.create({
+      trigger: sec,
+      start: 'center center',
+      end: function () { return '+=' + Math.round(window.innerHeight * 1.4); },
+      pin: true,
+      anticipatePin: 1,
+      snap: { snapTo: [0, 0.5, 1], duration: { min: 0.25, max: 0.6 }, delay: 0.05, ease: 'power2.inOut' },
+      onUpdate: function (self) { show(Math.round(self.progress * 2)); },
+    });
+    show(0);
+    return;
+  }
   new IntersectionObserver(function (es) {
     if (es[0].isIntersecting) { if (!timer) { stage = -1; next(); } }
     else { clearTimeout(timer); timer = null; }
