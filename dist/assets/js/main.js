@@ -600,35 +600,55 @@
   });
 })();
 
-/* How it works: step 1 → dots run → step 2 → dots run → step 3, then loop (only while visible) */
+/* How it works: steps on the left, matching scene on the right; dots run between steps; loops while visible */
 (function () {
   var box = document.querySelector('[data-hf]');
   if (!box) return;
-  var steps = box.querySelectorAll('[data-hf-step]'), links = box.querySelectorAll('[data-hf-link]');
+  var q = function (s) { return box.querySelectorAll(s); };
+  var steps = q('[data-hf-step]'), links = q('[data-hf-link]'), panes = q('[data-hf-pane]'), dots = q('[data-hf-dot]');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // stage: 0 step1 · 1 link1 · 2 step2 · 3 link2 · 4 step3 · 5 hold
-  var DUR = [3000, 1050, 3000, 1050, 3400, 1500], stage = -1, timer = null;
-  var bar = document.querySelector('[data-hf-bar]'), total = DUR.reduce(function (a, b) { return a + b; }, 0);
+  var DUR = [5200, 900, 5200, 900, 6000, 1800], stage = -1, timer = null;
+  box.style.setProperty('--hx-dur', DUR[0] + 'ms');
+  var each = function (list, fn) { Array.prototype.forEach.call(list, fn); };
   function paint() {
-    if (bar) {
-      var done = 0; for (var k = 0; k <= stage; k++) done += DUR[k];
-      if (stage === 0) { bar.style.transition = 'none'; bar.style.width = '0%'; void bar.offsetWidth; }
-      bar.style.transition = 'width ' + DUR[stage] + 'ms linear';
-      bar.style.width = (done / total) * 100 + '%';
-    }
-    var active = Math.floor(stage / 2);
-    Array.prototype.forEach.call(steps, function (s, i) {
-      s.classList.toggle('is-on', stage % 2 === 0 && i === active);
-      s.classList.toggle('is-done', i < active || (stage === 5 && i === 2) || (stage % 2 === 1 && i === active));
+    var active = Math.min(2, Math.floor(stage / 2));
+    var flowing = stage % 2 === 1 && stage < 5;
+    each(steps, function (s, i) {
+      s.classList.toggle('is-on', !flowing && stage < 5 && i === active);
+      s.classList.toggle('is-done', i < active || (flowing && i === active) || stage === 5);
     });
-    Array.prototype.forEach.call(links, function (l, i) {
+    each(panes, function (p, i) {
+      var show = flowing ? i === active : i === active;
+      p.classList.toggle('is-show', show);
+      p.classList.toggle('is-on', show && !flowing && stage < 5);
+      p.classList.toggle('is-done', show && (flowing || stage === 5));
+    });
+    each(dots, function (d, i) { d.classList.toggle('is-on', i === active); });
+    each(links, function (l, i) {
       l.classList.toggle('is-flow', stage === i * 2 + 1);
       l.classList.toggle('is-done', stage > i * 2 + 1 && stage < 5);
     });
+    box.style.setProperty('--hx-dur', DUR[stage] + 'ms');
+    // the 3D stage (steps3d.js) follows along
+    box.__hx = { stage: stage, active: active, flowing: flowing };
+    box.dispatchEvent(new CustomEvent('hx:stage', { detail: box.__hx }));
   }
+  function go(i) {
+    clearTimeout(timer);
+    each(steps, function (s) { s.classList.remove('is-on', 'is-done'); });
+    each(panes, function (p) { p.classList.remove('is-on', 'is-done'); });
+    void box.offsetWidth;
+    stage = i * 2 - 1;
+    next();
+  }
+  each(steps, function (s, i) {
+    s.addEventListener('click', function () { go(i); });
+    s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(i); } });
+  });
   function next() {
     stage = (stage + 1) % DUR.length;
-    if (stage === 0) { Array.prototype.forEach.call(steps, function (s) { s.classList.remove('is-on', 'is-done'); }); void box.offsetWidth; }
+    if (stage === 0) { each(steps, function (s) { s.classList.remove('is-on', 'is-done'); }); each(panes, function (p) { p.classList.remove('is-on', 'is-done'); }); void box.offsetWidth; }
     paint();
     timer = setTimeout(next, DUR[stage]);
   }

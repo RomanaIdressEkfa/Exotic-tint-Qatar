@@ -360,7 +360,7 @@ ${header(page)}
 <main id="main">
 ${body}
 </main>
-${page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions') ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n</body>') : footer()}`;
+${page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions') ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n' + (page.key === 'home' ? '<script type="module" src="/assets/js/steps3d.js"></script>\n' : '') + '</body>') : footer()}`;
 
 /* --------------------------------------------------------------- sections */
 function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
@@ -550,64 +550,100 @@ function servicesSlider() {
 }
 
 function howItWorks() {
-  // Auto-playing flow: step 1 → dots travel → step 2 → dots travel → step 3 → loop
+  // Dark premium shell: step list on the left, a live Three.js stage on the right (src/assets/js/steps3d.js).
+  // The 2D cards inside each pane are the no-WebGL fallback; the chips float over the 3D scene.
   const wa = waHello();
-  const step = (n, title, line, scene) => `
-      <div class="hf-step" data-hf-step>
-        <div class="hf-scene">${scene}</div>
-        <div class="mt-6 text-center">
-          <span class="hf-node"><span class="hf-num">${tr('Step', 'الخطوة')} ${num(pad(n))}</span><span class="hf-tick">${icon('check', 'h-3.5 w-3.5', 3)} ${tr('Done', 'تم')}</span></span>
-          <h3 class="mt-3 font-head text-[1.45rem] font-extrabold text-ink">${title}</h3>
-          <p class="mt-1 text-[0.98rem] text-muted">${line}</p>
-        </div>
-      </div>`;
-  const link = (ic) => `<div class="hf-link" data-hf-link aria-hidden="true"><span class="hf-dots"></span><span class="hf-runner">${icon(ic, 'h-4 w-4', 2.2)}</span></div>`;
-  const scene1 = `
-    <div class="hf-phone">
-      <div class="hf-phone-top"><img src="/assets/img/logo-mark.webp" alt="" class="h-6 w-6 rounded-full bg-ink p-0.5"><span>Exotic Tint<small>${tr('online', 'متصل')}</small></span>${waIcon('ms-auto h-4 w-4')}</div>
-      <div class="hf-phone-body">
-        <div class="hf-typing"><span></span><span></span><span></span></div>
-        <div class="hf-bubble hf-b1">${tr('Villa · 14 windows', 'فيلا · ١٤ نافذة')}</div>
-        <div class="hf-bubble hf-b2"><img src="/assets/img/residential.webp" alt="" loading="lazy"></div>
-        <div class="hf-seen">${icon('check', 'h-3.5 w-3.5', 3)}${icon('check', 'h-3.5 w-3.5 -ms-2', 3)}</div>
-      </div>
-    </div>`;
+  const chip = (cls, ic, label, value) => `<div class="hx-chip ${cls}"><span class="hx-chip-ic">${ic}</span><span><span class="hx-chip-l">${label}</span><span class="hx-chip-v">${value}</span></span></div>`;
+  const item = (n, ic, title, line) => `
+          <li class="hx-item" data-hf-step tabindex="0" role="button">
+            <span class="hx-node"><span class="hf-num">${ic}</span><span class="hf-tick">${icon('check', 'h-5 w-5', 3)}</span></span>
+            <div class="min-w-0 flex-1">
+              <h3 class="hx-h">${title}</h3>
+              <p class="hx-p">${line}</p>
+            </div>
+            <span class="hx-idx">${num(pad(n))}</span>
+            <span class="hx-bar"><span></span></span>
+          </li>`;
+  const link = () => `<li class="hx-link" data-hf-link aria-hidden="true"></li>`;
+  const pane1 = `
+            <div class="hx-pane" data-hf-pane>
+              <div class="hx-3d"><div class="hf-phone">
+                <div class="hf-phone-top"><img src="/assets/img/logo-mark.webp" alt="" class="h-6 w-6 rounded-full bg-ink p-0.5"><span>Exotic Tint<small>${tr('online', 'متصل')}</small></span>${waIcon('ms-auto h-4 w-4')}</div>
+                <div class="hf-phone-body">
+                  <div class="hf-typing"><span></span><span></span><span></span></div>
+                  <div class="hf-bubble hf-b1">${tr('Villa · 14 windows', 'فيلا · ١٤ نافذة')}</div>
+                  <div class="hf-bubble hf-b2"><img src="/assets/img/residential.webp" alt="" loading="lazy"></div>
+                  <div class="hf-seen">${icon('check', 'h-3.5 w-3.5', 3)}${icon('check', 'h-3.5 w-3.5 -ms-2', 3)}</div>
+                </div>
+              </div></div>
+              ${chip('hx-c1', waIcon('h-4 w-4'), tr('Sent on', 'أُرسلت عبر'), 'WhatsApp')}
+              ${chip('hx-c2', icon('clock', 'h-4 w-4', 2.2), tr('We reply in', 'نرد خلال'), tr('Minutes', 'دقائق'))}
+            </div>`;
   const opt = (k, l, tag) => `<div class="hf-opt hf-o${k}"><span class="hf-radio"></span><span class="flex-1">${l}</span><span class="hf-tag">${tag}</span></div>`;
-  const scene2 = `
-    <div class="hf-quote">
-      <p class="hf-q-head">${icon('layers', 'h-4 w-4', 2.2)} ${tr('Recommended film', 'الفيلم الموصى به')}</p>
-      ${opt(1, tr('Regular tint', 'تظليل عادي'), '30%')}${opt(2, tr('Nano ceramic', 'نانو سيراميك'), '80%')}${opt(3, tr('Super nano ceramic', 'سوبر نانو سيراميك'), '98%')}
-      <span class="hf-cursor"><svg viewBox="0 0 24 24" class="h-6 w-6"><path d="M5 3l14 8-6 1.6L10 19z" fill="#071d38" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="hf-ripple"></span>
-      <div class="hf-price"><span>${tr('Your quote', 'عرض السعر')}</span><b>${icon('wallet', 'h-4 w-4', 2.2)} ${tr('Fixed price', 'سعر ثابت')}</b></div>
-    </div>`;
-  const scene3 = `
-    <div class="hf-room">
-      <div class="hf-win"><span class="hf-sun"></span><span class="hf-film"></span><span class="hf-bar"></span><span class="hf-sill"></span><span class="hf-cool">${'<i></i>'.repeat(8)}</span></div>
-      <svg class="hf-heat" viewBox="0 0 40 60" aria-hidden="true"><path d="M8 58c-6-8 6-12 0-20s6-12 0-20"/><path d="M20 58c-6-8 6-12 0-20s6-12 0-20"/><path d="M32 58c-6-8 6-12 0-20s6-12 0-20"/></svg>
-      <div class="hf-gauge">
-        <span class="hf-g-label">${icon('thermo', 'h-3.5 w-3.5', 2.2)} ${tr('Room', 'الغرفة')}</span>
-        <span class="hf-temp" dir="ltr"><span class="hf-t1">46°</span><span class="hf-t2">32°</span></span>
-        <span class="hf-g-bar"><span></span></span>
-      </div>
-      <div class="hf-done">${icon('check', 'h-4 w-4', 3)} ${tr('Installed', 'تم التركيب')}</div>
-    </div>`;
+  const pane2 = `
+            <div class="hx-pane" data-hf-pane>
+              <div class="hx-3d"><div class="hf-quote">
+                <p class="hf-q-head">${icon('layers', 'h-4 w-4', 2.2)} ${tr('Recommended film', 'الفيلم الموصى به')}</p>
+                ${opt(1, tr('Regular tint', 'تظليل عادي'), '30%')}${opt(2, tr('Nano ceramic', 'نانو سيراميك'), '80%')}${opt(3, tr('Super nano ceramic', 'سوبر نانو سيراميك'), '98%')}
+                <div class="hf-price"><span>${tr('Your quote', 'عرض السعر')}</span><b>${icon('wallet', 'h-4 w-4', 2.2)} ${tr('Fixed price', 'سعر ثابت')}</b></div>
+              </div></div>
+              ${chip('hx-c1', icon('thermo', 'h-4 w-4', 2.2), tr('Heat blocked', 'حجب الحرارة'), tr('Up to 98%', 'حتى ٩٨٪'))}
+              ${chip('hx-c2', icon('wallet', 'h-4 w-4', 2.2), tr('Your quote', 'عرض السعر'), tr('Fixed price', 'سعر ثابت'))}
+            </div>`;
+  const pane3 = `
+            <div class="hx-pane" data-hf-pane>
+              <div class="hx-3d"><div class="hf-room">
+                <div class="hf-win"><span class="hf-sun"></span><span class="hf-film"></span><span class="hf-bar"></span><span class="hf-sill"></span></div>
+                <div class="hf-gauge">
+                  <span class="hf-g-label">${icon('thermo', 'h-3.5 w-3.5', 2.2)} ${tr('Room', 'الغرفة')}</span>
+                  <span class="hf-temp" dir="ltr"><span class="hf-t1">46°</span><span class="hf-t2">32°</span></span>
+                </div>
+              </div></div>
+              ${chip('hx-c1', icon('truck', 'h-4 w-4', 2.2), tr('We come to', 'نأتي إلى'), tr('Your home', 'منزلك'))}
+              ${chip('hx-c2', icon('thermo', 'h-4 w-4', 2.2), tr('Room temperature', 'حرارة الغرفة'), '<span class="hx-temp" dir="ltr"><s>46°</s><b>32°</b></span>')}
+              <div class="hx-done">${icon('check', 'h-4 w-4', 3)} ${tr('Installed', 'تم التركيب')}</div>
+            </div>`;
+  const s3d = JSON.stringify({
+    online: tr('online', 'متصل'),
+    villa: tr('Villa · 14 windows', 'فيلا · ١٤ نافذة'),
+    reply: tr('Got it! Your quote is ready', 'تم! عرض السعر جاهز'),
+    measured: tr('Window measured', 'قياس النافذة'),
+    dims: '5.2 m × 2.0 m',
+    f1: tr('Regular tint', 'تظليل عادي'),
+    f2: tr('Nano ceramic', 'نانو سيراميك'),
+    f3: tr('Super nano ceramic', 'سوبر نانو سيراميك'),
+  }).replace(/"/g, '&quot;');
   return `
-<section class="hf-sec relative" data-assemble>
-  <div class="hf-glow" aria-hidden="true"><span></span><span></span></div>
+<section class="hx-sec relative" data-assemble>
   <div class="container-site">
-    <div class="text-center" data-a="up">
-      <span class="eyebrow center">${tr('How it works', 'كيف نعمل')}</span>
-      <h2 class="mt-3 font-head text-[2.1rem] font-extrabold leading-tight text-ink sm:text-[2.9rem]">${tr('3 simple <span class="text-grad">steps</span>', '٣ <span class="text-grad">خطوات بسيطة</span>')}</h2>
+    <div class="hx-shell" data-hf>
+      <div class="hx-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="relative grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-5" data-a="up">
+          <span class="eyebrow hx-eyebrow">${tr('How it works', 'كيف نعمل')}</span>
+          <h2 class="hx-title">${tr('3 simple <em>steps</em>', '٣ <em>خطوات بسيطة</em>')}</h2>
+          <p class="hx-lead">${tr('Send a photo, pick your film — we handle the rest.', 'أرسل صورة، اختر الفيلم — ونتولى الباقي.')}</p>
+          <ol class="hx-list">
+            ${item(1, waIcon('h-5 w-5'), tr('Send a photo', 'أرسل صورة'), tr('On WhatsApp, in seconds', 'عبر واتساب في ثوانٍ'))}
+            ${link()}
+            ${item(2, icon('layers', 'h-5 w-5', 2.2), tr('Get your film', 'اختر الفيلم'), tr('Fixed price, no surprises', 'سعر ثابت دون مفاجآت'))}
+            ${link()}
+            ${item(3, icon('truck', 'h-5 w-5', 2.2), tr('We install', 'نركّب لك'), tr('At your home or office', 'في منزلك أو مكتبك'))}
+          </ol>
+          <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Start on WhatsApp', 'ابدأ عبر واتساب')}</a>
+            <span class="hx-note">${icon('shield', 'h-4 w-4', 2.2)} ${tr('Free estimate — no hidden fees', 'تقدير مجاني — دون رسوم خفية')}</span>
+          </div>
+        </div>
+        <div class="lg:col-span-7" data-a="up">
+          <div class="hx-stage" data-s3d="${s3d}">
+            <canvas aria-hidden="true"></canvas>
+            ${pane1}${pane2}${pane3}
+            <div class="hx-dots" aria-hidden="true"><span data-hf-dot></span><span data-hf-dot></span><span data-hf-dot></span></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="hf-progress mx-auto mt-7 max-w-md" aria-hidden="true"><span data-hf-bar></span></div>
-    <div class="hf mt-8 lg:mt-10" data-hf data-a="up">
-      ${step(1, tr('Send a photo', 'أرسل صورة'), tr('On WhatsApp, in seconds', 'عبر واتساب في ثوانٍ'), scene1)}
-      ${link('chat')}
-      ${step(2, tr('Get your film', 'اختر الفيلم'), tr('Fixed price, no surprises', 'سعر ثابت دون مفاجآت'), scene2)}
-      ${link('layers')}
-      ${step(3, tr('We install', 'نركّب لك'), tr('At your home or office', 'في منزلك أو مكتبك'), scene3)}
-    </div>
-    <div class="mt-9 text-center" data-a="up"><a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Start on WhatsApp', 'ابدأ عبر واتساب')}</a></div>
   </div>
 </section>`;
 }
@@ -2542,6 +2578,7 @@ function write(file, html) {
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'main.js'), path.join(DIST, 'assets', 'js', 'main.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'motion.js'), path.join(DIST, 'assets', 'js', 'motion.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'room3d.js'), path.join(DIST, 'assets', 'js', 'room3d.js'));
+  fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'steps3d.js'), path.join(DIST, 'assets', 'js', 'steps3d.js'));
   fs.rmSync(path.join(DIST, 'assets', 'js', 'car3d.js'), { force: true });
   fs.rmSync(path.join(DIST, 'assets', 'img', 'favicon.svg'), { force: true });
   // Old URLs kept alive → point to the new main service pages
