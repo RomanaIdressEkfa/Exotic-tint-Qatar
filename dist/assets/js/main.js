@@ -89,20 +89,40 @@
     var overlay = $('[data-tint-overlay]', lab);
     var sws = $$('[data-shade]', lab);
     var vlt = $('[data-out="vlt"]', lab), best = $('[data-out="best"]', lab);
-    var cur = -1;
+    var cur = -1, shown = 0, rollT = 0, countRaf = 0, demo = [];
+    var film = $('[data-tint-film]', lab), line = $('[data-tint-line]', lab), filmImg = film && film.querySelector('img');
     var flip = function (el) { el.classList.remove('is-flip'); void el.offsetWidth; el.classList.add('is-flip'); };
+    var opOf = function (s) { return (((100 - s.v) / 100) * 0.92).toFixed(2); };
+    var count = function (to) {
+      cancelAnimationFrame(countRaf);
+      var from = shown, t0 = performance.now();
+      var step = function (now) {
+        var p = Math.min(1, (now - t0) / 650), e = 1 - Math.pow(1 - p, 3);
+        shown = Math.round(from + (to - from) * e);
+        vlt.textContent = shown;
+        if (p < 1) countRaf = requestAnimationFrame(step);
+      };
+      countRaf = requestAnimationFrame(step);
+    };
     var render = function (i, quiet) {
       if (i === cur) return;
       cur = i;
-      var s = shades[i];
-      overlay.style.opacity = (((100 - s.v) / 100) * 0.92).toFixed(2);
+      var s = shades[i], op = opOf(s);
       sws.forEach(function (b, n) { b.setAttribute('aria-checked', String(n === i)); b.tabIndex = n === i ? 0 : -1; });
-      vlt.textContent = s.v;
       best.textContent = s.best;
-      if (!quiet) { flip(vlt.parentNode); flip(best); }
+      if (quiet || !film) { overlay.style.opacity = op; shown = s.v; vlt.textContent = s.v; return; }
+      // roll the new film down over the glass, then settle
+      clearTimeout(rollT);
+      filmImg.src = sceneImg.getAttribute('src');
+      film.style.setProperty('--op', op);
+      [film, line].forEach(function (el) { el.classList.remove('is-roll'); void el.offsetWidth; el.classList.add('is-roll'); });
+      rollT = setTimeout(function () { overlay.style.opacity = op; film.classList.remove('is-roll'); }, 980);
+      count(s.v);
+      flip(best);
     };
+    var stopDemo = function () { demo.forEach(clearTimeout); demo = []; };
     sws.forEach(function (b, n) {
-      b.addEventListener('click', function () { render(n); });
+      b.addEventListener('click', function () { stopDemo(); render(n); });
       b.addEventListener('keydown', function (e) {
         var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
         if (!d) return;
@@ -112,12 +132,25 @@
         sws[k].focus();
       });
     });
-    render(sws.findIndex ? sws.findIndex(function (b) { return b.getAttribute('aria-checked') === 'true'; }) : 2, true);
-
     var sceneImg = $('[data-scene-img]', lab);
+    render(sws.findIndex ? sws.findIndex(function (b) { return b.getAttribute('aria-checked') === 'true'; }) : 2, true);
+    // first time it comes into view: a short demo through the shades
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      new IntersectionObserver(function (es, io) {
+        if (!es[0].isIntersecting) return;
+        io.disconnect();
+        [4, 0, 3, 2].forEach(function (k, n) { demo.push(setTimeout(function () { render(k); }, 700 + n * 1500)); });
+      }, { threshold: 0.5 }).observe(lab);
+    }
+    lab.addEventListener('pointermove', function (e) {
+      var r = lab.getBoundingClientRect();
+      lab.style.setProperty('--mx', ((e.clientX - r.left) / r.width) * 100 + '%');
+      lab.style.setProperty('--my', ((e.clientY - r.top) / r.height) * 100 + '%');
+    });
     var tabs = $$('[data-scene]');
     tabs.forEach(function (tab) {
       tab.addEventListener('click', function () {
+        stopDemo();
         if (tab.getAttribute('aria-selected') === 'true') return;
         tabs.forEach(function (x) { x.setAttribute('aria-selected', String(x === tab)); });
         lab.classList.add('is-swap');
@@ -697,4 +730,104 @@
     if (es[0].isIntersecting) { if (!timer) { stage = -1; next(); } }
     else { clearTimeout(timer); timer = null; }
   }, { threshold: 0.3 }).observe(box);
+})();
+
+/* Client stories: prev/next, auto-advances every 7s while visible, pauses on hover */
+(function () {
+  var box = document.querySelector('[data-cs]');
+  if (!box) return;
+  var slides = box.querySelectorAll('[data-cs-slide]'), imgs = box.querySelectorAll('[data-cs-img]');
+  var each = function (l, fn) { Array.prototype.forEach.call(l, fn); };
+  var i = 0, timer = null, visible = false, hover = false;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function show(k) {
+    i = (k + slides.length) % slides.length;
+    each(slides, function (s, j) { s.classList.toggle('is-on', j === i); s.setAttribute('aria-hidden', String(j !== i)); });
+    each(imgs, function (s, j) { s.classList.toggle('is-on', j === i); });
+  }
+  function tick() {
+    clearTimeout(timer);
+    if (reduce || !visible || hover) return;
+    timer = setTimeout(function () { show(i + 1); tick(); }, 7000);
+  }
+  box.querySelector('[data-cs-prev]').addEventListener('click', function () { show(i - 1); tick(); });
+  box.querySelector('[data-cs-next]').addEventListener('click', function () { show(i + 1); tick(); });
+  box.addEventListener('mouseenter', function () { hover = true; tick(); });
+  box.addEventListener('mouseleave', function () { hover = false; tick(); });
+  new IntersectionObserver(function (es) { visible = es[0].isIntersecting; tick(); }, { threshold: 0.3 }).observe(box);
+})();
+
+/* WhatsApp booking: play the chat once it scrolls into view */
+(function () {
+  var box = document.querySelector('.wb');
+  if (!box) return;
+  new IntersectionObserver(function (es, io) { if (es[0].isIntersecting) { box.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.35 }).observe(box);
+})();
+
+/* Service "in action": desktop pins and scrolls one topic per step; phones auto-play. Each scene replays while shown. */
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tw]'), function (box) {
+    var steps = box.querySelectorAll('[data-tw-step]'), scenes = box.querySelectorAll('[data-tw-scene]'), dots = box.querySelectorAll('.tw-dots span');
+    var n = steps.length, cur = -1, replay = null, auto = null;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var each = function (l, fn) { Array.prototype.forEach.call(l, fn); };
+    var play = function (sc) { sc.classList.remove('play'); void sc.getBoundingClientRect(); sc.classList.add('play'); };
+    function show(i) {
+      if (i === cur) return;
+      cur = i;
+      each(steps, function (s, j) { s.classList.toggle('is-on', j === i); });
+      each(dots, function (d, j) { d.classList.toggle('is-on', j === i); });
+      each(scenes, function (s, j) { s.classList.toggle('is-on', j === i); if (j !== i) s.classList.remove('play'); });
+      if (!reduce) { play(scenes[i]); clearInterval(replay); replay = setInterval(function () { play(scenes[cur]); }, 4600); }
+    }
+    var sec = box.closest('section'), ST = window.ScrollTrigger, st = null;
+    if (!reduce && n > 1 && ST && window.gsap && sec && window.matchMedia('(min-width: 1024px) and (min-height: 700px)').matches) {
+      window.gsap.registerPlugin(ST);
+      var snaps = []; for (var k = 0; k < n; k++) snaps.push(k / (n - 1));
+      st = ST.create({
+        trigger: sec, start: 'center center', pin: true, anticipatePin: 1,
+        end: function () { return '+=' + Math.round(window.innerHeight * 0.65 * (n - 1)); },
+        snap: { snapTo: snaps, duration: { min: 0.25, max: 0.6 }, delay: 0.05, ease: 'power2.inOut' },
+        onUpdate: function (self) { show(Math.round(self.progress * (n - 1))); },
+      });
+      each(steps, function (s, i) {
+        var go = function () { window.scrollTo({ top: st.start + ((st.end - st.start) * i) / (n - 1), behavior: 'smooth' }); };
+        s.addEventListener('click', go);
+        s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      });
+      show(0);
+      return;
+    }
+    // phones / short screens: auto-advance while visible
+    box.classList.add('tw-auto');
+    var visible = false;
+    var tick = function () { clearTimeout(auto); if (!visible || reduce || n < 2) return; auto = setTimeout(function () { show((cur + 1) % n); tick(); }, 5200); };
+    each(steps, function (s, i) {
+      var go = function () { show(i); tick(); };
+      s.addEventListener('click', go);
+      s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+    new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible && cur < 0) show(0); tick(); }, { threshold: 0.3 }).observe(box);
+  });
+})();
+
+/* Topic sections: each animation plays when it scrolls into view and replays while visible */
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tp-scene]'), function (sc) {
+    if (reduce) return;
+    var timer = null;
+    var play = function () { sc.classList.remove('play'); void sc.getBoundingClientRect(); sc.classList.add('play'); };
+    new IntersectionObserver(function (es) {
+      clearInterval(timer);
+      if (es[0].isIntersecting) { play(); timer = setInterval(play, 4600); }
+    }, { threshold: 0.4 }).observe(sc);
+  });
+})();
+
+/* Topic photos: run the film effect only while on screen */
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-fx]'), function (el) {
+    new IntersectionObserver(function (es) { el.classList.toggle('is-in', es[0].isIntersecting); }, { threshold: 0.35 }).observe(el);
+  });
 })();

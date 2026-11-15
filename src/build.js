@@ -169,9 +169,10 @@ function header(page) {
   const cur = (k) => (page.key === k ? ' aria-current="page"' : '');
   const megaItems = C.services
     .map(
-      (s) => `<a href="${href('service/' + s.slug + '/')}" class="group flex items-center gap-4 rounded-2xl p-3 transition hover:bg-tint">
-        <span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl" style="background:${SV[s.slug].bg}">${img3d(SV[s.slug].emoji, 'h-10 w-10')}</span>
-        <span><span class="block font-head text-[1.02rem] font-bold text-ink group-hover:text-gold-700">${t(s.title)}</span><span class="block text-sm text-muted">${t(s.short)}</span></span>
+      (s) => `<a href="${href('service/' + s.slug + '/')}" class="mg-item">
+        <span class="mg-ic" style="background:${SV[s.slug].bg}">${img3d(SV[s.slug].emoji, 'h-6 w-6')}</span>
+        <span class="mg-t">${t(s.title)}</span>
+        ${arrow('mg-arr h-4 w-4')}
       </a>`
     )
     .join('');
@@ -196,25 +197,11 @@ function header(page) {
       <div class="has-mega" data-mega>
         <button type="button" class="nav-link" aria-expanded="false" data-mega-btn${page.key === 'service' || page.key === 'services' ? ' aria-current="page"' : ''}>${t(C.ui.nav.services)} ${icon('chevron', 'chev h-4 w-4')}</button>
         <div class="mega" data-mega-panel>
-          <div class="container-site grid gap-8 py-8 lg:grid-cols-12">
-            <div class="lg:col-span-8">
-              <p class="mb-3 px-3 text-xs font-extrabold uppercase tracking-[0.16em] text-gold-700">${tr('Our services', 'خدماتنا')}</p>
-              <div class="grid grid-cols-2 gap-1">${megaItems}</div>
-            </div>
-            <div class="relative overflow-hidden rounded-[22px] p-7 navy-bg lg:col-span-4">
-              <div class="relative">
-                <span class="chip-dot !border-white/20 !bg-white/10 !text-gold-300">${tr('Free estimate', 'تقدير مجاني')}</span>
-                <h4 class="mt-4 font-head text-2xl font-extrabold leading-tight text-white">${tr('Not sure which film you need?', 'لست متأكداً من الفيلم المناسب؟')}</h4>
-                <p class="mt-2 text-sm text-white/70">${tr('Send a photo on WhatsApp — we reply with a flat-rate quote.', 'أرسل صورة عبر واتساب — ونرد بعرض سعر ثابت.')}</p>
-                <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-primary mt-6 !py-3 text-sm">${waIcon('h-4 w-4')} ${t(C.ui.whatsapp)}</a>
-              </div>
-              ${img3d('sparkles', 'absolute -bottom-4 end-2 h-24 w-24 opacity-90')}
-            </div>
-          </div>
+          <div class="mg-list">${megaItems}</div>
+          <a href="${href('service/')}" class="mg-all">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
         </div>
       </div>
       <a href="${href('about/')}" class="nav-link"${cur('about')}>${t(C.ui.nav.about)}</a>
-      <a href="${href('reviews/')}" class="nav-link"${cur('reviews')}>${tr('Reviews', 'التقييمات')}</a>
       <a href="${href('blogs/')}" class="nav-link"${page.key === 'blogs' || page.key === 'post' ? ' aria-current="page"' : ''}>${tr('Blog', 'المدونة')}</a>
       <a href="${href('contact/')}" class="nav-link"${cur('contact')}>${t(C.ui.nav.contact)}</a>
     </nav>
@@ -240,7 +227,6 @@ function header(page) {
       ${C.services.map((s) => `<a href="${href('service/' + s.slug + '/')}" class="flex items-center gap-3 rounded-xl p-2 hover:bg-tint"><span class="grid h-10 w-10 place-items-center rounded-xl" style="background:${SV[s.slug].bg}">${img3d(SV[s.slug].emoji, 'h-7 w-7')}</span><span class="font-semibold text-ink">${t(s.title)}</span></a>`).join('')}
     </div>
     <a href="${href('about/')}" class="mt-3 block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${t(C.ui.nav.about)}</a>
-    <a href="${href('reviews/')}" class="block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${tr('Reviews', 'التقييمات')}</a>
     <a href="${href('blogs/')}" class="block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${tr('Blog', 'المدونة')}</a>
     <a href="${href('contact/')}" class="block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${t(C.ui.nav.contact)}</a>
     <a href="${base(other)}${page.path}" class="mt-2 flex items-center gap-2 rounded-xl px-3 py-3 font-semibold text-ink hover:bg-tint ${other === 'ar' ? 'font-arabic' : ''}">${icon('globe', 'h-4 w-4')} ${t(C.ui.langSwitch)}</a>
@@ -360,7 +346,7 @@ ${header(page)}
 <main id="main">
 ${body}
 </main>
-${page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions') ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n' + (page.key === 'home' ? '<script type="module" src="/assets/js/steps3d.js"></script>\n' : '') + '</body>') : footer()}`;
+${page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions') ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n' + (page.key === 'home' ? '<script type="module" src="/assets/js/steps3d.js"></script>\n<script type="module" src="/assets/js/home3d.js"></script>\n' : '') + '</body>') : footer()}`;
 
 /* --------------------------------------------------------------- sections */
 function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
@@ -402,7 +388,7 @@ function hero() {
         </h1>
         <p class="mt-5 max-w-md text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Window film, smart glass and surface protection for villas, offices and buildings — installed on-site across Qatar.', 'أفلام نوافذ وزجاج ذكي وحماية أسطح للفلل والمكاتب والمباني — نركّبها في موقعك في أنحاء قطر.')}</p>
         <div class="mt-8 flex flex-wrap gap-3" data-a="up">
-          <a href="#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
+          <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
         </div>
       </div>
@@ -473,13 +459,11 @@ function servicesGrid() {
     <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5 [&>*:last-child]:col-span-2 [&>*:last-child]:aspect-[2/1] md:[&>*:last-child]:col-span-1 md:[&>*:last-child]:aspect-[4/5]">
       ${C.services
         .map(
-          (s) => `<a href="${href('service/' + s.slug + '/')}" class="group relative block aspect-[4/5] overflow-hidden rounded-[22px] bg-ink shadow-soft ring-1 ring-ink/5 transition duration-500 hover:-translate-y-1.5 hover:shadow-float" data-a="up">
-        <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="absolute inset-0 h-full w-full object-cover transition duration-[1200ms] ease-out group-hover:scale-110" loading="lazy">
-        <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent"></div>
-        <span class="glass-hud absolute start-3 top-3 grid h-10 w-10 place-items-center rounded-xl text-white transition duration-300 group-hover:bg-gold-500">${icon(s.icon, 'h-[18px] w-[18px]', 2.2)}</span>
-        <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4">
-          <h3 class="font-head text-[1rem] font-bold leading-snug text-white sm:text-[1.08rem]">${t(s.title)}</h3>
-          <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition duration-300 group-hover:bg-gold-500">${arrow('h-3.5 w-3.5')}</span>
+          (s) => `<a href="${href('service/' + s.slug + '/')}" class="sg-tile group" data-a="up">
+        <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="sg-img" loading="lazy">
+        <div class="sg-bar">
+          <h3 class="sg-h">${t(s.title)}</h3>
+          <span class="sg-go">${arrow('h-3.5 w-3.5')}</span>
         </div>
       </a>`
         )
@@ -641,6 +625,253 @@ function howItWorks() {
 </section>`;
 }
 
+/* Stats card (FinCoach style): four figures in one glowing white card */
+function statsCard() {
+  const items = [
+    ['shield', '99', '%', tr('UV blocked', 'حجب الأشعة')],
+    ['thermo', '98', '%', tr('Heat rejection', 'العزل الحراري')],
+    ['layers', '5', '', tr('Specialist services', 'خدمات متخصصة')],
+    ['clock', '7', '/7', tr('Days a week', 'أيام في الأسبوع')],
+  ];
+  return `
+<section class="pb-16 lg:pb-20">
+  <div class="container-site">
+    <div class="sc glow-card" ${reveal()}>
+      ${items
+        .map(
+          ([ic, n, sup, label]) => `
+      <div class="sc-item">
+        <span class="sc-ic">${icon(ic, 'h-4 w-4', 2.2)}</span>
+        <p class="sc-num" dir="ltr"><span data-count="${n}">${n}</span><sup>${sup}</sup></p>
+        <p class="sc-label">${label}</p>
+      </div>`
+        )
+        .join('')}
+    </div>
+  </div>
+</section>`;
+}
+
+/* Book on WhatsApp (FinCoach "app" section): phone with a live chat on the left, QR + buttons on the right */
+function waBook() {
+  const wa = waHello();
+  return `
+<section class="pb-16 lg:pb-20">
+  <div class="container-site">
+    <div class="wb glow-card" ${reveal()}>
+      <div class="wb-art" aria-hidden="true">
+        <span class="wb-disc"></span>
+        <div class="wb-phone">
+          <div class="wb-top"><img src="/assets/img/logo-mark.webp" alt="" class="h-7 w-7 rounded-full bg-ink p-0.5"><span><b>Exotic Tint</b><small>${tr('online', 'متصل')}</small></span>${waIcon('ms-auto h-4 w-4')}</div>
+          <div class="wb-body">
+            <p class="wb-msg wb-me">${tr('Hi! Quote for 6 windows, villa in Lusail?', 'مرحباً! عرض سعر لـ ٦ نوافذ، فيلا في لوسيل؟')}</p>
+            <p class="wb-msg wb-me wb-img"><img src="/assets/img/bl-villa.webp" alt=""></p>
+            <p class="wb-msg wb-them">${tr('Thanks! Nano ceramic suits best — free estimate on its way.', 'شكراً! النانو سيراميك هو الأنسب — التقدير المجاني في الطريق.')}</p>
+            <p class="wb-msg wb-them wb-typing"><i></i><i></i><i></i></p>
+          </div>
+        </div>
+        <div class="wb-float"><span class="wb-float-ic">${icon('check', 'h-3.5 w-3.5', 3)}</span><span><span class="block text-[11px] text-muted">${tr('Free estimate', 'تقدير مجاني')}</span><span class="block font-head text-[0.95rem] font-bold text-ink">${tr('No hidden fees', 'دون رسوم خفية')}</span></span></div>
+      </div>
+      <div class="wb-text">
+        <span class="wb-pill"><i></i>${tr('WhatsApp booking', 'الحجز عبر واتساب')}</span>
+        <h2 class="cv-title">${tr('Your tint,<br><span class="text-grad">booked in one chat</span>', 'تظليلك،<br><span class="text-grad">محجوز في محادثة واحدة</span>')}</h2>
+        <p class="mt-3 max-w-md text-[1.02rem] leading-relaxed text-muted">${tr('Send a photo, get a free estimate and pick a time — all on WhatsApp.', 'أرسل صورة، احصل على تقدير مجاني واختر الموعد — كل ذلك عبر واتساب.')}</p>
+        <div class="wb-qr">
+          <div class="wb-qr-code">${QR}</div>
+          <div>
+            <p class="font-head text-[1.05rem] font-bold text-ink">${tr('Scan to chat', 'امسح للمحادثة')}</p>
+            <p class="text-sm text-muted">${tr('Or tap the button below', 'أو اضغط الزر أدناه')}</p>
+            <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary mt-3 !py-2.5 !text-sm">${waIcon('h-4 w-4')} ${tr('Chat on WhatsApp', 'تحدث عبر واتساب')}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+/* Why Exotic Tint — bento: one large photo story + three focused cards */
+function whyChoose() {
+  const wa = waHello();
+  return `
+<section class="pb-16 lg:pb-20">
+  <div class="container-site">
+    <div ${reveal()}>
+      <span class="eyebrow">${tr('Why Exotic Tint', 'لماذا إكزوتك تينت')}</span>
+      <h2 class="cv-title">${tr('Why clients <span class="text-grad">choose us</span>', 'لماذا <span class="text-grad">يختارنا العملاء</span>')}</h2>
+    </div>
+    <div class="wb2 mt-9">
+      <a href="${href('contact/')}" class="wb2-hero" ${reveal(60)}>
+        <img src="/assets/img/bl-villa.webp" alt="${tr('Modern villa in Qatar', 'فيلا حديثة في قطر')}" loading="lazy">
+        <div class="wb2-glass">
+          <span class="wb2-k">${icon('pin', 'h-4 w-4', 2.2)} ${tr('On-site, across Qatar', 'في الموقع، في أنحاء قطر')}</span>
+          <p class="wb2-big">${tr('We come to you.', 'نأتي إليك.')}</p>
+          <div class="wb2-areas">${C.areas.slice(0, 5).map((a) => `<span>${t(a)}</span>`).join('')}</div>
+        </div>
+      </a>
+      <div class="wb2-stat" ${reveal(120)}>
+        <p class="wb2-k2">${tr('Ceramic films that work', 'أفلام سيراميك فعّالة')}</p>
+        <div class="wb2-nums">
+          <div><p class="wb2-n" dir="ltr">99<span>%</span></p><p class="wb2-l">${tr('UV blocked', 'حجب الأشعة')}</p></div>
+          <span class="wb2-div"></span>
+          <div><p class="wb2-n" dir="ltr">98<span>%</span></p><p class="wb2-l">${tr('Solar heat rejected, up to', 'صد حرارة الشمس، حتى')}</p></div>
+        </div>
+        <div class="wb2-meter"><span></span></div>
+      </div>
+      <div class="wb2-card" ${reveal(160)}>
+        <span class="wb2-ic">${icon('wallet', 'h-5 w-5', 2.2)}</span>
+        <h3 class="wb2-h">${tr('Flat-rate pricing', 'أسعار ثابتة')}</h3>
+        <p class="wb2-p">${tr('Free estimate on WhatsApp. No hidden fees.', 'تقدير مجاني عبر واتساب. دون رسوم خفية.')}</p>
+        <a href="${wa}" target="_blank" rel="noopener" class="wb2-link">${waIcon('h-4 w-4')} ${tr('Get my estimate', 'احصل على تقديري')}</a>
+      </div>
+      <div class="wb2-card" ${reveal(200)}>
+        <div class="wb2-icons">${C.services.map((s) => `<span style="background:${SV[s.slug].bg}" title="${esc(t(s.title))}">${img3d(SV[s.slug].emoji, 'h-7 w-7')}</span>`).join('')}</div>
+        <h3 class="wb2-h">${tr('One team, five services', 'فريق واحد، خمس خدمات')}</h3>
+        <p class="wb2-p">${tr('Glass, surfaces and interiors — done properly.', 'زجاج وأسطح وديكور — بإتقان.')}</p>
+        <a href="${href('service/')}" class="wb2-link">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+
+/* Client stories — three clean review cards */
+function storiesSection() {
+  const card = (r, i) => `
+      <figure class="rv" ${reveal(i * 80)}>
+        <div class="rv-top">${starsRow('h-4 w-4')}<span class="rv-tag">${t(r.service)}</span></div>
+        <blockquote class="rv-q">“${t(r.text)}”</blockquote>
+        <figcaption class="rv-who">
+          <span class="rv-av">${r.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</span>
+          <span><span class="rv-name">${r.name}</span><span class="rv-role">${t(r.role)}</span></span>
+        </figcaption>
+      </figure>`;
+  return `
+<section class="pb-16 lg:pb-20">
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end" ${reveal()}>
+      <div>
+        <span class="eyebrow">${tr('Client stories', 'قصص العملاء')}</span>
+        <h2 class="cv-title">${tr('Loved by clients <span class="text-grad">across Qatar</span>', 'محبوب لدى العملاء <span class="text-grad">في أنحاء قطر</span>')}</h2>
+      </div>
+      <a href="${href('reviews/')}" class="lb-all">${tr('All reviews', 'كل التقييمات')} <span>${arrow('h-4 w-4')}</span></a>
+    </div>
+    <div class="mt-9 grid gap-5 md:grid-cols-3">${C.testimonials.map(card).join('')}</div>
+  </div>
+</section>`;
+}
+
+/* Latest blog — three compact cards, last section before the footer */
+function latestBlog() {
+  const pics = { 'blog-ceramic': 'bl-ceramic', 'blog-marble': 'bl-marble', 'blog-home': 'bl-villa' };
+  const card = (p, i) => `
+      <a href="${href(p.slug + '/')}" class="lb-card" ${reveal(i * 80)}>
+        <div class="lb-img"><img src="/assets/img/${pics[p.img] || p.img}.webp" alt="${esc(t(p.title))}" loading="lazy"></div>
+        <p class="lb-cat">${t(p.cat)}</p>
+        <h3 class="lb-h">${t(p.title)}</h3>
+        <p class="lb-meta">${fmtDate(p.date)} · ${num(p.read)} ${tr('min read', 'دقائق قراءة')}</p>
+      </a>`;
+  return `
+<section class="pb-16 lg:pb-20">
+  <div class="container-site">
+    <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end" ${reveal()}>
+      <div>
+        <span class="eyebrow">${tr('Insights &amp; news', 'مقالات وأخبار')}</span>
+        <h2 class="cv-title">${tr('Our latest <span class="text-grad">blog</span>', 'أحدث <span class="text-grad">المقالات</span>')}</h2>
+      </div>
+      <a href="${href('blogs/')}" class="lb-all">${tr('View all posts', 'كل المقالات')} <span>${arrow('h-4 w-4')}</span></a>
+    </div>
+    <div class="mt-8 grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">${POSTS.slice(0, 3).map(card).join('')}</div>
+  </div>
+</section>`;
+}
+
+/* Homepage 3D sections (scenes in src/assets/js/home3d.js) — each with its own layout */
+const h3Stage = (key, fallback, overlay = '', cls = '') => `
+      <div class="h3-stage ${cls}" data-h3="${key}" ${reveal(80)}>
+        <img class="h3-fb" src="/assets/img/${fallback}.webp" alt="" loading="lazy">
+        <canvas aria-hidden="true"></canvas>
+        ${overlay}
+      </div>`;
+
+/* 1 · wide cinematic comparison */
+function homeTwin() {
+  const chip = (cls, label, tone) => `<div class="h3-chip ${cls} h3-${tone}"><span class="h3-chip-l">${label}</span><span class="h3-chip-v" dir="ltr"><b data-h3-temp>38</b>°C</span><span class="h3-heat"><span data-h3-bar></span></span></div>`;
+  const fact = (ic, big, label, line) => `<div class="tw2-fact"><span class="tw2-ic">${icon(ic, 'h-5 w-5', 2.2)}</span><div><p class="tw2-big" dir="ltr">${big}</p><p class="tw2-l">${label}</p><p class="tw2-p">${line}</p></div></div>`;
+  return `
+<section class="py-14 lg:py-20">
+  <div class="container-site" data-h3-wrap>
+    <div class="mx-auto max-w-2xl text-center" ${reveal()}>
+      <span class="eyebrow center justify-center">${tr('The difference', 'الفرق')}</span>
+      <h2 class="h3-title">${tr('Same sun. <span class="text-grad">Two rooms.</span>', 'نفس الشمس. <span class="text-grad">غرفتان.</span>')}</h2>
+      <p class="h3-line mx-auto">${tr('Plain glass on the left, Exotic Tint ceramic film on the right. Same window, same sun — a very different room.', 'زجاج عادي على اليسار وفيلم سيراميك إكزوتك تينت على اليمين. نفس النافذة ونفس الشمس — وغرفة مختلفة تماماً.')}</p>
+    </div>
+    ${h3Stage('twin', 'tp-solar', chip('h3-cl', tr('Without film', 'بدون فيلم'), 'hot') + chip('h3-cr', tr('With Exotic Tint', 'مع إكزوتك تينت'), 'cool'), 'tw2-stage mt-10')}
+    <div class="tw2-facts" ${reveal(120)}>
+      ${fact('thermo', '98%', tr('Heat rejected, up to', 'صد الحرارة، حتى'), tr('Ceramic particles bounce infrared heat back outside.', 'جزيئات السيراميك ترد الحرارة إلى الخارج.'))}
+      ${fact('shield', '99%', tr('UV blocked', 'حجب الأشعة'), tr('Protects skin, floors and furniture from fading.', 'يحمي البشرة والأرضيات والأثاث من البهتان.'))}
+      ${fact('bolt', tr('Less', 'أقل'), tr('Work for your AC', 'جهد على المكيف'), tr('A cooler room means the AC runs less.', 'غرفة أبرد تعني تشغيلاً أقل للمكيف.'))}
+    </div>
+  </div>
+</section>`;
+}
+
+/* 2 · stage with an in-scene control panel, use cases beside it */
+function homeSmart() {
+  const use = (ic, a, b) => `<li class="sm2-use"><span class="sm2-ic">${icon(ic, 'h-5 w-5', 2.2)}</span><span><b>${a}</b><span>${b}</span></span></li>`;
+  return `
+<section class="py-14 lg:py-20">
+  <div class="container-site">
+    <div class="sm2" data-h3-wrap>
+      ${h3Stage('smart', 'tp-smart', `
+        <div class="sm2-panel">
+          <div class="flex items-center justify-between gap-3"><span class="sm2-k">${tr('Glass control', 'التحكم بالزجاج')}</span><span class="sm2-live"><i></i>${tr('Live', 'مباشر')}</span></div>
+          <p class="sm2-state"><span class="h3-s0">${tr('Clear', 'شفاف')}</span><span class="h3-s1">${tr('Private', 'خاص')}</span></p>
+          <div class="h3-toggle" role="group"><button type="button" data-h3-mode="clear" aria-pressed="true">${tr('Clear', 'شفاف')}</button><button type="button" data-h3-mode="private" aria-pressed="false">${tr('Private', 'خاص')}</button></div>
+        </div>`, 'sm2-stage')}
+      <div class="sm2-text" ${reveal(60)}>
+        <span class="eyebrow">${tr('Smart glass', 'الزجاج الذكي')}</span>
+        <h2 class="h3-title">${tr('Private <span class="text-grad">at a tap.</span>', 'خصوصية <span class="text-grad">بلمسة.</span>')}</h2>
+        <p class="h3-line">${tr('Switchable film is applied to your existing glass. Power on — clear. Power off — frosted, in under a second.', 'يُركّب الفيلم الذكي على زجاجك الحالي. تشغيل — شفاف. إطفاء — مصنفر، في أقل من ثانية.')}</p>
+        <ul class="sm2-uses">
+          ${use('building', tr('Meeting rooms', 'غرف الاجتماعات'), tr('Open by day, private for calls.', 'مفتوحة نهاراً وخاصة للمكالمات.'))}
+          ${use('home', tr('Bathrooms & bedrooms', 'الحمامات وغرف النوم'), tr('Light in, view out — only when you want.', 'ضوء ورؤية — فقط عندما تريد.'))}
+          ${use('shield', tr('Clinics & offices', 'العيادات والمكاتب'), tr('Privacy for patients and staff.', 'خصوصية للمرضى والموظفين.'))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+/* 3 · step tracker synced with the spill animation */
+function homeSpill() {
+  const steps = [
+    [tr('Film goes on', 'تركيب الفيلم'), tr('An invisible layer seals the marble.', 'طبقة غير مرئية تحمي الرخام.')],
+    [tr('Something spills', 'انسكاب'), tr('Wine, coffee, lemon — it happens.', 'نبيذ، قهوة، ليمون — يحدث.')],
+    [tr('It beads up', 'يتجمع'), tr("Liquid can't soak in or etch the stone.", 'لا يتسرب السائل ولا يحفر الحجر.')],
+    [tr('One wipe — gone', 'مسحة واحدة'), tr('No stain, no ring, no polishing bill.', 'لا بقع ولا حلقات ولا تلميع.')],
+  ];
+  return `
+<section class="py-14 lg:py-20">
+  <div class="container-site">
+    <div class="sp2" data-h3-wrap>
+      <div class="sp2-text" ${reveal()}>
+        <span class="eyebrow">${tr('Surface protection', 'حماية الأسطح')}</span>
+        <h2 class="h3-title">${tr('Spill it. <span class="text-grad">Wipe it.</span>', 'اسكبه. <span class="text-grad">امسحه.</span>')}</h2>
+        <p class="h3-line">${tr('Clear protection film for marble, wood, countertops and steel.', 'فيلم حماية شفاف للرخام والخشب والأسطح والستيل.')}</p>
+        <ol class="sp2-steps">
+          ${steps.map(([a, b], i) => `<li data-h3-step><span class="sp2-n" dir="ltr">${pad(i + 1)}</span><span><b>${a}</b><span>${b}</span></span><span class="sp2-bar"><i></i></span></li>`).join('')}
+        </ol>
+        <button type="button" class="ts-link mt-6 text-sm" data-h3-again>${tr('Spill again', 'اسكب مرة أخرى')} ${arrow('h-4 w-4')}</button>
+      </div>
+      ${h3Stage('spill', 'tp-counter', `<div class="h3-chip h3-cr"><span class="h3-chip-l">${tr('Marble', 'الرخام')}</span><span class="h3-chip-v">${tr('Protected', 'محمي')}</span></div>`, 'sp2-stage')}
+    </div>
+  </div>
+</section>`;
+}
+
 function difference() {
   return `
 <section class="py-20 lg:py-28">
@@ -732,6 +963,8 @@ function tintStudio() {
     <div class="ts-stage mt-10" data-tint-lab data-shades='${esc(JSON.stringify(shades))}' ${reveal(120)}>
       <img src="/assets/img/residential.webp" alt="${tr('Tint preview', 'معاينة التظليل')}" class="ts-img" data-scene-img loading="lazy">
       <div class="ts-tint" data-tint-overlay></div>
+      <div class="ts-film" data-tint-film aria-hidden="true"><img alt="" src="/assets/img/residential.webp"><span></span></div>
+      <span class="ts-line" data-tint-line aria-hidden="true"></span>
       <div class="ts-sheen" aria-hidden="true"></div>
       <div class="ts-read">
         <p class="ts-num" dir="ltr"><span data-out="vlt">35</span><small>%</small></p>
@@ -823,7 +1056,7 @@ function savings() {
             <span class="font-head text-lg font-extrabold text-white" dir="ltr"><span data-sav-spend>1,500</span> <span class="text-sm font-semibold text-white/50">${qar}</span></span>
           </div>
           <input id="sav-spend" type="range" class="range range-dark mt-4" min="${modes.home.min}" max="${modes.home.max}" step="${modes.home.step}" value="${modes.home.val}" data-sav-range dir="ltr">
-          <a href="#quote" class="te-cta">${tr('Get a free quote', 'احصل على عرض مجاني')} ${arrow('h-4 w-4')}</a>
+          <a href="${href('contact/')}#quote" class="te-cta">${tr('Get a free quote', 'احصل على عرض مجاني')} ${arrow('h-4 w-4')}</a>
           <p class="mt-4 text-[11px] leading-relaxed text-white/40" data-sav-note data-home="${esc(tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.'))}" data-office="${esc(tr('Estimate. Assumes cooling is about 50% of an office’s electricity bill in Qatar. Real savings depend on the building, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٥٠٪ من فاتورة كهرباء المكتب في قطر. التوفير الفعلي يعتمد على المبنى والزجاج والفيلم.'))}">${tr('Estimate. Assumes cooling is about 60% of a Qatar home’s electricity bill. Real savings depend on your home, glass and film.', 'تقدير. يفترض أن التبريد يمثل حوالي ٦٠٪ من فاتورة كهرباء المنزل في قطر. التوفير الفعلي يعتمد على منزلك والزجاج والفيلم.')}</p>
         </div>
       </div>
@@ -917,7 +1150,7 @@ function filmTech() {
           )
           .join('')}
         <div class="border-t border-dashed border-line p-6"></div>
-        ${films.map((f, fi) => `<div class="flex items-center justify-center border-t border-dashed border-line p-5 ${f.featured ? 'rounded-b-[22px] bg-gold-50/80' : ''}"><a href="#quote" class="btn ${f.featured ? 'btn-primary' : 'btn-outline'} !px-5 !py-2.5 text-sm">${tr('Get a quote', 'اطلب عرض سعر')}</a></div>`).join('')}
+        ${films.map((f, fi) => `<div class="flex items-center justify-center border-t border-dashed border-line p-5 ${f.featured ? 'rounded-b-[22px] bg-gold-50/80' : ''}"><a href="${href('contact/')}#quote" class="btn ${f.featured ? 'btn-primary' : 'btn-outline'} !px-5 !py-2.5 text-sm">${tr('Get a quote', 'اطلب عرض سعر')}</a></div>`).join('')}
       </div>
     </div>
     <p class="mt-5 text-center text-sm text-muted" ${reveal()}>${tr('Want the full breakdown?', 'تريد التفاصيل الكاملة؟')} <a class="font-semibold text-gold-700 underline-offset-4 hover:underline" href="${href(POSTS[0].slug + '/')}">${tr('Read our film guide', 'اقرأ دليل الأفلام')} ${arrow('inline h-3.5 w-3.5')}</a></p>
@@ -1121,7 +1354,7 @@ function areasSection() {
             text: tr('Professional window tint and marble protection across Doha, Lusail, Al Rayyan, Al Wakra and surrounding areas — heat-resistant, UV-blocking solutions for your home and office.', 'خدمات تظليل وحماية رخام احترافية في الدوحة ولوسيل والريان والوكرة والمناطق المحيطة — حلول مقاومة للحرارة وحاجبة للأشعة لمنزلك ومكتبك.'),
           })}
           <div class="mt-8 flex flex-wrap gap-3" ${reveal(120)}>
-            <a href="#quote" class="btn btn-primary">${tr('Check availability', 'تحقق من التوفر')} ${arrow()}</a>
+            <a href="${href('contact/')}#quote" class="btn btn-primary">${tr('Check availability', 'تحقق من التوفر')} ${arrow()}</a>
             <a href="${waLink(tr('Hello, do you cover my area? I am in ', 'مرحباً، هل تغطون منطقتي؟ أنا في '))}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-4 w-4 text-[#25D366]')} ${tr('Ask about your area', 'اسأل عن منطقتك')}</a>
           </div>
           <div class="mt-8 flex items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-card" ${reveal(160)}>
@@ -1225,7 +1458,7 @@ function ctaBanner() {
         <h2 class="mt-6 font-head text-[2.3rem] font-extrabold leading-[1.05] text-white sm:text-[3.4rem]">${tr('Premium tint &amp; protection <span class="text-grad">for your windows!</span>', 'تظليل وحماية فاخرة <span class="text-grad">لنوافذك!</span>')}</h2>
         <p class="mt-5 max-w-xl text-lg text-white/70">${tr('Enhance privacy, block UV rays and protect your surfaces with high-quality tint solutions. Let us work while you unwind.', 'عزّز الخصوصية واحجب الأشعة واحمِ أسطحك بحلول تظليل عالية الجودة. دعنا نعمل بينما تسترخي.')}</p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="#quote" class="btn btn-primary">${tr('Get my free estimate', 'احصل على تقديري المجاني')} ${arrow()}</a>
+          <a href="${href('contact/')}#quote" class="btn btn-primary">${tr('Get my free estimate', 'احصل على تقديري المجاني')} ${arrow()}</a>
           <a href="tel:${C.site.phoneRaw}" class="btn btn-glass">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
         </div>
         <div class="mt-10 grid max-w-xl grid-cols-3 gap-3">
@@ -1318,7 +1551,7 @@ function showcase() {
           )
           .join('')}
       </div>
-      <a href="#quote" class="btn btn-primary mt-8">${tr('Get this result', 'احصل على هذه النتيجة')} ${arrow()}</a>
+      <a href="${href('contact/')}#quote" class="btn btn-primary mt-8">${tr('Get this result', 'احصل على هذه النتيجة')} ${arrow()}</a>
     </div>
 
     <div class="lg:col-span-7" data-a="right">
@@ -1522,7 +1755,7 @@ function pageHero({ chip, title, text, crumbs = [], image, alt, chips = {} }) {
         <h1 class="mt-5 text-balance font-head text-[2.15rem] font-extrabold leading-[1.08] text-ink min-[400px]:text-[2.5rem] sm:text-[3.2rem] lg:text-[2.9rem] xl:text-[3.4rem]" data-split>${title}</h1>
         ${text ? `<p class="mt-5 max-w-xl text-[1.1rem] leading-relaxed text-muted" data-a="up">${text}</p>` : ''}
         <div class="mt-8 flex flex-wrap gap-3" data-a="up">
-          <a href="#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
+          <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} ${t(C.ui.whatsapp)}</a>
         </div>
       </div>
@@ -1568,14 +1801,9 @@ function pageHome(page) {
       [
         servicesGrid(),
         howItWorks(),
-        tintStudio(),
-        savings(),
-        showcase(),
-        bookFast(),
-        gallery(),
-        testimonials(),
-        faqSection(C.homeFaq),
-        quoteSection(),
+        homeTwin(),
+        homeSmart(),
+        homeSpill(),
       ]
         .map((html, i) => `<div class="home-band ${i % 2 ? 'band-ice' : 'bg-white'} py-12 lg:py-16">${html}</div>`)
         .join('')
@@ -1620,18 +1848,8 @@ ${pageHero({
     </div>
   </div>
 </section>
-${promiseSection()}
-${statsStrip()}
-<div class="-mt-20 lg:-mt-28"></div>
-${whyUs()}
-${processTimeline()}
-${bookFast()}
-${gallery()}
-${areasSection()}
-${testimonials()}
-${reviewUs()}
-${ctaBanner()}
-${quoteSection()}`;
+${whyChoose()}
+${storiesSection()}`;
   return layout(
     page,
     {
@@ -1874,17 +2092,15 @@ ${roomDock('ruv2')}
 function optionExplorer({ kicker, title, text, items, wa }) {
   const ar = L === 'ar';
   return `
-<section class="px-2.5 pt-20 sm:px-3 lg:pt-28">
-  <div class="relative overflow-hidden rounded-[28px] bg-ink" data-assemble>
-    <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
-    <div class="pointer-events-none absolute -top-40 end-[-10%] h-[28rem] w-[28rem] rounded-full bg-gold-500/20 blur-[110px]"></div>
-    <div class="container-site relative py-16 lg:py-24">
-      <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-end" data-a="up">
+<section class="pt-16 lg:pt-20">
+  <div class="ox-wrap" data-assemble>
+    <div class="container-site relative">
+      <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end" data-a="up">
         <div>
-          <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-gold-300">${kicker}</p>
-          <h2 class="mt-3 max-w-2xl font-head text-[2rem] font-extrabold leading-tight text-white sm:text-[2.7rem]">${title}</h2>
+          <span class="eyebrow">${kicker}</span>
+          <h2 class="cv-title max-w-2xl">${title}</h2>
         </div>
-        <p class="max-w-sm text-white/60">${text}</p>
+        <p class="max-w-sm text-muted">${text}</p>
       </div>
       <div class="ox mt-10 grid gap-6 lg:grid-cols-12 lg:gap-10" data-ox style="--ox-dur:4800ms" data-a="up">
         <div class="order-2 lg:order-1 lg:col-span-5" role="tablist">
@@ -1896,21 +2112,21 @@ function optionExplorer({ kicker, title, text, items, wa }) {
             </span>
             <span class="ox-bar" aria-hidden="true"><span></span></span>
           </button>`).join('')}
-          <a href="${wa}" target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white underline decoration-gold-400 decoration-2 underline-offset-8 hover:text-gold-300">${tr('Not sure which one? Ask us', 'لست متأكداً؟ اسألنا')} ${arrow('h-4 w-4')}</a>
+          <a href="${wa}" target="_blank" rel="noopener" class="ts-link mt-6 text-sm">${tr('Not sure which one? Ask us', 'لست متأكداً؟ اسألنا')} ${arrow('h-4 w-4')}</a>
         </div>
         <div class="order-1 lg:order-2 lg:col-span-7">
-          <div class="ox-stage relative aspect-[4/3] overflow-hidden rounded-[24px] border-[5px] border-white/10 bg-ink-2 shadow-float" dir="ltr">
+          <div class="ox-stage glow-card relative aspect-[4/3] overflow-hidden rounded-[24px] bg-[#e8eef6]" dir="ltr">
             ${items.map((it, i) => `<div class="ox-panel ${i === 0 ? 'is-on' : ''}" data-ox-panel="${i}" ${i ? 'aria-hidden="true"' : ''}>
               ${it.img ? `<img src="/assets/img/${it.img}.webp" alt="" class="ox-img absolute inset-0 h-full w-full object-cover" style="object-position:${it.pos || '50% 50%'}" loading="lazy">` : ''}
               <div class="ox-layer absolute inset-0">${it.layer || ''}</div>
               <span class="ox-edge" aria-hidden="true"></span>
-              <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-ink/10"></div>
+              <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent"></div>
               <span class="glass-hud absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold text-white ${ar ? 'font-arabic' : ''}" dir="${ar ? 'rtl' : 'ltr'}"><span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,.25)]"></span>${it.tag || it.title}</span>
               <div class="room-hud ox-stat absolute bottom-4 left-4 rounded-2xl px-4 py-3 ${ar ? 'text-right' : ''}" dir="${ar ? 'rtl' : 'ltr'}">
                 <p class="text-[11px] font-bold uppercase tracking-wider text-muted">${it.stat[0]}</p>
                 <p class="font-head text-2xl font-extrabold leading-tight text-ink sm:text-3xl">${it.stat[1]}</p>
               </div>
-              <span class="absolute bottom-4 right-4 font-head text-5xl font-extrabold leading-none text-white/20 sm:text-6xl">${num(pad(i + 1))}</span>
+              
             </div>`).join('')}
           </div>
         </div>
@@ -2196,6 +2412,312 @@ function premiumConfig(slug) {
   return C2[slug] || null;
 }
 
+/* ======================================================================
+   Service "in action" explainer: one step per sub-topic, each with its own
+   animated illustration. Scenes are inline SVG; CSS plays them when the
+   step is active (classes .k-* with --del / --dur / --o).
+   ====================================================================== */
+const K = (cls, del, dur, extra = '') => `class="k ${cls}" style="--del:${del}s;--dur:${dur}s${extra ? ';' + extra : ''}"`;
+const NAVY = '#0b2346', BLUE = '#2a8ff2', GLASS = '#e3f0ff', SUN = '#fbbf24', HEAT = '#f97316';
+const sunG = (x, y) => `<g ${K('k-fade', 0, 0.6)}><circle cx="${x}" cy="${y}" r="40" fill="#fde68a" opacity=".45" class="tw-pulse"/><circle cx="${x}" cy="${y}" r="22" fill="${SUN}"/></g>`;
+const check = (x, y, del) => `<g ${K('k-pop', del, 0.5)}><circle cx="${x}" cy="${y}" r="17" fill="#22c55e"/><path d="M${x - 7} ${y} l5 5 l10 -10" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+const wave = (x, y, n) => `M${x} ${y}` + ' q10 -8 20 0 t20 0'.repeat(1) + ' t20 0'.repeat(n - 2);
+const sofa = (x, y) => `<rect x="${x}" y="${y + 10}" width="80" height="24" rx="8" fill="#a9c1dd"/><rect x="${x - 6}" y="${y}" width="16" height="34" rx="6" fill="#8fadd0"/><rect x="${x + 70}" y="${y}" width="16" height="34" rx="6" fill="#8fadd0"/>`;
+const eye = (x, y) => `<path d="M${x - 20} ${y} q20 -16 40 0 q-20 16 -40 0z" fill="#fff" stroke="${NAVY}" stroke-width="2.5"/><circle cx="${x}" cy="${y}" r="5" fill="${NAVY}"/>`;
+const sky = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#cfe5ff"/><rect x="${x}" y="${y + h * 0.62}" width="${w}" height="${h * 0.38}" fill="#e9f3ff"/>` +
+  [[0.08, 0.5, 0.14, 0.3], [0.26, 0.38, 0.12, 0.42], [0.42, 0.56, 0.16, 0.24], [0.62, 0.32, 0.12, 0.48], [0.78, 0.48, 0.14, 0.32]]
+    .map(([a, b, c, d]) => `<rect x="${x + w * a}" y="${y + h * b}" width="${w * c}" height="${h * d}" rx="2" fill="#9dbfe6"/>`).join('');
+
+const TW_SCENES = {
+  solar: () => `
+    ${sunG(62, 62)}
+    <rect x="212" y="40" width="176" height="220" rx="16" fill="#f1f6fd"/><path d="M212 230 H388" stroke="#d6e2ef" stroke-width="2"/>${sofa(262, 192)}
+    <rect x="192" y="34" width="22" height="232" rx="6" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/>
+    <rect ${K('k-down', 0.2, 0.9, '--o:top')} x="207" y="37" width="5" height="226" rx="2" fill="${BLUE}"/>
+    <path ${K('k-draw', 1.1, 1.1)} pathLength="1" d="M86 80 L300 176" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path ${K('k-draw', 1.3, 1.1)} pathLength="1" d="M82 94 L282 214" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path ${K('k-draw', 1.2, 1.5)} pathLength="1" d="${wave(70, 124, 6)} L118 252" stroke="${HEAT}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path ${K('k-draw', 1.5, 1.5)} pathLength="1" d="${wave(70, 156, 6)} L104 272" stroke="${HEAT}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <rect x="352" y="62" width="18" height="122" rx="9" fill="#fff" stroke="#c9d8ea" stroke-width="2"/><circle cx="361" cy="192" r="15" fill="#fff" stroke="#c9d8ea" stroke-width="2"/>
+    <rect ${K('k-out', 2.5, 0.6)} x="356.5" y="78" width="9" height="116" rx="4.5" fill="${HEAT}"/><circle ${K('k-out', 2.5, 0.6)} cx="361" cy="192" r="10" fill="${HEAT}"/>
+    <rect ${K('k-up', 2.6, 0.9, '--o:bottom')} x="356.5" y="140" width="9" height="54" rx="4.5" fill="${BLUE}"/><circle ${K('k-fade', 2.6, 0.5)} cx="361" cy="192" r="10" fill="${BLUE}"/>`,
+
+  safety: () => `
+    <g ${K('k-shake', 0.85, 0.45)}>
+      <rect x="120" y="40" width="160" height="220" rx="8" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/>
+      <rect ${K('k-down', 0.1, 0.8, '--o:top')} x="124" y="44" width="152" height="212" rx="5" fill="${BLUE}" opacity=".16"/>
+      ${['M128 150 L168 118 L198 96', 'M128 150 L178 160 L222 152', 'M128 150 L160 198 L186 232', 'M128 150 L146 100 L150 64', 'M168 118 L190 136', 'M178 160 L188 186']
+        .map((d, i) => `<path ${K('k-draw', 0.95 + i * 0.05, 0.35)} pathLength="1" d="${d}" stroke="${NAVY}" stroke-width="2" opacity=".55" fill="none" stroke-linecap="round"/>`).join('')}
+    </g>
+    <circle ${K('k-throw', 0.2, 1.4)} cx="40" cy="150" r="15" fill="#64748b"/>
+    ${check(300, 66, 1.7)}`,
+
+  reflective: () => `
+    <clipPath id="tw-rf"><rect x="120" y="30" width="170" height="240" rx="8"/></clipPath>
+    <rect x="120" y="30" width="170" height="240" rx="8" fill="#b9d6f5" stroke="${NAVY}" stroke-width="3"/>
+    <path d="M176 30 V270 M233 30 V270 M120 110 H290 M120 190 H290" stroke="${NAVY}" stroke-width="2" opacity=".5"/>
+    <g clip-path="url(#tw-rf)"><circle ${K('k-fade', 0.3, 0.6)} cx="250" cy="72" r="15" fill="#fde68a"/><polygon ${K('k-sweep', 0.4, 1.4, '--dx:320px')} points="40,0 84,0 44,300 0,300" fill="#fff" opacity=".6"/></g>
+    ${eye(48, 160)}<path ${K('k-draw', 1.1, 0.9)} pathLength="1" d="M72 160 L117 160 L84 196" stroke="#94a3b8" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="1"/>
+    ${eye(348, 120)}<path ${K('k-draw', 1.8, 1)} pathLength="1" d="M324 120 L40 86" stroke="${BLUE}" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+
+  privacy: () => `
+    <rect x="110" y="34" width="180" height="232" rx="8" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/>
+    <g ${K('k-blur', 0.9, 1.1, '--b:7px')}><circle cx="200" cy="112" r="24" fill="#64748b"/><rect x="166" y="140" width="68" height="112" rx="32" fill="#64748b"/></g>
+    <rect ${K('k-down', 0.5, 1.2, '--o:top')} x="113" y="37" width="174" height="226" rx="5" fill="#fff" opacity=".62"/>
+    ${eye(52, 150)}<path ${K('k-draw', 1.6, 0.6)} pathLength="1" d="M76 150 L104 150" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path ${K('k-pop', 2.1, 0.4)} d="M40 128 L64 172" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>`,
+
+  blackout: () => `
+    <rect x="0" y="210" width="400" height="90" fill="#eef3fa"/>
+    <rect x="120" y="36" width="160" height="150" rx="6" fill="#cfe5ff" stroke="${NAVY}" stroke-width="3"/><circle cx="234" cy="84" r="18" fill="${SUN}"/>
+    <polygon ${K('k-out', 1.6, 0.7)} points="123,186 277,186 340,292 60,292" fill="#fde68a" opacity=".55"/>
+    <rect ${K('k-down', 0.4, 1.3, '--o:top')} x="123" y="39" width="154" height="144" rx="3" fill="#0b1426"/>
+    <rect ${K('k-fade', 1.6, 0.8, '--to:.18')} x="0" y="210" width="400" height="90" fill="#0b1426"/>
+    <g ${K('k-pop', 2.2, 0.5)}><path d="M346 44 a20 20 0 1 0 18 28 a16 16 0 1 1 -18 -28z" fill="#fde68a"/></g>`,
+
+  skylight: () => `
+    ${sunG(200, 34)}
+    <rect x="20" y="104" width="360" height="14" rx="4" fill="#cbd5e1"/><rect x="146" y="102" width="108" height="18" rx="3" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/>
+    <rect ${K('k-right', 0.2, 0.8, '--o:left')} x="149" y="105" width="102" height="5" rx="2" fill="${BLUE}"/>
+    <path ${K('k-draw', 1, 0.8)} pathLength="1" d="M200 60 V100 L176 64" stroke="${HEAT}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path ${K('k-draw', 1.2, 0.8)} pathLength="1" d="M226 62 V100 L250 66" stroke="${HEAT}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path ${K('k-draw', 1.4, 1)} pathLength="1" d="M186 64 L170 262" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path ${K('k-draw', 1.5, 1)} pathLength="1" d="M214 64 L232 262" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M20 268 H380" stroke="#d6e2ef" stroke-width="2"/>${sofa(60, 234)}
+    <g ${K('k-out', 2.3, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#fed7aa" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${HEAT}" font-family="Urbanist,sans-serif">46°</text></g>
+    <g ${K('k-fade', 2.5, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#bfdbfe" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${BLUE}" font-family="Urbanist,sans-serif">32°</text></g>`,
+
+  smartOff: () => smartBase(false) + crystals(false) + switchG(false),
+  smartOn: () => smartBase('on') + crystals(true) + switchG(true) + `<path ${K('k-draw', 0.5, 0.7)} pathLength="1" d="M318 246 H296 V200" stroke="${BLUE}" stroke-width="3" fill="none" stroke-dasharray="1"/>`,
+  smartClear: () => smartBase('clear') + switchG(true, true) + check(300, 60, 0.9) + `<g ${K('k-fade', 0.5, 0.5)}><rect x="160" y="236" width="80" height="30" rx="15" fill="${NAVY}"/><text x="200" y="256" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="Urbanist,sans-serif">&lt; 1s</text></g>`,
+
+  marble: () => `
+    <polygon points="50,170 350,170 392,254 8,254" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <path d="M70 196 q60 -14 110 6 t120 -4 M40 232 q80 -18 160 4 t150 -6" stroke="#cbd5e1" stroke-width="2" fill="none"/>
+    <polygon ${K('k-right', 0.2, 1, '--o:left')} points="50,170 350,170 392,254 8,254" fill="${BLUE}" opacity=".14"/>
+    <path ${K('k-drip', 0.9, 0.7)} d="M200 40 q-12 18 -12 28 a12 12 0 0 0 24 0 q0 -10 -12 -28z" fill="#9f1239"/>
+    <g ${K('k-out', 2.5, 0.3)}><ellipse ${K('k-pop', 1.55, 0.35)} cx="200" cy="206" rx="20" ry="8" fill="#9f1239"/><ellipse ${K('k-pop', 1.6, 0.3)} cx="196" cy="203" rx="6" ry="2.5" fill="#fda4af"/></g>
+    <rect ${K('k-wipe', 2.1, 1, '--dx:220px')} x="150" y="186" width="70" height="36" rx="10" fill="#93c5fd" opacity=".95"/>
+    ${check(330, 120, 3)}`,
+
+  wood: () => `
+    <rect x="28" y="168" width="344" height="78" rx="10" fill="#c08457"/>
+    <path d="M40 188 q80 -8 160 2 t160 -2 M40 210 q90 8 170 -2 t150 4 M40 230 q70 -6 150 2 t170 -2" stroke="#9a6236" stroke-width="2" fill="none"/>
+    <rect ${K('k-right', 0.2, 1, '--o:left')} x="28" y="168" width="344" height="78" rx="10" fill="${BLUE}" opacity=".16"/>
+    <g ${K('k-cup', 0.9, 2.2)}><path d="M184 112 h36 l-5 56 h-26z" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="2"/><path d="M187 128 h30 l-3 38 h-24z" fill="#7dd3fc" opacity=".7"/></g>
+    <path ${K('k-slide', 1.2, 0.9, '--from:-150px')} d="M280 150 l40 -6 l4 8 l-40 6z" fill="#94a3b8"/>
+    ${check(202, 214, 3.1)}`,
+
+  counter: () => `
+    <rect x="20" y="168" width="360" height="22" rx="4" fill="#e2e8f0"/><rect x="28" y="190" width="344" height="82" fill="#cbd5e1"/><path d="M200 190 V272 M114 190 V272 M286 190 V272" stroke="#b6c3d4" stroke-width="2"/>
+    <rect ${K('k-right', 0.2, 1, '--o:left')} x="20" y="168" width="360" height="9" rx="3" fill="${BLUE}" opacity=".35"/>
+    <g ${K('k-drop', 0.9, 0.6, '--dy:90px')}><rect x="92" y="134" width="44" height="34" rx="6" fill="#fff" stroke="#cbd5e1" stroke-width="2"/><path d="M136 144 h10 a8 8 0 0 1 0 16 h-10" stroke="#cbd5e1" stroke-width="3" fill="none"/></g>
+    <g ${K('k-slide', 1.6, 1, '--from:-180px')}><path d="M220 154 h96 l10 7 l-10 7 h-96z" fill="#94a3b8"/><rect x="186" y="155" width="36" height="12" rx="4" fill="${NAVY}"/></g>
+    <ellipse ${K('k-pulse', 2.3, 0.9)} cx="270" cy="170" rx="60" ry="8" fill="${BLUE}" opacity=".35"/>
+    ${check(330, 110, 3)}`,
+
+  steel: () => `
+    <clipPath id="tw-st"><rect x="200" y="30" width="90" height="240"/></clipPath>
+    <rect x="110" y="30" width="180" height="240" rx="12" fill="#d5dde7" stroke="#aab7c6" stroke-width="2"/>
+    ${[0, 1, 2, 3, 4, 5, 6, 7].map((i) => `<path d="M${122 + i * 22} 36 V264" stroke="#e6ecf3" stroke-width="2"/>`).join('')}
+    <rect x="186" y="110" width="8" height="80" rx="4" fill="#94a3b8"/><path d="M200 30 V270" stroke="#fff" stroke-width="2" stroke-dasharray="6 6"/>
+    <rect ${K('k-down', 0.2, 0.9, '--o:top')} x="200" y="31" width="89" height="238" rx="10" fill="${BLUE}" opacity=".14"/>
+    ${[[142, 96], [160, 150], [134, 200], [252, 96], [236, 160], [262, 214]].map(([x, y], i) => `<g ${K(i < 3 ? 'k-fade' : 'k-tap', 0.9 + i * 0.18, 0.4, i < 3 ? '--to:.75' : '')}><ellipse cx="${x}" cy="${y}" rx="11" ry="14" fill="none" stroke="#8a97a8" stroke-width="2" stroke-dasharray="3 3"/><ellipse cx="${x}" cy="${y}" rx="5" ry="7" fill="none" stroke="#8a97a8" stroke-width="2" stroke-dasharray="3 3"/></g>`).join('')}
+    <g clip-path="url(#tw-st)"><polygon ${K('k-sweep', 2.2, 1, '--dx:220px')} points="160,20 190,20 160,280 130,280" fill="#fff" opacity=".8"/></g>
+    ${check(320, 60, 2.8)}`,
+
+  decor: () => `
+    <rect x="100" y="34" width="200" height="232" rx="8" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/><path d="M200 34 V266" stroke="${NAVY}" stroke-width="3"/>
+    ${[0, 1, 2, 3, 4].map((r) => `<path ${K('k-draw', 0.3 + r * 0.28, 0.7)} pathLength="1" d="M104 ${60 + r * 44} l24 -20 l24 20 l24 -20 l24 20 l24 -20 l24 20 l20 -16" stroke="${BLUE}" stroke-width="2.4" fill="none" stroke-linejoin="round"/>`).join('')}
+    <rect ${K('k-fade', 1.9, 0.7, '--to:.18')} x="103" y="37" width="194" height="226" rx="5" fill="${BLUE}"/>
+    ${check(320, 60, 2.5)}`,
+
+  branding: () => `
+    <path d="M10 262 H390" stroke="#d6e2ef" stroke-width="2"/>
+    <rect x="70" y="44" width="260" height="218" rx="6" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/><path d="M200 44 V262" stroke="${NAVY}" stroke-width="2" opacity=".6"/>
+    <rect x="114" y="206" width="70" height="8" rx="3" fill="#94a3b8"/><rect x="122" y="214" width="6" height="40" fill="#94a3b8"/><rect x="170" y="214" width="6" height="40" fill="#94a3b8"/>
+    <rect ${K('k-right', 0.3, 1, '--o:left')} x="73" y="122" width="254" height="44" fill="#fff" opacity=".78"/>
+    <g ${K('k-pop', 1.2, 0.5)}><rect x="148" y="128" width="32" height="32" rx="9" fill="${BLUE}"/><path d="M156 152 l8 -16 l8 16" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/></g>
+    <rect ${K('k-right', 1.5, 0.6, '--o:left')} x="190" y="132" width="70" height="9" rx="4" fill="${NAVY}"/><rect ${K('k-right', 1.7, 0.6, '--o:left')} x="190" y="147" width="46" height="7" rx="3" fill="#94a3b8"/>`,
+
+  wallpaper: () => `
+    <pattern id="tw-wp" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#dbeafe"/><circle cx="11" cy="11" r="4" fill="#93c5fd"/><circle cx="0" cy="0" r="2" fill="#bfdbfe"/><circle cx="22" cy="22" r="2" fill="#bfdbfe"/></pattern>
+    <rect x="40" y="26" width="320" height="236" fill="#f1f5f9"/><path d="M20 262 H380" stroke="#cbd5e1" stroke-width="3"/>
+    ${[0, 1, 2].map((i) => `<rect ${K('k-down', 0.3 + i * 0.75, 0.8, '--o:top')} x="${60 + i * 96}" y="26" width="94" height="236" fill="url(#tw-wp)"/>`).join('')}
+    <rect ${K('k-roll', 0.3, 2.4, '--dy:230px')} x="54" y="22" width="300" height="8" rx="4" fill="${NAVY}" opacity=".85"/>
+    ${check(330, 60, 2.9)}`,
+
+  frost: () => `
+    <rect x="100" y="34" width="200" height="232" rx="8" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/>
+    <rect x="103" y="37" width="194" height="226" rx="5" fill="#fff" opacity=".75"/>
+    <path ${K('k-draw', 0.3, 1.6)} pathLength="1" d="M120 150 q40 -60 80 0 t80 0 M140 210 a26 26 0 1 0 52 0 a26 26 0 1 0 -52 0 M216 92 a20 20 0 1 0 40 0 a20 20 0 1 0 -40 0" stroke="${NAVY}" stroke-width="2" fill="none" stroke-dasharray="1"/>
+    <g ${K('k-fade', 2, 0.6)}><path d="M120 150 q40 -60 80 0 t80 0 v8 q-40 -52 -80 0 t-80 0z" fill="${GLASS}"/><circle cx="166" cy="210" r="25" fill="${GLASS}"/><circle cx="236" cy="92" r="19" fill="${GLASS}"/></g>
+    ${check(320, 60, 2.6)}`,
+
+  fabnano: () => `
+    <rect x="50" y="200" width="300" height="46" rx="14" fill="#7f93ad"/><rect x="40" y="120" width="40" height="126" rx="14" fill="#6f84a0"/><rect x="320" y="120" width="40" height="126" rx="14" fill="#6f84a0"/>
+    <rect x="76" y="170" width="248" height="40" rx="14" fill="#94a3b8"/>
+    ${Array.from({ length: 16 }, (_, i) => `<circle ${K('k-pop', 0.3 + i * 0.04, 0.3)} cx="${86 + i * 15.5}" cy="167" r="3" fill="${BLUE}"/>`).join('')}
+    <rect ${K('k-right', 1, 0.6, '--o:left')} x="80" y="164" width="240" height="2" rx="1" fill="${BLUE}"/>
+    ${[160, 200, 240].map((x, i) => `<g ${K('k-bead', 1.3 + i * 0.2, 1.7)}><path d="M${x} 60 q-9 14 -9 21 a9 9 0 0 0 18 0 q0 -7 -9 -21z" fill="#38bdf8"/></g>`).join('')}`,
+
+  stain: () => `
+    <rect x="40" y="150" width="320" height="110" rx="18" fill="#94a3b8"/>${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M52 ${166 + i * 16} H348" stroke="#a7b4c5" stroke-width="2"/>`).join('')}
+    <rect ${K('k-down', 0.1, 0.6, '--o:top')} x="40" y="150" width="320" height="110" rx="18" fill="${BLUE}" opacity=".14"/>
+    <g ${K('k-tip', 0.6, 0.6, '--o:right bottom')}><path d="M150 80 h44 l-6 52 h-32z" fill="#fff" stroke="#cbd5e1" stroke-width="2"/><rect x="156" y="86" width="32" height="8" rx="3" fill="#7c4a2a"/></g>
+    <g ${K('k-out', 2.3, 0.3)}>${[[214, 196, 11], [236, 206, 8], [200, 214, 7], [252, 194, 6]].map(([x, y, r], i) => `<circle ${K('k-pop', 1.1 + i * 0.08, 0.3)} cx="${x}" cy="${y}" r="${r}" fill="#7c4a2a"/>`).join('')}</g>
+    <rect ${K('k-wipe', 1.9, 1, '--dx:200px')} x="170" y="182" width="70" height="40" rx="10" fill="#e0f2fe"/>
+    ${check(320, 70, 3)}`,
+};
+function smartBase(state) {
+  const frost = state === 'clear' ? '' : state === 'on' ? `<rect ${K('k-out', 0.9, 0.9, '--to:.1')} x="113" y="43" width="174" height="214" rx="5" fill="#fff" opacity=".86"/>` : `<rect ${K('k-down', 0.2, 0.9, '--o:top')} x="113" y="43" width="174" height="214" rx="5" fill="#fff" opacity=".86"/>`;
+  return `<clipPath id="tw-sg-${state || 'off'}"><rect x="113" y="43" width="174" height="214" rx="5"/></clipPath>
+    <rect x="110" y="40" width="180" height="220" rx="8" fill="${GLASS}" stroke="${NAVY}" stroke-width="3"/>
+    <g clip-path="url(#tw-sg-${state || 'off'})">${sky(113, 43, 174, 214)}${frost}</g>`;
+}
+function crystals(align) {
+  const pts = [[132, 70, 50], [160, 96, -35], [190, 64, 70], [222, 90, 20], [254, 70, -60], [140, 130, -15], [176, 150, 80], [210, 126, -50], [246, 146, 35], [150, 190, 65], [186, 210, -25], [222, 186, 55], [258, 206, -70], [270, 110, 10]];
+  return pts.map(([x, y, r], i) => `<rect ${align ? K('k-align', 0.9 + i * 0.03, 0.6, `--r:${r}deg`) : K('k-fade', 0.5 + i * 0.04, 0.4, `transform:rotate(${r}deg)`)} x="${x}" y="${y}" width="4" height="16" rx="2" fill="${NAVY}" opacity=".45"/>`).join('');
+}
+function switchG(on, still) {
+  return `<rect x="316" y="232" width="52" height="28" rx="14" fill="${on ? BLUE : '#cbd5e1'}" ${on && !still ? K('k-fade', 0.3, 0.3) : ''}/><circle ${on && !still ? K('k-slide', 0.3, 0.4, '--from:-24px') : ''} cx="${on ? 354 : 330}" cy="246" r="10" fill="#fff"/>`;
+}
+
+const TW = {
+  'architectural-window-film-solutions': {
+    title: tr('Every film, <span class="text-grad">in action</span>', 'كل فيلم <span class="text-grad">أثناء العمل</span>'),
+    steps: [
+      ['solar', tr('Lets light in, bounces the heat back.', 'يُدخل الضوء ويرد الحرارة.')],
+      ['safety', tr('Holds broken glass together on impact.', 'يمسك الزجاج المكسور عند الصدمة.')],
+      ['reflective', tr('Mirror outside, clear view inside.', 'مرآة من الخارج ورؤية واضحة من الداخل.')],
+      ['privacy', tr('Frosts the glass so no one sees in.', 'يصنفر الزجاج فلا يرى أحد الداخل.')],
+      ['blackout', tr('Blocks the light for full darkness.', 'يحجب الضوء لظلام تام.')],
+      ['skylight', tr('Cuts the heat pouring through roof glass.', 'يقلل الحرارة النافذة من زجاج السقف.')],
+    ],
+  },
+  'smart-glass-privacy-solutions': {
+    title: tr('See it <span class="text-grad">switch</span>', 'شاهده <span class="text-grad">يتحوّل</span>'),
+    steps: [
+      ['smartOff', tr('Frosted and private.', 'مصنفر وخاص.'), tr('Power off', 'عند الإطفاء')],
+      ['smartOn', tr('Crystals line up in an instant.', 'تصطف البلورات في لحظة.'), tr('Switch on', 'عند التشغيل')],
+      ['smartClear', tr('Fully clear in under a second.', 'شفاف تماماً في أقل من ثانية.'), tr('Clear view', 'رؤية واضحة')],
+    ],
+  },
+  'surface-protection-solutions': {
+    title: tr('Protection, <span class="text-grad">in action</span>', 'الحماية <span class="text-grad">أثناء العمل</span>'),
+    steps: [
+      ['marble', tr('Spills bead up and wipe away.', 'تتجمع السوائل وتُمسح بسهولة.')],
+      ['wood', tr('No rings, no scratches.', 'لا حلقات ولا خدوش.')],
+      ['counter', tr('Knocks and scratches stay on the film.', 'الصدمات والخدوش تبقى على الفيلم.')],
+      ['steel', tr('No fingerprints, shine that lasts.', 'بلا بصمات ولمعان يدوم.')],
+    ],
+  },
+  'decorative-interior-solutions': {
+    title: tr('Design, <span class="text-grad">in action</span>', 'التصميم <span class="text-grad">أثناء العمل</span>'),
+    steps: [
+      ['decor', tr('Patterns made for your glass.', 'نقوش مصممة لزجاجك.')],
+      ['branding', tr('Your logo on every glass wall.', 'شعارك على كل جدار زجاجي.')],
+      ['wallpaper', tr('Fitted neatly, strip by strip.', 'يُركّب بإتقان شريطاً شريطاً.')],
+      ['frost', tr('Cut to your design — light stays in.', 'يُقص حسب تصميمك — ويبقى الضوء.')],
+    ],
+  },
+  'fabric-material-protection': {
+    title: tr('Protection, <span class="text-grad">in action</span>', 'الحماية <span class="text-grad">أثناء العمل</span>'),
+    steps: [
+      ['fabnano', tr('Water beads up and rolls off.', 'تتجمع المياه وتنزلق.')],
+      ['stain', tr('Spills wipe off before they stain.', 'تُمسح الانسكابات قبل أن تترك بقعة.')],
+    ],
+  },
+};
+
+function topicWorks(s) {
+  const cfg = TW[s.slug];
+  if (!cfg) return '';
+  const steps = cfg.steps.map(([scene, line, title], i) => ({ scene, line, title: title || t((s.options[i] || s.options[0])[0]) }));
+  const item = (st, i) => `
+          <li class="tw-item${i === 0 ? ' is-on' : ''}" data-tw-step tabindex="0" role="button">
+            <span class="tw-n" dir="ltr">${pad(i + 1)}</span>
+            <div class="min-w-0 flex-1"><h3 class="tw-h">${st.title}</h3><p class="tw-p">${st.line}</p></div>
+            <span class="tw-bar"><span></span></span>
+          </li>`;
+  const scene = (st, i) => `<svg class="tw-scene${i === 0 ? ' is-on' : ''}" data-tw-scene viewBox="0 0 400 300" aria-hidden="true">${TW_SCENES[st.scene]()}</svg>`;
+  return `
+<section class="tw-sec py-14 lg:py-16">
+  <div class="container-site" data-tw>
+    <div ${reveal()}>
+      <span class="eyebrow">${tr('How it works', 'كيف يعمل')}</span>
+      <h2 class="cv-title">${cfg.title}</h2>
+    </div>
+    <div class="mt-8 grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+      <ol class="lg:col-span-5">${steps.map(item).join('')}</ol>
+      <div class="lg:col-span-7"><div class="tw-stage glow-card">${steps.map(scene).join('')}<div class="tw-dots" aria-hidden="true">${steps.map((_, i) => `<span${i === 0 ? ' class="is-on"' : ''}></span>`).join('')}</div></div></div>
+    </div>
+  </div>
+</section>`;
+}
+
+/* One compact row per sub-topic: a real photo with the film's effect playing on it, plus title + one line */
+const TOPICS = {
+  'architectural-window-film-solutions': [
+    ['tp-solar', 'tint', tr('Lets light in, bounces the heat back.', 'يُدخل الضوء ويرد الحرارة.')],
+    ['tp-safety', 'gloss', tr('Holds broken glass together on impact.', 'يمسك الزجاج المكسور عند الصدمة.')],
+    ['tp-reflective', 'mirror', tr('Mirror outside, clear view inside.', 'مرآة من الخارج ورؤية واضحة من الداخل.')],
+    ['tp-privacy', 'frost', tr('Frosts the glass so no one sees in.', 'يصنفر الزجاج فلا يرى أحد الداخل.')],
+    ['tp-blackout', 'black', tr('Blocks the light for full darkness.', 'يحجب الضوء لظلام تام.')],
+    ['tp-skylight', 'tint', tr('Cuts the heat pouring through roof glass.', 'يقلل الحرارة النافذة من زجاج السقف.')],
+  ],
+  'smart-glass-privacy-solutions': [['tp-smart', 'smart', tr('Clear or private at the flick of a switch.', 'شفاف أو خاص بلمسة زر.')]],
+  'surface-protection-solutions': [
+    ['bl-marble', 'gloss', tr('Spills and scratches stay on the film.', 'الانسكابات والخدوش تبقى على الفيلم.')],
+    ['tp-wood', 'gloss', tr('No rings, no scratches.', 'لا حلقات ولا خدوش.')],
+    ['tp-counter', 'gloss', tr('Daily knocks leave no mark.', 'الصدمات اليومية لا تترك أثراً.')],
+    ['tp-steel', 'gloss', tr('No fingerprints, shine that lasts.', 'بلا بصمات ولمعان يدوم.')],
+  ],
+  'decorative-interior-solutions': [
+    ['tp-decor', 'gloss', tr('Patterns made for your glass.', 'نقوش مصممة لزجاجك.')],
+    ['cs-commercial', 'frost', tr('Your logo on every glass wall.', 'شعارك على كل جدار زجاجي.')],
+    ['tp-wallpaper', 'gloss', tr('Fitted neatly, strip by strip.', 'يُركّب بإتقان شريطاً شريطاً.')],
+    ['tp-frosted', 'frost', tr('Cut to your design — light stays in.', 'يُقص حسب تصميمك — ويبقى الضوء.')],
+  ],
+  'fabric-material-protection': [
+    ['tp-sofa', 'gloss', tr('Water beads up and rolls off.', 'تتجمع المياه وتنزلق.')],
+    ['tp-stain', 'gloss', tr('Spills wipe off before they stain.', 'تُمسح الانسكابات قبل أن تترك بقعة.')],
+  ],
+};
+function topicSections(s) {
+  const list = TOPICS[s.slug];
+  if (!list) return '';
+  const labels = (fx) =>
+    fx === 'smart' ? [tr('Power on · clear', 'تشغيل · شفاف'), tr('Power off · private', 'إطفاء · خاص')]
+    : fx === 'gloss' ? [tr('Before', 'قبل'), tr('Protected', 'محمي')]
+    : [tr('Without film', 'بدون فيلم'), tr('With film', 'مع الفيلم')];
+  const rows = list
+    .map(([img, fx, line], i) => {
+      const name = t((s.options[i] || s.options[0])[0]);
+      const ask = waLink(tr('Hello, I would like a quote for ', 'مرحباً، أرغب في عرض سعر لـ ') + name);
+      const [l0, l1] = labels(fx);
+      return `
+    <div class="tr-row${i % 2 ? ' tr-rev' : ''}" ${reveal()}>
+      <figure class="tr-pic fx-${fx}" data-fx>
+        <img src="/assets/img/${img}.webp" alt="${esc(name)}" loading="lazy">
+        <span class="fx-layer" aria-hidden="true"></span><span class="fx-edge" aria-hidden="true"></span><span class="fx-sheen" aria-hidden="true"></span>${fx === 'gloss' ? '<span class="fx-drop d1"></span><span class="fx-drop d2"></span><span class="fx-drop d3"></span>' : ''}
+        <span class="fx-chip fx-a">${l0}</span><span class="fx-chip fx-b">${l1}</span>
+      </figure>
+      <div class="tr-text">
+        <span class="tp-n" dir="ltr">${pad(i + 1)}</span>
+        <h2 class="tr-h">${name}</h2>
+        <p class="tp-line">${line}</p>
+        <a href="${ask}" target="_blank" rel="noopener" class="ts-link mt-5 text-sm">${tr('Ask about this', 'اسأل عن هذا')} ${arrow('h-4 w-4')}</a>
+      </div>
+    </div>`;
+    })
+    .join('');
+  return `
+<section class="py-12 lg:py-16">
+  <div class="container-site"><div class="tr-list">${rows}</div></div>
+</section>`;
+}
+
 function pageService(page) {
   const s = page.service;
   const cfg = premiumConfig(s.slug);
@@ -2204,8 +2726,8 @@ function pageService(page) {
 <section class="px-2.5 sm:px-3">
   <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
     <div class="pointer-events-none absolute inset-0 grid-lines"></div>
-    <div class="container-site relative grid items-center gap-8 py-10 lg:grid-cols-12 lg:py-12">
-      <div class="lg:col-span-5">
+    <div class="container-site relative grid items-center gap-8 py-10 lg:grid-cols-12 lg:gap-12 lg:py-14">
+      <div class="lg:col-span-6">
         <nav class="flex items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
           <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}
           <a href="${href('service/')}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.services)}</a>
@@ -2220,16 +2742,8 @@ function pageService(page) {
           <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Get a price', 'اعرف السعر')}</a>
           <a href="tel:${C.site.phoneRaw}" class="btn btn-white">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
         </div>
-        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink-2" data-a="up">
-          ${cfg.facts.map(([ic, x]) => `<li class="flex items-center gap-2">${icon(ic, 'h-4 w-4 text-gold-600', 2.2)} ${x}</li>`).join('')}
-        </ul>
       </div>
-      <div class="lg:col-span-7">${cfg.stage === 'room' ? roomStage() : fxStage(cfg.stage)}</div>
-    </div>
-    <div class="container-site relative pb-8">
-      <div class="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" data-a="up">
-        ${s.options.map(([n]) => `<span class="inline-flex shrink-0 items-center gap-2 rounded-full border border-white bg-white/80 px-3.5 py-2 text-[13px] font-semibold text-ink shadow-card backdrop-blur"><span class="h-1.5 w-1.5 rounded-full bg-gold-500"></span>${t(n)}</span>`).join('')}
-      </div>
+      <div class="lg:col-span-6"><div class="svc-vis">${cfg.stage === 'room' ? roomStage() : fxStage(cfg.stage)}</div></div>
     </div>
   </div>
 </section>`;
@@ -2279,7 +2793,7 @@ function pageService(page) {
         hasOfferCatalog: { '@type': 'OfferCatalog', name: t(s.title), itemListElement: s.options.map(([n, d]) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: t(n), description: t(d) } })) },
       },
     },
-    hero + howItWorksFor(cfg.how) + optionExplorer({ ...cfg.ox, wa }) + cfg.middle(s) + stepSec + faqSection(s.faq, tr('Quick <span class="text-grad">answers</span>', 'إجابات <span class="text-grad">سريعة</span>')) + cta
+    hero + topicSections(s) + cfg.middle(s)
   );
 }
 
@@ -2315,24 +2829,7 @@ ${pageHero({
   </div>
 </section>
 ${quoteSection()}
-<section class="pb-20 lg:pb-28">
-  <div class="container-site">
-    <div class="grid gap-5 md:grid-cols-3">
-      ${[
-        ['clock', tr('Saves your time', 'يوفر وقتك'), tr('Fast, hassle-free tinting and mobile service tailored to your schedule.', 'تظليل سريع ودون عناء مع خدمة متنقلة تناسب جدولك.')],
-        ['wallet', tr('Cashless payment', 'دفع إلكتروني'), tr('Secure, seamless cashless transactions for every service.', 'معاملات إلكترونية آمنة وسلسة لكل خدمة.')],
-        ['chat', tr('Seamless communication', 'تواصل سلس'), tr('A responsive support team from quote to handover.', 'فريق دعم سريع الاستجابة من العرض حتى التسليم.')],
-      ]
-        .map(([ic, a, b], i) => `<div class="card flex gap-5 p-7" ${reveal(i * 80)}><span class="ico">${icon(ic, 'h-5 w-5', 2.2)}</span><div><h3 class="font-head text-lg font-bold text-ink">${a}</h3><p class="mt-1 text-muted">${b}</p></div></div>`)
-        .join('')}
-    </div>
-  </div>
-</section>
-${mapSection()}
-${bookFast()}
-${areasSection()}
-${reviewUs()}
-${faqSection(C.homeFaq)}`;
+${mapSection()}`;
   return layout(
     page,
     {
@@ -2376,11 +2873,7 @@ ${pageHero({
     </div>
   </div>
 </section>
-${reviewUs()}
-${statsStrip()}
-${gallery()}
-${ctaBanner()}
-${quoteSection()}`;
+${reviewUs()}`;
   return layout(page, { title: tr('Client Reviews — Exotic Tint for Trading and Contracting', 'آراء العملاء — إكزوتك تينت للتجارة والمقاولات'), description: tr('Read what homeowners and businesses in Qatar say about Exotic Tint for Trading and Contracting.', 'اقرأ آراء السائقين وأصحاب المنازل والشركات في قطر عن إكزوتك تينت للتجارة والمقاولات.'), image: 'residential' }, body);
 }
 
@@ -2470,7 +2963,7 @@ function pagePost(page) {
         ${img3d('sparkles', 'absolute -bottom-4 end-4 h-24 w-24')}
         <p class="font-head text-2xl font-extrabold text-ink">${tr('Ready to upgrade your glass?', 'مستعد لترقية زجاجك؟')}</p>
         <p class="mt-1 max-w-md text-ink/75">${tr('Contact Exotic Tint for Trading and Contracting for a free consultation and flat-rate quote.', 'تواصل مع إكزوتك تينت للتجارة والمقاولات لاستشارة مجانية وعرض سعر ثابت.')}</p>
-        <div class="mt-5 flex flex-wrap gap-3"><a href="#quote" class="btn btn-dark">${t(C.ui.quote)} ${arrow()}</a><a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-4 w-4 text-[#25D366]')} WhatsApp</a></div>
+        <div class="mt-5 flex flex-wrap gap-3"><a href="${href('contact/')}#quote" class="btn btn-dark">${t(C.ui.quote)} ${arrow()}</a><a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-4 w-4 text-[#25D366]')} WhatsApp</a></div>
       </div>
     </article>
     <aside class="lg:col-span-4">
@@ -2489,13 +2982,7 @@ function pagePost(page) {
     </aside>
   </div>
 </section>
-<section class="pb-20 lg:pb-28">
-  <div class="container-site">
-    ${sectionHead({ eyebrow: tr('Keep reading', 'تابع القراءة'), title: tr('More from <span class="text-grad">our blog</span>', 'المزيد من <span class="text-grad">مدونتنا</span>') })}
-    <div class="mt-10 grid gap-5 md:grid-cols-2">${others.map(postCard).join('')}</div>
-  </div>
-</section>
-${quoteSection()}`;
+`;
   return layout(
     page,
     {
@@ -2537,6 +3024,7 @@ function write(file, html) {
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'motion.js'), path.join(DIST, 'assets', 'js', 'motion.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'room3d.js'), path.join(DIST, 'assets', 'js', 'room3d.js'));
   fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'steps3d.js'), path.join(DIST, 'assets', 'js', 'steps3d.js'));
+  fs.copyFileSync(path.join(__dirname, 'assets', 'js', 'home3d.js'), path.join(DIST, 'assets', 'js', 'home3d.js'));
   fs.rmSync(path.join(DIST, 'assets', 'js', 'car3d.js'), { force: true });
   fs.rmSync(path.join(DIST, 'assets', 'img', 'favicon.svg'), { force: true });
   // Old URLs kept alive → point to the new main service pages
