@@ -215,25 +215,31 @@ function header(page) {
 </header>
 
 <div id="drawer-backdrop" class="drawer-backdrop fixed inset-0 z-[60] bg-ink/40 backdrop-blur-sm lg:hidden"></div>
-<aside id="drawer" class="drawer fixed inset-y-0 end-0 z-[70] flex w-[88%] max-w-sm flex-col bg-white shadow-2xl lg:hidden" aria-hidden="true">
-  <div class="flex h-[84px] items-center justify-between border-b border-line px-5">
+<aside id="drawer" class="drawer fixed inset-y-0 end-0 z-[70] flex w-[86%] max-w-[360px] flex-col bg-white lg:hidden" aria-hidden="true">
+  <div class="dr-head">
     ${logo()}
-    <button type="button" id="menu-close" class="grid h-10 w-10 place-items-center rounded-xl bg-[#f2f4f7] text-ink" aria-label="${t(C.ui.close)}">${icon('x', 'h-5 w-5', 2.2)}</button>
+    <button type="button" id="menu-close" class="dr-close" aria-label="${t(C.ui.close)}">${icon('x', 'h-5 w-5', 2.2)}</button>
   </div>
-  <div class="flex-1 overflow-y-auto px-5 py-5">
-    <a href="${href()}" class="block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${t(C.ui.nav.home)}</a>
-    <p class="mt-3 px-3 text-xs font-extrabold uppercase tracking-[0.16em] text-gold-700">${t(C.ui.nav.services)}</p>
-    <div class="mt-2 grid gap-1">
-      ${C.services.map((s) => `<a href="${href('service/' + s.slug + '/')}" class="flex items-center gap-3 rounded-xl p-2 hover:bg-tint"><span class="grid h-10 w-10 place-items-center rounded-xl" style="background:${SV[s.slug].bg}">${img3d(SV[s.slug].emoji, 'h-7 w-7')}</span><span class="font-semibold text-ink">${t(s.title)}</span></a>`).join('')}
+  <nav class="dr-body no-scrollbar" aria-label="Mobile">
+    <a href="${href()}" class="dr-link">${t(C.ui.nav.home)} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
+    <details class="dr-acc">
+      <summary class="dr-link">${t(C.ui.nav.services)} ${icon('chevron', 'dr-chev h-4 w-4', 2.2)}</summary>
+      <div class="dr-sub">
+        ${C.services.map((s) => `<a href="${href('service/' + s.slug + '/')}"><span class="dr-dot"></span>${t(s.title)}</a>`).join('')}
+        <a href="${href('service/')}" class="dr-all">${tr('All services', 'كل الخدمات')} ${arrow('h-3.5 w-3.5')}</a>
+      </div>
+    </details>
+    <a href="${href('about/')}" class="dr-link">${t(C.ui.nav.about)} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
+    <a href="${href('blogs/')}" class="dr-link">${tr('Blog', 'المدونة')} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
+    <a href="${href('contact/')}" class="dr-link">${t(C.ui.nav.contact)} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
+    <a href="${base(other)}${page.path}" class="dr-lang ${other === 'ar' ? 'font-arabic' : ''}">${icon('globe', 'h-4 w-4')} ${t(C.ui.langSwitch)}</a>
+  </nav>
+  <div class="dr-foot">
+    <div class="grid grid-cols-2 gap-2">
+      <a href="${href('contact/')}#quote" class="btn btn-primary !px-3 !py-3 text-sm">${tr('Free quote', 'عرض مجاني')}</a>
+      <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white !px-3 !py-3 text-sm">${waIcon('h-4 w-4 text-[#25D366]')} WhatsApp</a>
     </div>
-    <a href="${href('about/')}" class="mt-3 block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${t(C.ui.nav.about)}</a>
-    <a href="${href('blogs/')}" class="block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${tr('Blog', 'المدونة')}</a>
-    <a href="${href('contact/')}" class="block rounded-xl px-3 py-3 font-head text-lg font-bold text-ink hover:bg-tint">${t(C.ui.nav.contact)}</a>
-    <a href="${base(other)}${page.path}" class="mt-2 flex items-center gap-2 rounded-xl px-3 py-3 font-semibold text-ink hover:bg-tint ${other === 'ar' ? 'font-arabic' : ''}">${icon('globe', 'h-4 w-4')} ${t(C.ui.langSwitch)}</a>
-  </div>
-  <div class="grid gap-2 border-t border-line p-5">
-    <a href="${href('contact/')}#quote" class="btn btn-dark w-full">${t(C.ui.quote)}</a>
-    <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-outline w-full">${waIcon('h-4 w-4 text-[#25D366]')} ${t(C.ui.whatsapp)}</a>
+    <a href="tel:${C.site.phoneRaw}" class="dr-phone">${icon('phone', 'h-4 w-4', 2.2)} <span dir="ltr">${C.site.phone}</span> · ${tr('8 AM – 6 PM, 7 days', '٨ ص – ٦ م، ٧ أيام')}</a>
   </div>
 </aside>`;
 }
@@ -387,7 +393,7 @@ function hero() {
           <span class="block text-grad" data-a="up">${tr('Stay protected.', 'حماية تامة.')}</span>
         </h1>
         <p class="mt-5 max-w-md text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Window film, smart glass and surface protection for villas, offices and buildings — installed on-site across Qatar.', 'أفلام نوافذ وزجاج ذكي وحماية أسطح للفلل والمكاتب والمباني — نركّبها في موقعك في أنحاء قطر.')}</p>
-        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+        <div class="hero-actions mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
         </div>
@@ -395,7 +401,7 @@ function hero() {
 
       <!-- 3D room -->
       <div class="relative lg:col-span-7" data-a="up">
-        <div class="room3d relative aspect-[4/5] w-full sm:aspect-[5/4] lg:aspect-[11/10]" data-room>
+        <div class="room3d relative aspect-square w-full sm:aspect-[5/4] lg:aspect-[11/10]" data-room>
           <div class="pointer-events-none absolute inset-[12%] rounded-full bg-gold-300/30 blur-[80px]"></div>
           <canvas class="relative h-full w-full" aria-label="${tr('3D living room showing window film blocking the sun', 'غرفة ثلاثية الأبعاد توضح حجب فيلم النوافذ للشمس')}" role="img"></canvas>
           <img src="/assets/img/residential.webp" alt="" class="room-fallback-img absolute inset-[8%] hidden h-[84%] w-[84%] rounded-[28px] object-cover shadow-float">
@@ -460,7 +466,7 @@ function servicesGrid() {
       ${C.services
         .map(
           (s) => `<a href="${href('service/' + s.slug + '/')}" class="sg-tile group" data-a="up">
-        <img src="/assets/img/${s.img}.webp" alt="${esc(t(s.title))}" class="sg-img" loading="lazy">
+        <img src="/assets/img/svc3d-${{ 'architectural-window-film-solutions': 'twin', 'smart-glass-privacy-solutions': 'smart', 'surface-protection-solutions': 'spill', 'decorative-interior-solutions': 'decor', 'fabric-material-protection': 'fabric' }[s.slug]}.webp" alt="${esc(t(s.title))}" class="sg-img" loading="lazy">
         <div class="sg-bar">
           <h3 class="sg-h">${t(s.title)}</h3>
           <span class="sg-go">${arrow('h-3.5 w-3.5')}</span>

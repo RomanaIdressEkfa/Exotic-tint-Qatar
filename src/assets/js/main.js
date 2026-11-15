@@ -38,6 +38,7 @@
     drawer.classList.toggle('open', open);
     backdrop.classList.toggle('open', open);
     drawer.setAttribute('aria-hidden', String(!open));
+    document.documentElement.classList.toggle('drawer-open', open);
     openBtn.setAttribute('aria-expanded', String(open));
     document.body.style.overflow = open ? 'hidden' : '';
   }

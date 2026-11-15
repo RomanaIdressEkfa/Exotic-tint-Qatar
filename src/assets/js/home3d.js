@@ -77,9 +77,10 @@ const glowM = (color, o = {}) => new THREE.MeshBasicMaterial({ color, toneMapped
 
 /* ---------- shared stage ---------- */
 function makeStage(host, cfg) {
+  if (host.dataset.cam) cfg = Object.assign({}, cfg, JSON.parse(host.dataset.cam));
   const canvas = host.querySelector('canvas');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: host.hasAttribute('data-capture') });
+  renderer.setPixelRatio(host.hasAttribute('data-capture') ? 3 : Math.min(window.devicePixelRatio, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = cfg.exposure || 1;
@@ -505,10 +506,88 @@ function spill(host) {
   S.onStart = play;
 }
 
+
+/* ======================================================================
+   4. Decorative glass — office partition with a frosted pattern + logo band
+   ====================================================================== */
+function decorScene(host) {
+  const S = makeStage(host, { cam: [7.2, 6.4, 10.4], target: [0, 1.4, 0], fov: 30, fovTall: 46 });
+  const G = plinth(S, 10, 8);
+  lights(S, [6, 12, 8], '#fff3e0', 2.2);
+  S.add(S.rbox(8.6, 0.1, 6.4, 0.04), M('#ffffff', { map: oak(), roughness: 0.55 }), [0, G + 0.05, 0], { cast: false });
+  const metal = M('#1d2b42', { roughness: 0.3, metalness: 0.7, envMapIntensity: 1.2 });
+  const H = 2.9, z = -1.2;
+  // frosted pattern texture: diamonds band + logo circle, rest clear
+  const pat = canvasTex(1024, 512, (g, w, h) => {
+    g.clearRect(0, 0, w, h);
+    g.fillStyle = 'rgba(255,255,255,.88)'; g.fillRect(0, h * 0.34, w, h * 0.3);
+    g.globalCompositeOperation = 'destination-out';
+    for (let x = 0; x < w; x += 64) { g.beginPath(); g.moveTo(x + 32, h * 0.38); g.lineTo(x + 56, h * 0.49); g.lineTo(x + 32, h * 0.6); g.lineTo(x + 8, h * 0.49); g.closePath(); g.fill(); }
+    g.globalCompositeOperation = 'source-over';
+    g.fillStyle = 'rgba(255,255,255,.55)';
+    for (let i = 0; i < 18; i++) g.fillRect(0, h * 0.7 + i * 7, w, 2);
+  });
+  [-2.6, 0, 2.6].forEach((x, i) => {
+    S.add(new THREE.BoxGeometry(2.5, H, 0.04), new THREE.MeshPhysicalMaterial({ color: '#e8f3ff', transparent: true, opacity: 0.18, roughness: 0.05, clearcoat: 1, envMapIntensity: 1.4, depthWrite: false }), [x, G + 0.1 + H / 2, z], { cast: false, receive: false }).renderOrder = 4;
+    const pm = new THREE.MeshBasicMaterial({ map: pat, transparent: true, depthWrite: false, toneMapped: false });
+    S.add(new THREE.PlaneGeometry(2.5, H), pm, [x, G + 0.1 + H / 2, z + 0.03], { cast: false, receive: false }).renderOrder = 5;
+  });
+  [-3.9, -1.3, 1.3, 3.9].forEach((x) => S.add(S.rbox(0.09, H, 0.09, 0.03), metal, [x, G + 0.1 + H / 2, z]));
+  S.add(S.rbox(7.9, 0.09, 0.09, 0.03), metal, [0, G + 0.1 + H, z]);
+  // logo on the middle pane
+  const logo = canvasTex(256, 256, (g, w) => { g.fillStyle = 'rgba(255,255,255,.95)'; g.beginPath(); g.arc(w / 2, w / 2, w * 0.42, 0, Math.PI * 2); g.fill(); g.globalCompositeOperation = 'destination-out'; g.font = `800 ${w * 0.3}px Urbanist, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('ET', w / 2, w / 2 + 6); });
+  S.add(new THREE.PlaneGeometry(0.75, 0.75), new THREE.MeshBasicMaterial({ map: logo, transparent: true, depthWrite: false, toneMapped: false }), [0, G + 2.35, z + 0.04], { cast: false, receive: false }).renderOrder = 6;
+  // office behind and in front
+  const wal = M('#ffffff', { map: walnut(), roughness: 0.45 });
+  S.add(S.rbox(2.2, 0.08, 1.0, 0.03), wal, [-0.6, G + 0.85, -2.6]);
+  [-1.5, 0.3].forEach((x) => S.add(S.rbox(0.08, 0.75, 0.9, 0.03), metal, [x, G + 0.47, -2.6]));
+  S.add(S.rbox(0.9, 0.55, 0.05, 0.02), M('#111827', { roughness: 0.3 }), [-0.6, G + 1.25, -2.95]);
+  S.add(S.rbox(0.6, 0.6, 0.6, 0.12), M('#2b3a52', { roughness: 0.7 }), [-0.6, G + 0.5, -2.0]);
+  plant(S, 3.0, -2.6, 1.3, G);
+  plant(S, -3.6, 1.6, 1.1, G);
+  S.add(S.rbox(1.8, 0.08, 0.8, 0.03), M('#f4f2ee', { roughness: 0.2 }), [1.5, G + 0.5, 1.3]);
+  S.add(new THREE.CylinderGeometry(0.06, 0.08, 0.42, 12), metal, [1.5, G + 0.27, 1.3]);
+  S.add(S.rbox(2.2, 0.36, 0.9, 0.14), M('#efe6d6', { roughness: 0.95 }), [1.5, G + 0.28, 2.4]);
+}
+
+/* ======================================================================
+   5. Fabric protection — sofa where water beads up on the cushions
+   ====================================================================== */
+function fabricScene(host) {
+  const S = makeStage(host, { cam: [5.6, 5.0, 9.2], target: [0, 1.0, 0], fov: 30, fovTall: 44 });
+  const G = plinth(S, 9, 7);
+  lights(S, [5, 11, 7], '#fff1dc', 2.1);
+  S.add(S.rbox(8.4, 3.2, 0.2, 0.05), M('#eef2f6', { roughness: 0.9 }), [0, G + 1.6, -2.4]);
+  S.add(S.rbox(5.2, 0.03, 3.4, 0.015), M('#e6dccb', { roughness: 1 }), [0, G + 0.02, 0.2], { cast: false });
+  const fab = M('#8fa7c4', { roughness: 0.95 });
+  const fab2 = M('#7d97b6', { roughness: 0.95 });
+  const sofa = new THREE.Group();
+  S.add(S.rbox(3.8, 0.42, 1.4, 0.16), fab2, [0, 0.36, 0], { parent: sofa });
+  S.add(S.rbox(3.8, 0.85, 0.32, 0.14), fab2, [0, 0.9, -0.56], { parent: sofa });
+  [-1.78, 1.78].forEach((x) => S.add(S.rbox(0.34, 0.66, 1.4, 0.15), fab2, [x, 0.62, 0], { parent: sofa }));
+  [-0.9, 0.9].forEach((x) => S.add(S.rbox(1.7, 0.26, 1.15, 0.12), fab, [x, 0.7, 0.1], { parent: sofa }));
+  [-0.9, 0.9].forEach((x) => S.add(S.rbox(1.6, 0.7, 0.3, 0.14), fab, [x, 1.1, -0.36], { parent: sofa, rot: [-0.15, 0, 0] }));
+  S.add(S.rbox(0.6, 0.5, 0.16, 0.08), M('#e8d5b5', { roughness: 0.95 }), [-1.2, 1.05, -0.12], { parent: sofa, rot: [-0.3, 0.2, 0.06] });
+  [-1.6, 1.6].forEach((x) => [-0.5, 0.5].forEach((z) => S.add(new THREE.CylinderGeometry(0.035, 0.025, 0.16, 8), M('#c9a25e', { metalness: 1, roughness: 0.3 }), [x, 0.08, z], { parent: sofa })));
+  sofa.position.set(0, G, -0.6);
+  S.root.add(sofa);
+  // water beads sitting on the fabric (they don't soak in)
+  const drop = new THREE.MeshPhysicalMaterial({ color: '#cfeaff', roughness: 0, metalness: 0, transparent: true, opacity: 0.85, clearcoat: 1, envMapIntensity: 2.2 });
+  [[-1.2, 0.2, 0.09], [-0.7, 0.42, 0.07], [-0.95, -0.05, 0.06], [0.6, 0.3, 0.1], [1.1, 0.05, 0.07], [0.85, 0.5, 0.05], [1.35, 0.35, 0.06], [-0.4, 0.15, 0.05]].forEach(([x, z, r]) => {
+    const d = S.add(new THREE.SphereGeometry(1, 24, 16), drop, [x, G + 0.83 + r * 0.6, -0.5 + z], { cast: false });
+    d.scale.set(r, r * 0.75, r);
+  });
+  // side table + glass
+  S.add(new THREE.CylinderGeometry(0.42, 0.42, 0.05, 36), M('#f4f2ee', { roughness: 0.2 }), [2.7, G + 0.62, -0.3]);
+  S.add(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 10), M('#c9a25e', { metalness: 1, roughness: 0.3 }), [2.7, G + 0.31, -0.3]);
+  S.add(new THREE.CylinderGeometry(0.11, 0.09, 0.3, 24), new THREE.MeshPhysicalMaterial({ color: '#ffffff', transparent: true, opacity: 0.35, roughness: 0, clearcoat: 1 }), [2.6, G + 0.8, -0.25]);
+  plant(S, -2.9, -1.6, 1.4, G);
+}
+
 /* ---------- boot ---------- */
 const hosts = document.querySelectorAll('[data-h3]');
 if (hosts.length && gsap && webgl()) {
-  const map = { twin, smart: smartRoom, spill };
+  const map = { twin, smart: smartRoom, spill, decor: decorScene, fabric: fabricScene };
   hosts.forEach((h) => map[h.dataset.h3] && map[h.dataset.h3](h));
 } else {
   hosts.forEach((h) => h.classList.add('h3-fallback'));
