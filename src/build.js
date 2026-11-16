@@ -2050,46 +2050,173 @@ function pageHome(page) {
   );
 }
 
-function pageAbout(page) {
-  const body = `
-${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('user', 'h-4 w-4', 2.2)}</span>${tr('About us', 'من نحن')}`,
-  title: tr('Comfort, privacy &amp; protection — <span class="text-grad">installed on-site</span>', 'راحة وخصوصية وحماية — <span class="text-grad">تُركّب في موقعك</span>'),
-  text: tr('Exotic Tint for Trading and Contracting specialises in window films, smart glass, surface protection and interior finishes for homes, offices and commercial spaces.', 'تتخصص إكزوتك تينت للتجارة والمقاولات في أفلام النوافذ والزجاج الذكي وحماية الأسطح والتشطيبات الداخلية للمنازل والمكاتب والمساحات التجارية.'),
-  crumbs: [[t(C.ui.nav.about)]],
-  image: 'commercial',
-  alt: tr('Technician working on a glass façade', 'فني يعمل على واجهة زجاجية'),
-  chips: chipHeat(),
-})}
-<section class="py-20 lg:py-28">
-  <div class="container-site grid items-center gap-12 lg:grid-cols-2">
-    <div class="grid grid-cols-2 gap-4" ${reveal()}>
-      <img src="/assets/img/marble.webp" alt="${tr('Marble protection film installation', 'تركيب فيلم حماية الرخام')}" class="aspect-[3/4] w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy" decoding="async">
-      <div class="mt-10 space-y-4">
-        <img src="/assets/img/frosted.webp" alt="${tr('Decorative frosted film', 'فيلم مصنفر زخرفي')}" class="aspect-square w-full rounded-[22px] border-[6px] border-white object-cover shadow-float" loading="lazy" decoding="async">
-        <div class="rounded-[22px] bg-grad p-5 text-white shadow-gold"><span class="block font-head text-4xl font-extrabold">${num(C.services.length)}</span><span class="text-sm font-semibold">${tr('Specialist services under one roof', 'خدمات متخصصة تحت سقف واحد')}</span></div>
+/* ------------------------------------------------------------- About page */
+/* Hero: copy on one side, a layered photo collage with a spinning seal and glass chips on the other,
+   and a white stats bar rising from the bottom (same rhythm as the homepage hero). */
+function aboutHero() {
+  const ring = 'EXOTIC TINT · QATAR · ON-SITE · 7 DAYS · '; // Latin in both languages, like the logo
+  const stats = [
+    ['shield', '99', '%', tr('UV blocked', 'حجب الأشعة')],
+    ['thermo', '98', '%', tr('Heat rejected, up to', 'صد الحرارة، حتى')],
+    ['layers', '5', '', tr('Specialist services', 'خدمات متخصصة')],
+    ['clock', '7', '/7', tr('Days a week', 'أيام في الأسبوع')],
+  ];
+  return `
+<section class="px-2.5 sm:px-3">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    ${aurora()}
+    <div class="pointer-events-none absolute inset-0 grid-lines"></div>
+    <div class="ab-hero container-site relative grid items-center gap-12 pt-10 lg:grid-cols-12 lg:gap-8 lg:pt-14">
+      <div class="lg:col-span-6">
+        <nav class="flex flex-wrap items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
+          <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>
+          ${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}<span class="font-semibold text-ink">${t(C.ui.nav.about)}</span>
+        </nav>
+        <span class="chip mt-6" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('user', 'h-4 w-4', 2.2)}</span>${tr('About Exotic Tint', 'عن إكزوتك تينت')}</span>
+        <h1 class="mt-6 font-head text-[2.5rem] font-extrabold leading-[1.03] text-ink min-[400px]:text-[2.9rem] sm:text-[3.8rem] lg:text-[3.5rem] xl:text-[4.2rem]">
+          <span class="block" data-split>${tr('Glass, surfaces &amp; interiors.', 'زجاج وأسطح وديكور.')}</span>
+          <span class="block text-grad" data-a="up">${tr('Done properly.', 'بإتقان.')}</span>
+        </h1>
+        <p class="mt-5 max-w-lg text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Exotic Tint for Trading and Contracting is a Qatar team of film specialists. We install window film, smart glass, surface protection and interior finishes — on-site, at your home, office or building.', 'إكزوتك تينت للتجارة والمقاولات فريق قطري من مختصي الأفلام. نركّب أفلام النوافذ والزجاج الذكي وحماية الأسطح والتشطيبات الداخلية — في موقعك، في منزلك أو مكتبك أو مبناك.')}</p>
+        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+          <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
+          <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
+        </div>
+        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[0.95rem]" data-a="up">
+          ${[tr('On-site across Qatar', 'في موقعك بأنحاء قطر'), tr('Free flat-rate estimate', 'تقدير مجاني بسعر ثابت'), tr('No hidden fees', 'دون رسوم خفية')]
+            .map((x) => `<li class="hero-check"><span>${icon('check', 'h-3 w-3', 3)}</span>${x}</li>`)
+            .join('')}
+        </ul>
+      </div>
+
+      <div class="lg:col-span-6">
+        <div class="ab-col" data-parallax>
+          <div class="ab-glow" aria-hidden="true"></div>
+          <div class="ab-ph ab-ph1" data-a="up" data-depth="10"><img src="/assets/img/commercial.webp" alt="${tr('Window film installed on a commercial glass façade in Qatar', 'فيلم نوافذ مركّب على واجهة زجاجية تجارية في قطر')}" fetchpriority="high"></div>
+          <div class="ab-ph ab-ph2" data-a="fly-bl" data-depth="-18"><img src="/assets/img/frosted.webp" alt="${tr('Decorative frosted film on office glass', 'فيلم مصنفر زخرفي على زجاج مكتب')}" decoding="async"></div>
+          <div class="ab-ph ab-ph3" data-a="fly-tr" data-depth="22"><img src="/assets/img/marble.webp" alt="${tr('Clear protection film on a marble surface', 'فيلم حماية شفاف على سطح رخامي')}" decoding="async"></div>
+          <div class="ab-seal" data-a="pop" data-depth="-26" aria-hidden="true">
+            <svg viewBox="0 0 120 120" direction="ltr"><defs><path id="ab-ring" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs><text direction="ltr" unicode-bidi="isolate"><textPath href="#ab-ring" textLength="285">${ring}</textPath></text></svg>
+            <img src="/assets/img/logo-mark.webp" alt="">
+          </div>
+          <div class="ab-c1" data-a="pop" data-depth="30"><div class="float-chip floaty flex items-center gap-3 p-2.5 pe-4">${img3d('pin', 'h-10 w-10 drop-shadow-lg')}<span><span class="block text-xs text-muted">${tr('We come to you', 'نأتي إليك')}</span><span class="block font-head text-[0.98rem] font-extrabold text-ink">${tr('Across Qatar', 'في أنحاء قطر')}</span></span></div></div>
+          <div class="ab-c2" data-a="pop" data-depth="-20"><div class="float-chip floaty-2 flex items-center gap-3 p-2.5 pe-4"><span class="ico !h-10 !w-10">${icon('shield', 'h-5 w-5', 2.2)}</span><span><span class="block text-xs text-muted">${tr('Every job', 'كل عمل')}</span><span class="block font-head text-[0.98rem] font-extrabold text-ink">${tr('Quality checked', 'جودة مفحوصة')}</span></span></div></div>
+        </div>
       </div>
     </div>
-    <div>
-      ${sectionHead({
-        eyebrow: tr('Who we are', 'من نحن'),
-        title: tr('A team of specialists <span class="text-grad">who come to you</span>', 'فريق من المختصين <span class="text-grad">يأتي إليك</span>'),
-        text: tr('We are a team of skilled professionals offering on-site installation services across Qatar. Our goal is to provide cutting-edge tinting and coating solutions that enhance comfort, aesthetics and durability for homes and buildings.', 'نحن فريق من المحترفين نقدم خدمات التركيب في الموقع في جميع أنحاء قطر. هدفنا تقديم حلول تظليل وطلاء متطورة تعزز الراحة والجمال والمتانة للمنازل والمباني.'),
-      })}
-      <ul class="mt-8 space-y-3" ${reveal(100)}>
-        ${[
-          tr('Best heat rejection, UV protection and privacy', 'أفضل عزل حراري وحماية من الأشعة وخصوصية'),
-          tr('Expert installation with clear, flat-rate pricing', 'تركيب احترافي بأسعار واضحة وثابتة'),
-          tr('Trusted across Doha, Lusail, Al Rayyan and beyond', 'موثوقون في الدوحة ولوسيل والريان وما بعدها'),
-        ]
-          .map((x) => `<li class="hero-check"><span>${icon('check', 'h-3 w-3', 3)}</span>${x}</li>`)
-          .join('')}
-      </ul>
+
+    <div class="relative mt-12 lg:mt-14">
+      <div class="container-site">
+        <div class="ab-bar" data-a="rise">
+          ${stats
+            .map(
+              ([ic, n, sup, label]) => `
+          <div class="ab-stat">
+            <span class="ico ico-soft !h-11 !w-11">${icon(ic, 'h-5 w-5', 2.2)}</span>
+            <span><span class="ab-num" dir="ltr"><span data-count="${n}">${n}</span><sup>${sup}</sup></span><span class="ab-lbl">${label}</span></span>
+          </div>`
+            )
+            .join('')}
+        </div>
+      </div>
     </div>
   </div>
-</section>
-${whyChoose()}
-${storiesSection()}`;
+</section>`;
+}
+
+/* Our story: an editorial statement, a signed photo card, and three pillars */
+function aboutStory() {
+  const pillars = [
+    ['bulb', tr('Our mission', 'رسالتنا'), tr('Cooler, more private, better-protected spaces', 'مساحات أبرد وأكثر خصوصية وحماية'), tr('Films and coatings chosen for Qatar’s sun — so rooms stay bright, comfortable and protected.', 'أفلام وطلاءات مختارة لشمس قطر — لتبقى الغرف مضيئة ومريحة ومحمية.')],
+    ['wrench', tr('Our craft', 'حرفتنا'), tr('Installed like it was always there', 'تركيب كأنه جزء أصلي'), tr('Deep-cleaned glass, films cut to fit, edges sealed and smoothed — then checked before handover.', 'زجاج منظّف بعمق، أفلام مقصوصة بالمقاس، حواف مثبتة ومنعّمة — ثم فحص قبل التسليم.')],
+    ['trophy', tr('Our promise', 'وعدنا'), tr('Clear prices, no surprises', 'أسعار واضحة دون مفاجآت'), tr('A free estimate and a flat rate for every job. No hidden fees, ever.', 'تقدير مجاني وسعر ثابت لكل عمل. دون رسوم خفية، أبداً.')],
+  ];
+  return `
+<section>
+  <div class="container-site">
+    <div class="ab-story">
+      <div ${reveal()}>
+        <span class="eyebrow">${tr('Our story', 'قصتنا')}</span>
+        <p class="ab-manifesto">${tr(
+          'We started with one idea: <span class="text-grad">Qatar’s sun shouldn’t decide how your space feels.</span> <span class="m">Today our team brings window film, smart glass, surface protection and interior finishes to villas, offices and buildings —</span> fitted on-site, finished properly.',
+          'بدأنا بفكرة واحدة: <span class="text-grad">شمس قطر لا يجب أن تحدد شعورك في مساحتك.</span> <span class="m">اليوم يقدّم فريقنا أفلام النوافذ والزجاج الذكي وحماية الأسطح والتشطيبات الداخلية للفلل والمكاتب والمباني —</span> تُركّب في موقعك، بإتقان.'
+        )}</p>
+        <div class="ab-sign">
+          ${mark('h-12 w-12')}
+          <span><span class="block font-head font-extrabold text-ink">${tr('Exotic Tint for Trading and Contracting', 'إكزوتك تينت للتجارة والمقاولات')}</span><span class="block text-sm text-muted">${tr('Doha, Qatar · 8 AM – 6 PM, 7 days', 'الدوحة، قطر · ٨ ص – ٦ م، ٧ أيام')}</span></span>
+        </div>
+      </div>
+      <div class="ab-photo" ${reveal(120)}>
+        <img src="/assets/img/cs-office.webp" alt="${tr('Office glass finished by the Exotic Tint team', 'زجاج مكتب أنجزه فريق إكزوتك تينت')}" loading="lazy" decoding="async">
+        <div class="ab-photo-tag glass-hud"><span class="ab-dot"></span>${tr('Installed on-site', 'تركيب في الموقع')}</div>
+        <div class="sr-chip ab-photo-chip"><b>${tr('Homes · Offices · Buildings', 'منازل · مكاتب · مبانٍ')}</b><span>${tr('Who we work for', 'لمن نعمل')}</span></div>
+      </div>
+    </div>
+    <div class="ab-pillars">
+      ${pillars
+        .map(
+          ([ic, k, h, p], i) => `
+      <article class="ab-pillar" ${reveal(i * 90)}>
+        <div class="flex items-start justify-between gap-4">
+          ${img3d(ic, 'ab-pillar-ic')}
+          <span class="ab-pillar-n" dir="ltr">${pad(i + 1)}</span>
+        </div>
+        <p class="ab-pillar-k">${k}</p>
+        <h3 class="ab-pillar-h">${h}</h3>
+        <p class="ab-pillar-p">${p}</p>
+      </article>`
+        )
+        .join('')}
+    </div>
+  </div>
+</section>`;
+}
+
+/* How we work: dark navy shell with the five-step process on a glowing rail */
+function aboutProcess() {
+  const ic = ['chat', 'pin', 'drop', 'layers', 'badge'];
+  return `
+<section>
+  <div class="container-site">
+    <div class="ab-flow">
+      <div class="ab-flow-aurora" aria-hidden="true"><span></span><span></span></div>
+      <div class="pointer-events-none absolute inset-0 grid-lines-dark opacity-70"></div>
+      <div class="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end" ${reveal()}>
+        <div class="max-w-2xl">
+          <span class="eyebrow !text-gold-300">${tr('How we work', 'طريقة عملنا')}</span>
+          <h2 class="ab-flow-title">${tr('Five steps to a <span class="text-grad-light">flawless finish</span>', 'خمس خطوات نحو <span class="text-grad-light">نتيجة مثالية</span>')}</h2>
+          <p class="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-white/70">${tr('The same careful routine on every job — from the first chat to the final check.', 'نفس الروتين الدقيق في كل عمل — من أول محادثة حتى الفحص النهائي.')}</p>
+        </div>
+        <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-primary w-max">${waIcon('h-5 w-5')} ${tr('Start on WhatsApp', 'ابدأ عبر واتساب')}</a>
+      </div>
+      <ol class="ab-steps">
+        <li class="ab-rail" aria-hidden="true"><span></span></li>
+        ${C.process
+          .map(
+            ([a, b], i) => `
+        <li class="ab-step" ${reveal(i * 110)}>
+          <span class="ab-node"><span dir="ltr">${pad(i + 1)}</span></span>
+          <div class="ab-card">
+            <span class="ab-card-ic">${icon(ic[i] || 'check', 'h-4 w-4', 2.2)}</span>
+            <h3>${t(a)}</h3>
+            <p>${t(b)}</p>
+          </div>
+        </li>`
+          )
+          .join('')}
+      </ol>
+    </div>
+  </div>
+</section>`;
+}
+
+function pageAbout(page) {
+  const body =
+    aboutHero() +
+    // after the ice hero: white, ice, white, ... (same rhythm as the homepage)
+    [aboutStory(), servicesGrid(), aboutProcess(), whyChoose(), areasSection(), storiesSection(), waBook()]
+      .map((html, i) => `<div class="home-band ${i % 2 ? 'band-ice' : 'bg-white'} py-12 lg:py-16">${html}</div>`)
+      .join('');
   return layout(
     page,
     {
