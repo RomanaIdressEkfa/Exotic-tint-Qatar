@@ -7,9 +7,10 @@
     "images": "node scripts/images.js",
     "html": "node src/build.js",
     "css": "tailwindcss -i src/styles.css -o dist/assets/css/app.css --minify",
-    "build": "npm run html && npm run css",
+    "build": "npm run html && npm run css && npm run og",
     "dev": "npm run build && node scripts/serve.js",
-    "serve": "node scripts/serve.js"
+    "serve": "node scripts/serve.js",
+    "og": "node scripts/og.js"
   },
   "devDependencies": {
     "qrcode": "^1.5.4",

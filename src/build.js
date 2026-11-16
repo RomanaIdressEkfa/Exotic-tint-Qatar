@@ -105,13 +105,13 @@ const roomDock = (gid) => `
           </div>
           <span class="h-7 w-px bg-line"></span>
           <div class="flex" role="group" aria-label="${tr('Window film', 'فيلم النوافذ')}">
-            <button type="button" class="room-btn" data-r-mode="off" aria-pressed="true">${icon('sun', 'h-4 w-4', 2.2)}<span class="hidden min-[420px]:inline">${tr('Without film', 'بدون فيلم')}</span></button>
-            <button type="button" class="room-btn" data-r-mode="on" aria-pressed="false">${icon('shield', 'h-4 w-4', 2.2)}<span class="hidden whitespace-nowrap min-[420px]:inline">${tr('With Exotic Tint', 'مع إكزوتك تينت')}</span></button>
+            <button type="button" class="room-btn" data-r-mode="off" aria-pressed="true" aria-label="${tr('Without film', 'بدون فيلم')}">${icon('sun', 'h-4 w-4', 2.2)}<span class="hidden whitespace-nowrap min-[560px]:inline">${tr('Without film', 'بدون فيلم')}</span></button>
+            <button type="button" class="room-btn" data-r-mode="on" aria-pressed="false" aria-label="${tr('With Exotic Tint', 'مع إكزوتك تينت')}">${icon('shield', 'h-4 w-4', 2.2)}<span class="hidden whitespace-nowrap min-[560px]:inline">${tr('With Exotic Tint', 'مع إكزوتك تينت')}</span></button>
           </div>
           <span class="h-7 w-px bg-line"></span>
           <div class="flex items-center gap-1.5 pe-2.5 ps-1 sm:pe-3.5 sm:ps-2" title="${tr('UV blocked', 'حجب الأشعة')}">
             <svg class="h-7 w-7 -rotate-90" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="#eceef3" stroke-width="7"/><circle cx="24" cy="24" r="20" fill="none" stroke="url(#${gid})" stroke-width="7" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66" data-r-ring/><defs><linearGradient id="${gid}"><stop stop-color="#3592EF"/><stop offset="1" stop-color="#0553A3"/></linearGradient></defs></svg>
-            <p class="leading-none"><span class="font-head text-lg font-extrabold text-ink sm:text-xl" dir="ltr"><span data-r-uv>0</span>%</span><span class="mt-0.5 block text-[10px] font-bold uppercase tracking-wider text-muted">UV</span></p>
+            <p class="leading-none"><span class="font-head text-lg font-extrabold text-ink sm:text-xl" dir="ltr"><span data-r-uv>0</span>%</span><span class="mt-0.5 block whitespace-nowrap text-[10px] font-bold uppercase tracking-wider text-muted">${tr('UV blocked', 'حجب UV')}</span></p>
           </div>
           <span class="sr-only" aria-live="polite" data-r-state data-on="${tr('With Exotic Tint film', 'مع فيلم إكزوتك تينت')}" data-off="${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}">${tr('Direct sun · no film', 'شمس مباشرة · بدون فيلم')}</span>
         </div>
@@ -172,13 +172,16 @@ function head(page, meta) {
 <link rel="alternate" hreflang="en" href="${C.site.domain}/${page.path}">
 <link rel="alternate" hreflang="ar" href="${C.site.domain}/ar/${page.path}">
 <link rel="alternate" hreflang="x-default" href="${C.site.domain}/${page.path}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="${meta.ogType || 'website'}">
 <meta property="og:site_name" content="${esc(t(C.site.name))}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${canonical}">
-<meta property="og:image" content="${C.site.domain}/assets/img/${meta.image || 'residential'}.webp">
-<meta property="og:locale" content="${L === 'ar' ? 'ar_QA' : 'en_QA'}">
+<meta property="og:image" content="${C.site.domain}/assets/img/og/${meta.image || 'residential'}.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="${L === 'ar' ? 'ar_QA' : 'en_QA'}">${meta.published ? `\n<meta property="article:published_time" content="${meta.published}">` : ''}
 <meta property="og:image:alt" content="${esc(title)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
@@ -3226,6 +3229,8 @@ function pagePost(page) {
       title: `${t(p.title)} | ${t(C.site.name)}`,
       description: t(p.excerpt),
       image: p.img,
+      ogType: 'article',
+      published: p.date,
       jsonld: { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: t(p.title), description: t(p.excerpt), datePublished: p.date, image: `${C.site.domain}/assets/img/${p.img}.webp`, author: { '@type': 'Organization', name: 'Exotic Tint for Trading and Contracting' }, publisher: { '@type': 'Organization', name: 'Exotic Tint for Trading and Contracting', logo: { '@type': 'ImageObject', url: `${C.site.domain}/assets/img/logo-original.webp` } } },
     },
     body
