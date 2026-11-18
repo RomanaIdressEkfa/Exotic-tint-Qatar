@@ -1906,3 +1906,111 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
   /* single option (Smart glass): normal framed panel, no pinning */
   .ss--single .ss-media.is-3d { height: auto; aspect-ratio: 16 / 11; }
 }
+
+/* ---------- How it works: no inner padding, fuller left column ---------- */
+.hx-shell { padding-top: 0 !important; padding-bottom: 0 !important; }
+@media (min-width: 1024px) { .hx-stage { aspect-ratio: 16 / 12; } }
+.hx-title { font-size: clamp(2.3rem, 3.6vw, 3.2rem); }
+.hx-list { margin-top: 1.6rem; display: grid; gap: .7rem; }
+.hx-list .hx-link { display: none; }
+.hx-item { opacity: 1; padding: 1.15rem 1.25rem; background: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px #e1eaf5; }
+.hx-item:hover { background: #fff; }
+.hx-item .hx-h, .hx-item .hx-p { transition: color .4s; }
+.hx-item:not(.is-on):not(.is-done) .hx-h { color: #475569; }
+.hx-item.is-on { background: #fff; box-shadow: inset 0 0 0 1.5px #0878e8, 0 24px 44px -26px rgba(8,120,232,.55); }
+.hx-item.is-done { opacity: 1; background: #fff; }
+.hx-node { width: 52px; height: 52px; border-radius: 16px; }
+.hx-h { font-size: 1.22rem; }
+.hx-p { font-size: .95rem; }
+/* desktop: the pinned section fills the screen under the header instead of floating in the middle */
+@media (min-width: 1024px) and (min-height: 700px) {
+  .hx-stage { aspect-ratio: auto; height: min(calc(100vh - 150px), 640px); }
+}
+
+/* ---------- How it works: sun rising behind the card's top-right corner ---------- */
+.hx-stage-wrap { position: relative; isolation: isolate; }
+.hx-stage { z-index: 1; }
+.hx-sun { position: absolute; z-index: 0; top: 0; inset-inline-end: 0; width: 210px; height: 210px; margin: -105px -105px 0 0; pointer-events: none;
+  transform: translate(-40px, 70px) scale(.6); opacity: 0; transition: transform 2.4s cubic-bezier(.2,.7,.2,1), opacity 1.4s ease; }
+[dir='rtl'] .hx-sun { margin: -105px 0 0 -105px; transform: translate(40px, 70px) scale(.6); }
+.hx-sun.is-up { transform: none; opacity: 1; }
+.hx-sun i { position: absolute; display: block; border-radius: 50%; }
+.hx-sun-rays { inset: -45%; background: repeating-conic-gradient(from 0deg, rgba(255,200,110,.55) 0deg 2.5deg, transparent 2.5deg 12deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 30%, #000 36%, transparent 72%); mask-image: radial-gradient(closest-side, transparent 30%, #000 36%, transparent 72%);
+  animation: hx-sun-spin 70s linear infinite; }
+.hx-sun-glow { inset: -10%; background: radial-gradient(circle, rgba(255,232,170,.95), rgba(255,190,90,.5) 42%, rgba(255,170,60,0) 70%); animation: hx-sun-pulse 4.5s ease-in-out infinite; }
+.hx-sun-core { inset: 26%; background: radial-gradient(circle at 38% 35%, #fffdf3 0%, #ffe7a0 45%, #ffbf4d 100%); box-shadow: 0 0 36px 12px rgba(255,205,110,.8), 0 0 100px 36px rgba(255,180,80,.35); }
+@keyframes hx-sun-spin { to { transform: rotate(360deg); } }
+@keyframes hx-sun-pulse { 50% { transform: scale(1.1); opacity: .85; } }
+/* the sunlight that falls into the picture from that corner */
+.hx-light { position: absolute; z-index: 1; top: -30%; inset-inline-end: -30%; width: 90%; height: 90%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255,214,140,.38), rgba(255,190,110,.12) 50%, transparent 75%); }
+.hx-stage .hx-chip, .hx-stage .hx-dots { z-index: 3; }
+@media (max-width: 640px) { .hx-sun { width: 140px; height: 140px; margin: -70px -40px 0 0; } [dir='rtl'] .hx-sun { margin: -70px 0 0 -40px; } }
+@media (prefers-reduced-motion: reduce) { .hx-sun-rays, .hx-sun-glow { animation: none; } .hx-sun { transition: none; } }
+/* desktop pin: the section fills the screen under the header, so no empty band below it */
+@media (min-width: 1024px) and (min-height: 700px) {
+  .hx-stage { aspect-ratio: auto; height: min(calc(100vh - 150px), 880px); }
+}
+/* wide screens have room beside the card: let the whole sun show next to its top-right corner */
+@media (min-width: 1600px) { .hx-sun { margin: -80px -170px 0 0; } [dir='rtl'] .hx-sun { margin: -80px 0 0 -170px; } }
+
+/* service tiles: smaller title + picture so the 3D image never runs into the heading */
+.sv2-tile:not(.sv2-big) .sv2-h { font-size: 1.02rem; max-width: 11.5rem; }
+.sv2-tile:not(.sv2-big) .sv2-img { width: 60%; right: -4%; bottom: -6%; }
+[dir='rtl'] .sv2-tile:not(.sv2-big) .sv2-img { right: auto; left: -4%; }
+@media (max-width: 767px) { .sv2-tile:not(.sv2-big) .sv2-img { width: 66%; } }
+
+/* sun: a little smaller */
+.hx-sun { width: 160px; height: 160px; margin: -80px -80px 0 0; }
+[dir='rtl'] .hx-sun { margin: -80px 0 0 -80px; }
+@media (min-width: 1600px) { .hx-sun { margin: -62px -130px 0 0; } [dir='rtl'] .hx-sun { margin: -62px 0 0 -130px; } }
+@media (max-width: 640px) { .hx-sun { width: 110px; height: 110px; margin: -55px -30px 0 0; } [dir='rtl'] .hx-sun { margin: -55px 0 0 -30px; } }
+/* big tile: smaller title + room picture, kept clear of each other */
+.sv2-big .sv2-h { font-size: clamp(1.35rem, 1.9vw, 1.75rem); max-width: 16rem; }
+.sv2-big .sv2-img { width: 58%; right: -2%; bottom: -10%; }
+[dir='rtl'] .sv2-big .sv2-img { right: auto; left: -2%; }
+@media (max-width: 767px) { .sv2-big .sv2-img { width: 70%; } }
+/* big tile title: back to a confident size (the picture now sits lower, so there's room) */
+.sv2-big .sv2-h { font-size: clamp(1.75rem, 2.5vw, 2.25rem); max-width: 19rem; }
+@media (max-width: 767px) { .sv2-big .sv2-h { font-size: 1.55rem; } .sv2-big .sv2-img { width: 62%; bottom: -12%; } }
+
+/* ---------- Same sun. Two rooms. — sunset sky + one real sun above both rooms ---------- */
+.tw2-stage {
+  background:
+    radial-gradient(60% 55% at 50% 30%, rgba(255,214,150,.75), rgba(255,190,120,.25) 45%, transparent 72%),
+    linear-gradient(180deg, #cfe3fb 0%, #e6eefb 30%, #fde6c8 62%, #f7f1ea 82%, #f3f7fc 100%);
+}
+.tw2-stage::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(40% 18% at 22% 18%, rgba(255,255,255,.75), transparent 70%), radial-gradient(34% 14% at 80% 14%, rgba(255,255,255,.65), transparent 70%); }
+.tw2-stage canvas { position: relative; z-index: 1; }
+.tw2-sun { position: absolute; z-index: 0; left: 50%; top: 9%; width: 150px; height: 150px; margin-left: -75px; pointer-events: none; }
+.tw2-sun i { position: absolute; display: block; border-radius: 50%; }
+.tw2-rays { inset: -55%; background: repeating-conic-gradient(from 0deg, rgba(255,198,110,.5) 0deg 2.5deg, transparent 2.5deg 12deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 28%, #000 34%, transparent 72%); mask-image: radial-gradient(closest-side, transparent 28%, #000 34%, transparent 72%);
+  animation: hx-sun-spin 80s linear infinite; }
+.tw2-glow { inset: -12%; background: radial-gradient(circle, rgba(255,236,180,.95), rgba(255,190,90,.45) 45%, rgba(255,170,60,0) 72%); animation: hx-sun-pulse 5s ease-in-out infinite; }
+.tw2-core { inset: 24%; background: radial-gradient(circle at 38% 35%, #fffdf3 0%, #ffe6a0 45%, #ffbe4c 100%); box-shadow: 0 0 34px 12px rgba(255,205,110,.75), 0 0 110px 44px rgba(255,180,80,.3); }
+.tw2-same { position: absolute; z-index: 2; left: 50%; top: calc(9% + 150px); transform: translateX(-50%); display: inline-flex; align-items: center; gap: .35rem;
+  padding: .32rem .75rem; border-radius: 99px; background: rgba(255,255,255,.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #b45309; box-shadow: 0 10px 24px -14px rgba(180,83,9,.6); white-space: nowrap; }
+.tw2-tag { position: absolute; z-index: 2; bottom: 6%; padding: .45rem .95rem; border-radius: 99px; font-size: .82rem; font-weight: 800; white-space: nowrap;
+  background: rgba(255,255,255,.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 14px 30px -16px rgba(7,29,56,.45); }
+.tw2-tl { left: 27%; transform: translateX(-50%); color: #c2410c; }
+.tw2-tr { left: 73%; transform: translateX(-50%); color: #0866d0; }
+.tw2-stage .h3-chip { z-index: 3; }
+@media (max-width: 1023px) { .tw2-sun { width: 110px; height: 110px; margin-left: -55px; top: 6%; } .tw2-same { top: calc(6% + 110px); } }
+@media (max-width: 640px) { .tw2-sun { width: 80px; height: 80px; margin-left: -40px; top: 4%; } .tw2-same { display: none; } .tw2-tag { font-size: .68rem; padding: .3rem .6rem; bottom: 4%; } }
+@media (prefers-reduced-motion: reduce) { .tw2-rays, .tw2-glow { animation: none; } }
+/* sun fully above the rooms; "same sun" pill sits in the gap between them */
+.tw2-sun { top: 1%; width: 120px; height: 120px; margin-left: -60px; }
+.tw2-same { top: 37%; }
+@media (max-width: 1023px) { .tw2-sun { top: 1%; width: 90px; height: 90px; margin-left: -45px; } .tw2-same { top: 36%; } }
+@media (max-width: 640px) { .tw2-sun { width: 64px; height: 64px; margin-left: -32px; } }
+/* the 3D rooms are not mirrored in Arabic, so the temperature cards must not swap sides either */
+.tw2-stage .h3-cl { left: 16px; right: auto; }
+.tw2-stage .h3-cr { right: 16px; left: auto; }
+@media (max-width: 640px) { .tw2-stage .h3-cl { left: 10px; } .tw2-stage .h3-cr { right: 10px; } }
+/* stage shadow stays tight, so it no longer spills onto the fact cards below */
+.tw2-stage { box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 0 0 1px rgba(8,120,232,.08), 0 18px 34px -24px rgba(7,29,56,.35) !important; }
+.tw2-facts { margin-top: 1.75rem; }

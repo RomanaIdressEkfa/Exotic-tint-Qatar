@@ -218,7 +218,7 @@ function init() {
   const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
   sunSprite.position.copy(sunPos);
   sunSprite.scale.set(3.2, 3.2, 1);
-  scene.add(sunSprite);
+  sunSprite.visible = false; // the sun is drawn in the page, beside the card's top-right corner
 
   // contact shadow under the plinth
   const contact = new THREE.Mesh(new THREE.PlaneGeometry(20, 16), new THREE.MeshBasicMaterial({ map: radial([[0, 'rgba(0,8,24,.55)'], [0.6, 'rgba(0,8,24,.2)'], [1, 'rgba(0,8,24,0)']]), transparent: true, depthWrite: false }));
@@ -226,6 +226,7 @@ function init() {
   contact.position.set(0, -0.7, 0.6);
   scene.add(contact);
 
+  let beamGeo = null;
   // heat beam: a soft pyramid from the sun onto the main window
   const beamMat = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
@@ -245,6 +246,7 @@ function init() {
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     g.setAttribute('fade', new THREE.Float32BufferAttribute(fade, 1));
     scene.add(new THREE.Mesh(g, beamMat));
+    beamGeo = g;
   }
 
   // heat particles: fly in from the sun, pass through the glass — or bounce off once tinted
@@ -256,7 +258,7 @@ function init() {
     const Sx = sunPos.clone().add(new THREE.Vector3(rnd(-0.6, 0.6), rnd(-0.6, 0.6), rnd(-0.6, 0.6)));
     const din = P.clone().sub(Sx).normalize();
     const dout = new THREE.Vector3(din.x * 0.6 + rnd(-0.3, 0.3), -din.y * 0.4 + rnd(0, 0.5), Math.abs(din.z) + 0.6).normalize();
-    hp.push({ P, S: Sx, din, dout, ph: Math.random(), sp: rnd(0.28, 0.4) });
+    hp.push({ P, S: Sx, off: Sx.clone().sub(sunPos), din, dout, ph: Math.random(), sp: rnd(0.28, 0.4) });
   }
   const heatPos = new Float32Array(HEAT * 3), heatCol = new Float32Array(HEAT * 3);
   const heatGeo = new THREE.BufferGeometry();
@@ -642,11 +644,28 @@ function init() {
   /* ---------- render loop (only while visible) ---------- */
   let running = false, started = false, raf = 0;
   const clock = new THREE.Clock();
+  const sunNdc = new THREE.Vector3(), sunNow = new THREE.Vector3(), sunDir = new THREE.Vector3();
   function frame() {
     if (!running) return;
     const t = clock.getElapsedTime();
     camera.position.set(cam.x + look.x * 1.4, cam.y - look.y * 0.9 + Math.sin(t * 0.5) * 0.08, cam.z);
     camera.lookAt(cam.tx, cam.ty, cam.tz);
+    camera.updateMatrixWorld();
+    // sunlight comes from where the sun sits on the page: just past the card's top-right corner
+    sunNdc.set(ar ? -1.02 : 1.02, 1.02, 0.5).unproject(camera).sub(camera.position).normalize();
+    sunNow.copy(camera.position).addScaledVector(sunNdc, 11);
+    sun.position.copy(sun.target.position).addScaledVector(sunDir.copy(sunNow).sub(sun.target.position).normalize(), 17);
+    if (beamGeo) {
+      const bp = beamGeo.attributes.position;
+      for (let k = 0; k < 4; k++) bp.setXYZ(k * 3, sunNow.x, sunNow.y, sunNow.z);
+      bp.needsUpdate = true;
+    }
+    for (let i = 0; i < HEAT; i++) {
+      const p = hp[i];
+      p.S.copy(sunNow).add(p.off);
+      p.din.copy(p.P).sub(p.S).normalize();
+      p.dout.set(p.din.x * 0.6, -p.din.y * 0.4 + 0.25, Math.abs(p.din.z) + 0.6).normalize();
+    }
     phone.position.y = Math.sin(t * 1.3) * 0.08;
     phone.rotation.z = Math.sin(t * 0.9) * 0.025;
     samples.position.y = G + 1.55 + Math.sin(t * 1.1) * 0.05;

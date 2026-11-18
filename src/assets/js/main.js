@@ -723,7 +723,8 @@
     // scroll 1 → step 1, scroll 2 → step 2, scroll 3 → step 3, then the page moves on
     st = ST.create({
       trigger: sec,
-      start: desk ? 'center center' : 'top 84px',
+      start: desk ? function () { return 'top ' + Math.round(88 + Math.max(0, (window.innerHeight - 88 - sec.offsetHeight) / 2)) + 'px'; } : 'top 84px',
+      invalidateOnRefresh: true,
       end: function () { return '+=' + Math.round(window.innerHeight * 1.4); },
       pin: true,
       anticipatePin: 1,
@@ -893,4 +894,11 @@
     });
     update();
   });
+})();
+
+/* How it works: the sun rises when the stage comes into view */
+(function () {
+  var sun = document.querySelector('.hx-sun');
+  if (!sun || !('IntersectionObserver' in window)) { if (sun) sun.classList.add('is-up'); return; }
+  new IntersectionObserver(function (es, o) { if (es[0].isIntersecting) { sun.classList.add('is-up'); o.disconnect(); } }, { threshold: 0.35 }).observe(sun.parentNode);
 })();

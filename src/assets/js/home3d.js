@@ -222,11 +222,11 @@ function twin(host) {
   // sky + sun behind the rooms
   const sky = new THREE.Mesh(new THREE.PlaneGeometry(22, 7), new THREE.MeshBasicMaterial({ toneMapped: false, map: canvasTex(8, 256, (g, w, h) => { const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, '#8fbbe8'); grd.addColorStop(0.6, '#ffd9a0'); grd.addColorStop(1, '#ffb45c'); g.fillStyle = grd; g.fillRect(0, 0, w, h); }) }));
   sky.position.set(0, 2.6, -4.4);
-  S.scene.add(sky);
+  sky.visible = false; // the sky and sun are drawn behind the canvas (CSS)
   const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: radial([[0, 'rgba(255,255,255,1)'], [0.18, 'rgba(255,240,200,1)'], [0.45, 'rgba(255,190,100,.5)'], [1, 'rgba(255,150,60,0)']]), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
   sunSprite.position.set(0, 3.4, -4.2);
   sunSprite.scale.set(3.2, 3.2, 1);
-  S.scene.add(sunSprite);
+  sunSprite.visible = false;
 
   const wallMat = M('#f6f3ee', { roughness: 0.9 });
   const frameMat = M('#1d2b42', { roughness: 0.35, metalness: 0.5 });

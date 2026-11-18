@@ -654,9 +654,11 @@ function howItWorks() {
             <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Start on WhatsApp', 'ابدأ عبر واتساب')}</a>
           </div>
         </div>
-        <div class="lg:col-span-7" data-a="up">
+        <div class="hx-stage-wrap lg:col-span-7" data-a="up">
+          <div class="hx-sun" aria-hidden="true"><i class="hx-sun-rays"></i><i class="hx-sun-glow"></i><i class="hx-sun-core"></i></div>
           <div class="hx-stage" data-s3d="${s3d}">
             <canvas aria-hidden="true"></canvas>
+            <i class="hx-light" aria-hidden="true"></i>
             ${pane1}${pane2}${pane3}
             <div class="hx-dots" aria-hidden="true"><span data-hf-dot></span><span data-hf-dot></span><span data-hf-dot></span></div>
           </div>
@@ -784,7 +786,7 @@ function homeTwin() {
       <h2 class="h3-title">${tr('Same sun. <span class="text-grad">Two rooms.</span>', 'نفس الشمس. <span class="text-grad">غرفتان.</span>')}</h2>
       <p class="h3-line mx-auto">${tr('Plain glass on the left, Exotic Tint ceramic film on the right. Same window, same sun — a very different room.', 'زجاج عادي على اليسار وفيلم سيراميك إكزوتك تينت على اليمين. نفس النافذة ونفس الشمس — وغرفة مختلفة تماماً.')}</p>
     </div>
-    ${h3Stage('twin', 'tp-solar', chip('h3-cl', tr('Without film', 'بدون فيلم'), 'hot') + chip('h3-cr', tr('With Exotic Tint', 'مع إكزوتك تينت'), 'cool'), 'tw2-stage mt-10')}
+    ${h3Stage('twin', 'tp-solar', chip('h3-cl', tr('Without film', 'بدون فيلم'), 'hot') + chip('h3-cr', tr('With Exotic Tint', 'مع إكزوتك تينت'), 'cool') + `<div class="tw2-sun" aria-hidden="true"><i class="tw2-rays"></i><i class="tw2-glow"></i><i class="tw2-core"></i></div><span class="tw2-same">${icon('sun', 'h-3.5 w-3.5', 2.4)} ${tr('Same sun', 'نفس الشمس')}</span><span class="tw2-tag tw2-tl">${tr('Plain glass', 'زجاج عادي')}</span><span class="tw2-tag tw2-tr">${tr('Exotic Tint film', 'فيلم إكزوتك تينت')}</span>`, 'tw2-stage mt-10')}
     <div class="tw2-facts" ${reveal(120)}>
       ${fact('thermo', '98%', tr('Heat rejected, up to', 'صد الحرارة، حتى'), tr('Ceramic particles bounce infrared heat back outside.', 'جزيئات السيراميك ترد الحرارة إلى الخارج.'))}
       ${fact('shield', '99%', tr('UV blocked', 'حجب الأشعة'), tr('Protects skin, floors and furniture from fading.', 'يحمي البشرة والأرضيات والأثاث من البهتان.'))}
