@@ -1638,11 +1638,10 @@ function reviewUs() {
 function blogSection() {
   const [f, ...rest] = POSTS;
   return `
-<section class="pb-20 lg:pb-28">
+<section class="pb-16 pt-12 lg:pb-20 lg:pt-16">
   <div class="container-site">
     <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-      ${sectionHead({ eyebrow: tr('Insights & guides', 'مقالات وأدلة'), title: tr('From our <span class="text-grad">blog</span>', 'من <span class="text-grad">مدونتنا</span>'), text: tr('Practical tint and protection guides written for Qatar’s climate.', 'أدلة عملية للتظليل والحماية مكتوبة لمناخ قطر.') })}
-      <a href="${href('blogs/')}" class="btn btn-white w-max !pe-2" ${reveal(100)}>${tr('View all posts', 'كل المقالات')} <span class="grid h-9 w-9 place-items-center rounded-full bg-grad text-white">${arrow('h-4 w-4')}</span></a>
+      ${sectionHead({ eyebrow: tr('Insights & guides', 'مقالات وأدلة'), title: tr('From our <span class="text-grad">blog</span>', 'من <span class="text-grad">مدونتنا</span>') })}
     </div>
     <div class="mt-10 grid gap-5 lg:grid-cols-12">
       <a href="${href(f.slug + '/')}" class="group relative min-h-[460px] overflow-hidden rounded-[28px] shadow-soft lg:col-span-7" ${reveal()}>
@@ -1653,7 +1652,6 @@ function blogSection() {
         <div class="absolute inset-x-4 bottom-4 rounded-[22px] border border-white/20 bg-ink/55 p-6 backdrop-blur-xl">
           <span class="rounded-full bg-grad px-2.5 py-1 text-[11px] font-extrabold uppercase text-white">${t(f.cat)}</span>
           <h3 class="mt-3 font-head text-2xl font-extrabold leading-tight text-white">${t(f.title)}</h3>
-          <p class="mt-2 line-clamp-2 text-sm text-white/80">${t(f.excerpt)}</p>
           <div class="mt-4 flex items-center justify-between border-t border-white/15 pt-4">
             <span class="flex items-center gap-2.5">${mark('h-9 w-9')}<span><span class="block text-sm font-bold text-white">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</span><span class="block text-xs text-white/70">${fmtDate(f.date)}</span></span></span>
             <span class="grid h-11 w-11 place-items-center rounded-full bg-white text-ink transition group-hover:bg-gold-300">${arrow('h-4 w-4')}</span>
@@ -1686,41 +1684,6 @@ function blogSection() {
 }
 
 /* Premium CTA banner (from the original "Premium Tint & Protection for Your Windows!") */
-function ctaBanner() {
-  return `
-<section class="px-2.5 pb-20 sm:px-3 lg:pb-28">
-  <div class="relative overflow-hidden rounded-[28px] navy-bg">
-    <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
-    <div class="pointer-events-none absolute -start-20 top-1/2 h-[30rem] w-[30rem] -translate-y-1/2 rounded-full bg-gold-500/20 blur-[100px]"></div>
-    <div class="container-site relative grid items-center gap-12 py-16 lg:grid-cols-12 lg:py-20">
-      <div class="lg:col-span-7" ${reveal()}>
-        <span class="inline-flex items-center gap-2 rounded-full border border-gold-400/40 bg-gold-400/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-gold-300">${img3d('glowstar', 'h-5 w-5')} ${tr('Free estimate · Limited time', 'تقدير مجاني · لفترة محدودة')}</span>
-        <h2 class="mt-6 font-head text-[2.3rem] font-extrabold leading-[1.05] text-white sm:text-[3.4rem]">${tr('Premium tint &amp; protection <span class="text-grad">for your windows!</span>', 'تظليل وحماية فاخرة <span class="text-grad">لنوافذك!</span>')}</h2>
-        <p class="mt-5 max-w-xl text-lg text-white/70">${tr('Enhance privacy, block UV rays and protect your surfaces with high-quality tint solutions. Let us work while you unwind.', 'عزّز الخصوصية واحجب الأشعة واحمِ أسطحك بحلول تظليل عالية الجودة. دعنا نعمل بينما تسترخي.')}</p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="${href('contact/')}#quote" class="btn btn-primary">${tr('Get my free estimate', 'احصل على تقديري المجاني')} ${arrow()}</a>
-          <a href="tel:${C.site.phoneRaw}" class="btn btn-glass">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
-        </div>
-        <div class="mt-10 grid max-w-xl grid-cols-3 gap-3">
-          ${[
-            ['99%', tr('UV blocked', 'حجب الأشعة')],
-            [tr('60s', '٦٠ث'), tr('To book', 'للحجز')],
-            ['7/7', tr('Days open', 'أيام العمل')],
-          ]
-            .map(([n, l]) => `<div class="rounded-2xl border border-white/10 bg-white/[0.05] p-4"><p class="font-head text-2xl font-extrabold text-white" dir="ltr">${n}</p><p class="text-xs text-white/60">${l}</p></div>`)
-            .join('')}
-        </div>
-      </div>
-      <div class="relative mx-auto w-full max-w-sm lg:col-span-5" ${reveal(150)}>
-        <div class="absolute inset-[-10%] rounded-full border border-dashed border-gold-400/30"></div>
-        <div class="arch relative aspect-[4/5] !border-white/10"><img src="/assets/img/frosted.webp" alt="${tr('Frosted film on office glass', 'فيلم مصنفر على زجاج مكتب')}" class="h-full w-full object-cover" loading="lazy" decoding="async"></div>
-        ${img3d('sparkles', 'floaty absolute -end-6 -top-4 h-20 w-20 drop-shadow-2xl')}
-        <div class="float-chip floaty-2 absolute -start-6 bottom-12 flex items-center gap-3 p-3 pe-5"><span class="ico">${icon('shield', 'h-5 w-5', 2.2)}</span><span><span class="block text-xs text-muted">${tr('Every job', 'كل عمل')}</span><span class="block font-head font-extrabold text-ink">${tr('Quality guaranteed', 'جودة مضمونة')}</span></span></div>
-      </div>
-    </div>
-  </div>
-</section>`;
-}
 
 /* Detailed 5-step process (from the original service pages) */
 function processTimeline() {
@@ -3415,7 +3378,6 @@ function postCard(p, i) {
     <div class="flex flex-1 flex-col p-6">
       <p class="flex items-center gap-2 text-xs text-muted">${icon('calendar', 'h-3.5 w-3.5')} ${fmtDate(p.date)} · ${num(p.read)} ${tr('min read', 'دقائق قراءة')}</p>
       <h3 class="mt-3 font-head text-xl font-bold leading-snug text-ink group-hover:text-gold-700">${t(p.title)}</h3>
-      <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">${t(p.excerpt)}</p>
       <span class="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-bold text-ink">${tr('Read article', 'اقرأ المقال')} <span class="grid h-8 w-8 place-items-center rounded-full bg-grad shadow-gold">${arrow('h-3.5 w-3.5')}</span></span>
     </div>
   </a>`;
@@ -3438,9 +3400,7 @@ ${blogSection()}
     ${sectionHead({ eyebrow: tr('All articles', 'كل المقالات'), title: tr('Latest <span class="text-grad">posts</span>', 'أحدث <span class="text-grad">المقالات</span>') })}
     <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">${POSTS.map(postCard).join('')}</div>
   </div>
-</section>
-${ctaBanner()}
-${quoteSection()}`;
+</section>`;
   return layout(page, { title: tr('Blog — Window Tint & Protection Guides | Exotic Tint for Trading and Contracting', 'المدونة — أدلة التظليل والحماية | إكزوتك تينت للتجارة والمقاولات'), description: tr('Guides on window tinting, nano ceramic film and marble protection in Qatar.', 'أدلة عن تظليل النوافذ وأفلام النانو سيراميك وحماية الرخام في قطر.'), image: 'blog-ceramic' }, body);
 }
 
