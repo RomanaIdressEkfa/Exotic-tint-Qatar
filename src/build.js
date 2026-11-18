@@ -3411,7 +3411,7 @@ function renderBlocks(blocks) {
       if (b.h) return `<h2 id="s${++h2}" class="mt-12 scroll-mt-32 font-head text-[1.7rem] font-extrabold leading-tight text-ink">${t(b.h)}</h2>`;
       if (b.p) return `<p class="mt-5 text-[1.08rem] leading-[1.85] text-ink-2/85">${t(b.p)}</p>`;
       if (b.list) return `<ul class="mt-4 space-y-2.5">${b.list.map((x) => `<li class="flex gap-3 text-[1.05rem] leading-relaxed text-ink-2/90"><span class="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(x)}</li>`).join('')}</ul>`;
-      if (b.callout) return `<div class="mt-6 flex gap-4 rounded-2xl border border-[#bfdcfb] bg-tint p-5">${img3d('bulb', 'h-10 w-10 shrink-0')}<p class="font-semibold leading-relaxed text-ink">${t(b.callout)}</p></div>`;
+      if (b.callout) return `<p class="post-note mt-6">${t(b.callout)}</p>`;
       if (b.table)
         return `<div class="no-scrollbar mt-6 overflow-x-auto rounded-2xl border border-line shadow-card"><table class="w-full min-w-[520px] text-start text-sm"><thead class="bg-ink text-white"><tr>${b.table.head.map((x, i) => `<th class="px-4 py-3.5 text-start font-head font-bold ${i === b.table.head.length - 1 ? 'text-gold-300' : ''}">${t(x)}</th>`).join('')}</tr></thead><tbody>${b.table.rows.map((r, ri) => `<tr class="${ri % 2 ? 'bg-tint-2' : 'bg-white'}">${r.map((c, ci) => `<td class="border-t border-line px-4 py-3.5 ${ci === 0 ? 'font-semibold text-ink' : 'text-ink-2'} ${ci === r.length - 1 && ci ? 'font-bold text-gold-700' : ''}">${t(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
       return '';
@@ -3435,7 +3435,6 @@ function pagePost(page) {
       <div class="mt-8 max-w-4xl">
         <span class="chip"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('edit', 'h-4 w-4', 2.2)}</span>${t(p.cat)}</span>
         <h1 class="mt-5 text-balance font-head text-[2.2rem] font-extrabold leading-[1.1] text-ink sm:text-[3rem]">${t(p.title)}</h1>
-        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted">${t(p.excerpt)}</p>
         <div class="mt-7 flex flex-wrap items-center gap-5 text-sm text-muted">
           <span class="flex items-center gap-2.5">${mark('h-10 w-10 shadow')}<b class="text-ink">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</b></span>
           <span class="flex items-center gap-1.5">${icon('calendar', 'h-4 w-4')} ${fmtDate(p.date)}</span>
@@ -3448,24 +3447,16 @@ function pagePost(page) {
 <section class="py-14 lg:py-20">
   <div class="container-site grid gap-12 lg:grid-cols-12">
     <article class="min-w-0 lg:col-span-8">
-      <img src="/assets/img/${p.img}.webp" alt="${esc(t(p.title))}" class="aspect-[16/9] w-full rounded-[28px] border-[6px] border-white object-cover shadow-float">
+      <img src="/assets/img/${p.img}.webp" alt="${esc(t(p.title))}" class="aspect-[16/9] w-full rounded-[24px] object-cover shadow-card">
       <div class="mt-4">${renderBlocks(p.body)}</div>
-      <div class="relative mt-12 overflow-hidden rounded-[28px] bg-grad p-8 shadow-glow">
-        ${img3d('sparkles', 'absolute -bottom-4 end-4 h-24 w-24')}
-        <p class="font-head text-2xl font-extrabold text-ink">${tr('Ready to upgrade your glass?', 'مستعد لترقية زجاجك؟')}</p>
-        <p class="mt-1 max-w-md text-ink/75">${tr('Contact Exotic Tint for Trading and Contracting for a free consultation and flat-rate quote.', 'تواصل مع إكزوتك تينت للتجارة والمقاولات لاستشارة مجانية وعرض سعر ثابت.')}</p>
-        <div class="mt-5 flex flex-wrap gap-3"><a href="${href('contact/')}#quote" class="btn btn-dark">${t(C.ui.quote)} ${arrow()}</a><a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-4 w-4 text-[#25D366]')} WhatsApp</a></div>
+      <div class="post-cta mt-12">
+        <p class="font-head text-2xl font-extrabold text-white">${tr('Ready to upgrade your glass?', 'مستعد لترقية زجاجك؟')}</p>
+        <div class="mt-5 flex flex-wrap gap-3"><a href="${href('contact/')}#quote" class="btn btn-white">${t(C.ui.quote)} ${arrow()}</a><a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-glass">${waIcon('h-4 w-4')} WhatsApp</a></div>
       </div>
     </article>
     <aside class="lg:col-span-4">
       <div class="sticky top-28 space-y-5">
         <div class="card p-5"><p class="px-3 font-head text-lg font-bold text-ink">${tr('In this article', 'في هذا المقال')}</p><ol class="mt-3 space-y-0.5">${toc}</ol></div>
-        <div class="relative overflow-hidden rounded-[22px] p-6 navy-bg">
-          ${img3d('chat', 'absolute -bottom-2 end-2 h-16 w-16 opacity-90')}
-          <p class="font-head text-lg font-bold text-white">${tr('Talk to a tint expert', 'تحدث مع خبير تظليل')}</p>
-          <p class="mt-1 text-sm text-white/70">${tr('Free advice, 7 days a week.', 'استشارة مجانية ٧ أيام في الأسبوع.')}</p>
-          <a href="tel:${C.site.phoneRaw}" class="btn btn-primary mt-4 !py-2.5 text-sm">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
-        </div>
         <div class="card p-5"><p class="font-head text-lg font-bold text-ink">${tr('More articles', 'مقالات أخرى')}</p>
           ${others.map((o) => `<a href="${href(o.slug + '/')}" class="group mt-4 flex gap-3"><img src="/assets/img/${o.img}.webp" alt="" class="h-16 w-16 shrink-0 rounded-xl object-cover" loading="lazy" decoding="async"><span class="line-clamp-3 text-sm font-semibold leading-snug text-ink group-hover:text-gold-700">${t(o.title)}</span></a>`).join('')}
         </div>
