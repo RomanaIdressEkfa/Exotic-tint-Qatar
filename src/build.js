@@ -452,12 +452,12 @@ ${roomDock('ruv')}
 
     <div class="absolute inset-x-0 bottom-0">
       <div class="container-site">
-        <div class="rounded-t-[28px] bg-white px-4 pb-6 pt-6 sm:px-8" data-a="rise">
+        <div class="hx-areas rounded-t-[28px] bg-white px-4 pb-6 pt-6 sm:px-8" data-a="rise">
           <p class="flex items-center justify-center gap-4 text-center text-sm text-muted"><span class="hidden h-px w-20 bg-line sm:block"></span><span>${tr('Serving <b class="text-ink">homes, offices &amp; businesses</b> across Qatar', 'نخدم <b class="text-ink">المنازل والمكاتب والشركات</b> في جميع أنحاء قطر')}</span><span class="hidden h-px w-20 bg-line sm:block"></span></p>
           <div class="marquee mt-5 overflow-hidden" dir="ltr">
             <div class="marquee-track">
               ${[0, 1]
-                .map(() => C.areas.map((a) => `<span class="flex shrink-0 items-center gap-2 font-head text-xl font-bold text-[#a3adbd] ${L === 'ar' ? 'font-arabic' : ''}">${icon('pin', 'h-5 w-5 text-gold-400')}${t(a)}</span>`).join(''))
+                .map(() => C.areas.map((a) => `<span class="hx-area flex shrink-0 items-center gap-2 font-head text-xl font-bold text-[#a3adbd] ${L === 'ar' ? 'font-arabic' : ''}">${icon('pin', 'h-5 w-5 text-gold-400')}${t(a)}</span>`).join(''))
                 .join('')}
             </div>
           </div>

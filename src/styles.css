@@ -2328,3 +2328,13 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
   main > section:first-child { padding-inline: 0 !important; }
   main > section:first-child > .hero-bg { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
 }
+
+/* Phones: the hero's area bar — tighter line, areas as clean pills */
+@media (max-width: 639px) {
+  .hx-areas { padding: 1.1rem 0 1.25rem; border-radius: 24px 24px 0 0; box-shadow: 0 -12px 30px -22px rgba(7,29,56,.35); }
+  .hx-areas > p { padding-inline: 1rem; font-size: .8rem; line-height: 1.4; }
+  .hx-areas .marquee { margin-top: .85rem; }
+  .hx-areas .marquee-track { gap: .55rem; animation-duration: 26s; }
+  .hx-area { gap: .4rem; padding: .5rem .85rem .5rem .6rem; border-radius: 99px; background: #f5f9ff; border: 1px solid #e1ecf8; font-size: .9rem !important; font-weight: 700; color: var(--ink) !important; }
+  .hx-area svg { width: 1rem; height: 1rem; color: var(--brand); }
+}
