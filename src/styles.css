@@ -1773,9 +1773,6 @@ h1, h2, h3, .font-head { font-family: 'Inter', 'IBM Plex Sans Arabic', system-ui
 .cx-act.is-main.is-wa:hover { background: #25D366; color: #fff; }
 .cx-copied { position: absolute; inset: 0; display: grid; place-items: center; border-radius: inherit; background: #10b981; color: #fff; opacity: 0; transform: scale(.8); transition: opacity .2s, transform .2s; }
 .cx-act.is-copied .cx-copied { opacity: 1; transform: none; }
-.cx-note { margin-top: 1.25rem; display: flex; align-items: flex-start; gap: .6rem; border-radius: 16px; background: #eef6ff; padding: .9rem 1.1rem; font-size: .9rem; line-height: 1.5; color: #23456e; }
-.cx-note svg { margin-top: .15rem; color: var(--brand); }
-.cx-note b { color: var(--ink); }
 .cx-soc { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 99px; color: #fff; box-shadow: 0 10px 20px -10px rgba(7,29,56,.5); transition: transform .25s; }
 .cx-soc:hover { transform: translateY(-3px); }
 

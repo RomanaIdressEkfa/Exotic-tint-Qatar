@@ -3237,9 +3237,9 @@ function contactHero() {
 function contactForm() {
   const copyBtn = (v) => `<button type="button" class="cx-act" data-copy="${esc(v)}" aria-label="${tr('Copy', 'نسخ')}" title="${tr('Copy', 'نسخ')}">${icon('copy', 'h-4 w-4', 2)}<span class="cx-copied">${icon('check', 'h-4 w-4', 2.6)}</span></button>`;
   const cards = [
-    { ico: icon('phone', 'h-6 w-6', 2), cls: '', label: tr('Call us', 'اتصل بنا'), value: C.site.phone, sub: tr('Daily · 8:00 AM – 6:00 PM', 'يومياً · ٨:٠٠ ص – ٦:٠٠ م'), link: `tel:${C.site.phoneRaw}`, actIco: icon('phone', 'h-4 w-4', 2.2), actLabel: t(C.ui.callUs), copy: C.site.phone },
-    { ico: waIcon('h-6 w-6'), cls: 'is-wa', label: 'WhatsApp', value: C.site.phone, sub: tr('Fastest reply — usually within minutes', 'أسرع رد — عادةً خلال دقائق'), link: waHello(), actIco: waIcon('h-4 w-4'), actLabel: 'WhatsApp', copy: '+' + C.site.whatsapp },
-    { ico: icon('mail', 'h-6 w-6', 2), cls: '', label: tr('Email us', 'راسلنا'), value: C.site.email, sub: tr('Send photos, sizes or drawings', 'أرسل الصور أو المقاسات أو المخططات'), link: `mailto:${C.site.email}`, actIco: icon('arrow', 'h-4 w-4', 2.2), actLabel: tr('Email', 'البريد'), copy: C.site.email },
+    { ico: icon('phone', 'h-6 w-6', 2), cls: '', label: tr('Call us', 'اتصل بنا'), value: C.site.phone, link: `tel:${C.site.phoneRaw}`, actIco: icon('phone', 'h-4 w-4', 2.2), actLabel: t(C.ui.callUs), copy: C.site.phone },
+    { ico: waIcon('h-6 w-6'), cls: 'is-wa', label: 'WhatsApp', value: C.site.phone, link: waHello(), actIco: waIcon('h-4 w-4'), actLabel: 'WhatsApp', copy: '+' + C.site.whatsapp },
+    { ico: icon('mail', 'h-6 w-6', 2), cls: '', label: tr('Email us', 'راسلنا'), value: C.site.email, link: `mailto:${C.site.email}`, actIco: icon('arrow', 'h-4 w-4', 2.2), actLabel: tr('Email', 'البريد'), copy: C.site.email },
   ];
   const socials = [
     [C.site.instagram, 'Instagram', icon('instagram', 'h-[18px] w-[18px]', 2), 'background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)'],
@@ -3264,7 +3264,6 @@ function contactForm() {
           <span class="min-w-0 flex-1">
             <span class="block text-[11px] font-bold uppercase tracking-[0.14em] text-muted">${c.label}</span>
             <a href="${c.link}" ${c.link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} class="mt-1 block truncate font-head text-[1.2rem] font-extrabold text-ink transition hover:text-gold-700 sm:text-[1.3rem]" dir="ltr">${c.value}</a>
-            <span class="mt-0.5 block text-sm text-muted">${c.sub}</span>
           </span>
           <span class="flex shrink-0 flex-col gap-2">
             <a href="${c.link}" ${c.link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} class="cx-act is-main ${c.cls}" aria-label="${esc(c.actLabel)}">${c.actIco}</a>
@@ -3274,7 +3273,6 @@ function contactForm() {
           )
           .join('')}
       </div>
-      <p class="cx-note">${icon('shield', 'h-4 w-4 shrink-0', 2.2)}<span><b>${tr('Free estimate:', 'تقدير مجاني:')}</b> ${tr('send a photo of your glass — we reply with a flat-rate price, no obligation.', 'أرسل صورة لزجاجك — ونرد بسعر ثابت دون أي التزام.')}</span></p>
       <div class="mt-6 flex items-center gap-3">
         <span class="text-sm font-semibold text-ink">${tr('Follow us', 'تابعنا')}</span>
         ${socials.map(([u, n, ic, bg]) => `<a href="${u}" target="_blank" rel="noopener" class="cx-soc" style="${bg}" aria-label="${n}">${ic}</a>`).join('')}
