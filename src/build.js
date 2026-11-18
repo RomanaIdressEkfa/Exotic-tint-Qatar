@@ -717,12 +717,10 @@ function waBook() {
       <div class="wb-text">
         <span class="wb-pill"><i></i>${tr('WhatsApp booking', 'الحجز عبر واتساب')}</span>
         <h2 class="cv-title">${tr('Your tint,<br><span class="text-grad">booked in one chat</span>', 'تظليلك،<br><span class="text-grad">محجوز في محادثة واحدة</span>')}</h2>
-        <p class="mt-3 max-w-md text-[1.02rem] leading-relaxed text-muted">${tr('Send a photo, get a free estimate and pick a time — all on WhatsApp.', 'أرسل صورة، احصل على تقدير مجاني واختر الموعد — كل ذلك عبر واتساب.')}</p>
         <div class="wb-qr">
           <div class="wb-qr-code">${QR}</div>
           <div>
             <p class="font-head text-[1.05rem] font-bold text-ink">${tr('Scan to chat', 'امسح للمحادثة')}</p>
-            <p class="text-sm text-muted">${tr('Or tap the button below', 'أو اضغط الزر أدناه')}</p>
             <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary mt-3 !py-2.5 !text-sm">${waIcon('h-4 w-4')} ${tr('Chat on WhatsApp', 'تحدث عبر واتساب')}</a>
           </div>
         </div>
@@ -763,13 +761,11 @@ function whyChoose() {
       <div class="wb2-card" ${reveal(160)}>
         <span class="wb2-ic">${icon('wallet', 'h-5 w-5', 2.2)}</span>
         <h3 class="wb2-h">${tr('Flat-rate pricing', 'أسعار ثابتة')}</h3>
-        <p class="wb2-p">${tr('Free estimate on WhatsApp. No hidden fees.', 'تقدير مجاني عبر واتساب. دون رسوم خفية.')}</p>
         <a href="${wa}" target="_blank" rel="noopener" class="wb2-link">${waIcon('h-4 w-4')} ${tr('Get my estimate', 'احصل على تقديري')}</a>
       </div>
       <div class="wb2-card" ${reveal(200)}>
         <div class="wb2-icons">${C.services.map((s) => `<span style="background:${SV[s.slug].bg}" title="${esc(t(s.title))}">${img3d(SV[s.slug].emoji, 'h-7 w-7')}</span>`).join('')}</div>
         <h3 class="wb2-h">${tr('One team, five services', 'فريق واحد، خمس خدمات')}</h3>
-        <p class="wb2-p">${tr('Glass, surfaces and interiors — done properly.', 'زجاج وأسطح وديكور — بإتقان.')}</p>
         <a href="${href('service/')}" class="wb2-link">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
       </div>
     </div>
@@ -1591,7 +1587,6 @@ function areasSection() {
           ${sectionHead({
             eyebrow: tr('Service areas', 'مناطق الخدمة'),
             title: tr('Across Qatar. <span class="text-grad">At your door.</span>', 'في كل قطر. <span class="text-grad">عند بابك.</span>'),
-            text: tr('Professional window tint and marble protection across Doha, Lusail, Al Rayyan, Al Wakra and surrounding areas — heat-resistant, UV-blocking solutions for your home and office.', 'خدمات تظليل وحماية رخام احترافية في الدوحة ولوسيل والريان والوكرة والمناطق المحيطة — حلول مقاومة للحرارة وحاجبة للأشعة لمنزلك ومكتبك.'),
           })}
           <div class="mt-8 flex flex-wrap gap-3" ${reveal(120)}>
             <a href="${href('contact/')}#quote" class="btn btn-primary">${tr('Check availability', 'تحقق من التوفر')} ${arrow()}</a>
@@ -1599,7 +1594,7 @@ function areasSection() {
           </div>
           <div class="mt-8 flex items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-card" ${reveal(160)}>
             ${img3d('truck', 'h-14 w-14 shrink-0 drop-shadow-lg')}
-            <div><p class="font-head font-bold text-ink">${tr('Mobile service — we come to you', 'خدمة متنقلة — نأتي إليك')}</p><p class="text-sm text-muted">${tr('Home, office or parking spot. 7 days a week.', 'المنزل أو المكتب أو الموقف. ٧ أيام في الأسبوع.')}</p></div>
+            <div><p class="font-head font-bold text-ink">${tr('Mobile service — we come to you', 'خدمة متنقلة — نأتي إليك')}</p></div>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:col-span-7">
@@ -1607,7 +1602,7 @@ function areasSection() {
             .map(
               (a, i) => `<div class="group flex items-center gap-3 rounded-2xl border border-line bg-white p-3.5 shadow-card transition hover:-translate-y-0.5 hover:border-gold-300 sm:p-4 " ${reveal(i * 50)}>
             <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-tint transition group-hover:bg-gold-100">${img3d('pin', 'h-7 w-7')}</span>
-            <span class="min-w-0"><span class="block truncate font-head text-[1.05rem] font-bold text-ink">${t(a)}</span><span class="flex items-center gap-1.5 text-xs text-muted"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>${L === 'ar' ? a[0] : `<span class="font-arabic">${a[1]}</span>`}</span></span>
+            <span class="min-w-0"><span class="block truncate font-head text-[1.05rem] font-bold text-ink">${t(a)}</span></span>
           </div>`
             )
             .join('')}
@@ -2052,11 +2047,6 @@ function aboutHero() {
           <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
         </div>
-        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[0.95rem]" data-a="up">
-          ${[tr('On-site across Qatar', 'في موقعك بأنحاء قطر'), tr('Free flat-rate estimate', 'تقدير مجاني بسعر ثابت'), tr('No hidden fees', 'دون رسوم خفية')]
-            .map((x) => `<li class="hero-check"><span>${icon('check', 'h-3 w-3', 3)}</span>${x}</li>`)
-            .join('')}
-        </ul>
       </div>
 
       <div class="lg:col-span-6">
@@ -2108,18 +2098,18 @@ function aboutStory() {
       <div ${reveal()}>
         <span class="eyebrow">${tr('Our story', 'قصتنا')}</span>
         <p class="ab-manifesto">${tr(
-          'We started with one idea: <span class="text-grad">Qatar’s sun shouldn’t decide how your space feels.</span> <span class="m">Today our team brings window film, smart glass, surface protection and interior finishes to villas, offices and buildings —</span> fitted on-site, finished properly.',
-          'بدأنا بفكرة واحدة: <span class="text-grad">شمس قطر لا يجب أن تحدد شعورك في مساحتك.</span> <span class="m">اليوم يقدّم فريقنا أفلام النوافذ والزجاج الذكي وحماية الأسطح والتشطيبات الداخلية للفلل والمكاتب والمباني —</span> تُركّب في موقعك، بإتقان.'
+          'We started with one idea: <span class="text-grad">Qatar’s sun shouldn’t decide how your space feels.</span>',
+          'بدأنا بفكرة واحدة: <span class="text-grad">شمس قطر لا يجب أن تحدد شعورك في مساحتك.</span>'
         )}</p>
         <div class="ab-sign">
           ${mark('h-12 w-12')}
-          <span><span class="block font-head font-extrabold text-ink">${tr('Exotic Tint for Trading and Contracting', 'إكزوتك تينت للتجارة والمقاولات')}</span><span class="block text-sm text-muted">${tr('Doha, Qatar · 8 AM – 6 PM, 7 days', 'الدوحة، قطر · ٨ ص – ٦ م، ٧ أيام')}</span></span>
+          <span><span class="block font-head font-extrabold text-ink">${tr('Exotic Tint for Trading and Contracting', 'إكزوتك تينت للتجارة والمقاولات')}</span></span>
         </div>
       </div>
       <div class="ab-photo" ${reveal(120)}>
         <img src="/assets/img/cs-office.webp" alt="${tr('Office glass finished by the Exotic Tint team', 'زجاج مكتب أنجزه فريق إكزوتك تينت')}" loading="lazy" decoding="async">
         <div class="ab-photo-tag glass-hud"><span class="ab-dot"></span>${tr('Installed on-site', 'تركيب في الموقع')}</div>
-        <div class="sr-chip ab-photo-chip"><b>${tr('Homes · Offices · Buildings', 'منازل · مكاتب · مبانٍ')}</b><span>${tr('Who we work for', 'لمن نعمل')}</span></div>
+        <div class="sr-chip ab-photo-chip"><b>${tr('Homes · Offices · Buildings', 'منازل · مكاتب · مبانٍ')}</b></div>
       </div>
     </div>
     <div class="ab-pillars">
@@ -2133,7 +2123,6 @@ function aboutStory() {
         </div>
         <p class="ab-pillar-k">${k}</p>
         <h3 class="ab-pillar-h">${h}</h3>
-        <p class="ab-pillar-p">${p}</p>
       </article>`
         )
         .join('')}
@@ -2155,7 +2144,6 @@ function aboutProcess() {
         <div class="max-w-2xl">
           <span class="eyebrow !text-gold-300">${tr('How we work', 'طريقة عملنا')}</span>
           <h2 class="ab-flow-title">${tr('Five steps to a <span class="text-grad-light">flawless finish</span>', 'خمس خطوات نحو <span class="text-grad-light">نتيجة مثالية</span>')}</h2>
-          <p class="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-white/70">${tr('The same careful routine on every job — from the first chat to the final check.', 'نفس الروتين الدقيق في كل عمل — من أول محادثة حتى الفحص النهائي.')}</p>
         </div>
         <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-primary w-max">${waIcon('h-5 w-5')} ${tr('Start on WhatsApp', 'ابدأ عبر واتساب')}</a>
       </div>
