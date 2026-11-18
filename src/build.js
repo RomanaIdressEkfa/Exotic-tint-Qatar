@@ -196,7 +196,7 @@ ${(page.key === 'home' || page.service) ? '<link rel="preconnect" href="https://
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
 <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
-${(page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions')) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
+${(page.key === 'home' || page.service) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
 ${graph.map((g) => `<script type="application/ld+json">${JSON.stringify(g)}</script>`).join('\n')}
 </head>`;
 }
@@ -389,7 +389,7 @@ ${header(page)}
 <main id="main">
 ${body}
 </main>
-${page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions') ? footer().replace('</body>', '<script type="module" src="/assets/js/room3d.js"></script>\n' + (page.key === 'home' ? '<script type="module" src="/assets/js/steps3d.js"></script>\n<script type="module" src="/assets/js/home3d.js"></script>\n' : '') + '</body>') : footer()}`;
+${page.key === 'home' || page.service ? footer().replace('</body>', (page.key === 'home' || page.service.slug === 'architectural-window-film-solutions' ? '<script type="module" src="/assets/js/room3d.js"></script>\n' : '') + (page.key === 'home' ? '<script type="module" src="/assets/js/steps3d.js"></script>\n' : '') + '<script type="module" src="/assets/js/home3d.js"></script>\n</body>') : footer()}`;
 
 /* --------------------------------------------------------------- sections */
 function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
@@ -2897,7 +2897,8 @@ function topicWorks(s) {
 }
 
 /* One compact row per sub-topic: a real photo with the film's effect playing on it, plus title + one line */
-const TOPICS = {
+// built per language (tr() reads the current language), so it must be a function
+const topicsFor = () => ({
   'architectural-window-film-solutions': [
     ['tp-solar', 'tint', tr('Lets light in, bounces the heat back.', 'يُدخل الضوء ويرد الحرارة.')],
     ['tp-safety', 'gloss', tr('Holds broken glass together on impact.', 'يمسك الزجاج المكسور عند الصدمة.')],
@@ -2923,38 +2924,66 @@ const TOPICS = {
     ['tp-sofa', 'gloss', tr('Water beads up and rolls off.', 'تتجمع المياه وتنزلق.')],
     ['tp-stain', 'gloss', tr('Spills wipe off before they stain.', 'تُمسح الانسكابات قبل أن تترك بقعة.')],
   ],
-};
+});
+/* Service options as ONE scroll-driven section: the panel pins, and each scroll step brings in the next option
+   (photo swaps on the left, the step list fills on the right). Phones get a simple stacked timeline. */
 function topicSections(s) {
-  const list = TOPICS[s.slug];
+  const list = topicsFor()[s.slug];
   if (!list) return '';
+  const n = list.length;
   const labels = (fx) =>
     fx === 'smart' ? [tr('Power on · clear', 'تشغيل · شفاف'), tr('Power off · private', 'إطفاء · خاص')]
     : fx === 'gloss' ? [tr('Before', 'قبل'), tr('Protected', 'محمي')]
     : [tr('Without film', 'بدون فيلم'), tr('With film', 'مع الفيلم')];
-  const rows = list
-    .map(([img, fx, line], i) => {
-      const name = t((s.options[i] || s.options[0])[0]);
-      const ask = waLink(tr('Hello, I would like a quote for ', 'مرحباً، أرغب في عرض سعر لـ ') + name);
-      const [l0, l1] = labels(fx);
-      return `
-    <div class="tr-row${i % 2 ? ' tr-rev' : ''}" ${reveal()}>
-      <figure class="tr-pic fx-${fx}" data-fx>
-        <img src="/assets/img/${img}.webp" alt="${esc(name)}" loading="lazy" decoding="async">
-        <span class="fx-layer" aria-hidden="true"></span><span class="fx-edge" aria-hidden="true"></span><span class="fx-sheen" aria-hidden="true"></span>${fx === 'gloss' ? '<span class="fx-drop d1"></span><span class="fx-drop d2"></span><span class="fx-drop d3"></span>' : ''}
-        <span class="fx-chip fx-a">${l0}</span><span class="fx-chip fx-b">${l1}</span>
-      </figure>
-      <div class="tr-text">
-        <span class="tp-n" dir="ltr">${pad(i + 1)}</span>
-        <h2 class="tr-h">${name}</h2>
-        <p class="tp-line">${line}</p>
-        <a href="${ask}" target="_blank" rel="noopener" class="ts-link mt-5 text-sm">${tr('Ask about this', 'اسأل عن هذا')} ${arrow('h-4 w-4')}</a>
-      </div>
-    </div>`;
-    })
-    .join('');
+  const SCENE = { 'architectural-window-film-solutions': 'twin', 'smart-glass-privacy-solutions': 'smart', 'surface-protection-solutions': 'spill', 'decorative-interior-solutions': 'decor', 'fabric-material-protection': 'fabric' };
+  const key = SCENE[s.slug];
+  const chip = (cls, label, tone) => `<div class="h3-chip ${cls} h3-${tone}"><span class="h3-chip-l">${label}</span><span class="h3-chip-v" dir="ltr"><b data-h3-temp>38</b>°C</span><span class="h3-heat"><span data-h3-bar></span></span></div>`;
+  const spillSteps = [tr('Film goes on', 'تركيب الفيلم'), tr('Something spills', 'انسكاب'), tr("It beads up — can't soak in", 'يتجمع — لا يتسرب'), tr('One wipe — gone', 'مسحة واحدة — اختفى')];
+  const overlay =
+    key === 'twin' ? chip('h3-cl', tr('Without film', 'بدون فيلم'), 'hot') + chip('h3-cr', tr('With Exotic Tint', 'مع إكزوتك تينت'), 'cool')
+    : key === 'smart' ? `<div class="sm2-panel"><div class="flex items-center justify-between gap-3"><span class="sm2-k">${tr('Glass control', 'التحكم بالزجاج')}</span><span class="sm2-live"><i></i>${tr('Live', 'مباشر')}</span></div><p class="sm2-state"><span class="h3-s0">${tr('Clear', 'شفاف')}</span><span class="h3-s1">${tr('Private', 'خاص')}</span></p><div class="h3-toggle" role="group"><button type="button" data-h3-mode="clear" aria-pressed="true">${tr('Clear', 'شفاف')}</button><button type="button" data-h3-mode="private" aria-pressed="false">${tr('Private', 'خاص')}</button></div></div>`
+    : key === 'spill' ? `<div class="sp3-now" aria-live="polite"><span class="sp3-now-n" data-sp-n dir="ltr">01</span><span data-sp-t>${spillSteps[0]}</span></div><div class="sp3-time">${spillSteps.map((long, i) => `<div class="sp3-seg" data-h3-step data-label="${esc(long)}" style="--d:${[1.6, 1.2, 0.9, 1.75][i]}s"><span>${[tr('Film on', 'تركيب الفيلم'), tr('Spill', 'انسكاب'), tr('Beads up', 'يتجمع'), tr('Wiped', 'مسح')][i]}</span><i><b></b></i></div>`).join('')}</div>`
+    : '';
+  const items = list.map(([img, fx, line], i) => {
+    const name = t((s.options[i] || s.options[0])[0]);
+    return { img, fx, line, name, ask: waLink(tr('Hello, I would like a quote for ', 'مرحباً، أرغب في عرض سعر لـ ') + name) };
+  });
   return `
 <section class="py-12 lg:py-16">
-  <div class="container-site"><div class="tr-list">${rows}</div></div>
+  <div class="container-site">
+    <div class="max-w-2xl" ${reveal()}>
+      <span class="eyebrow">${n > 1 ? `${num(n)} ${tr('options', 'خيارات')}` : tr('What we install', 'ما نركّبه')}</span>
+      <h2 class="mt-4 text-balance font-head text-[2rem] font-extrabold leading-[1.1] text-ink sm:text-[2.6rem]">${n > 1 ? tr('Every option, <span class="text-grad">step by step</span>', 'كل خيار، <span class="text-grad">خطوة بخطوة</span>') : tr('Made for <span class="text-grad">your glass</span>', 'مصمم <span class="text-grad">لزجاجك</span>')}</h2>
+    </div>
+    <div class="ss${n === 1 ? ' ss--single' : ''} mt-8" data-ss style="--n:${n}">
+      <div class="ss-pin">
+        <div class="ss-media${key ? ' is-3d' : ''}" ${key ? 'data-h3-wrap' : ''}>
+          ${key ? h3Stage(key, list[0][0], overlay, 'ss-stage').replace('data-h3="spill"', 'data-h3="spill" data-modes="marble,wood,counter,steel"').replace('data-h3="decor"', 'data-h3="decor" data-modes="pattern,brand,wallpaper,frost"').replace('data-h3="fabric"', 'data-h3="fabric" data-modes="water,stain"').replace('data-h3="twin"', `data-h3="twin" data-modes="solar,safety,reflective,privacy,blackout,skylight" data-words='${esc(JSON.stringify({ without: tr('Without film', 'بدون فيلم'), with: tr('With Exotic Tint', 'مع إكزوتك تينت'), shatter: tr('Shatters', 'يتحطم'), hold: tr('Holds together', 'يبقى متماسكاً'), see: tr('See-through', 'مكشوف'), private: tr('Private', 'خاص'), holds0: '—' }))}'`) : ''}
+          ${key ? items.map((it, i) => `<figure class="ss-fig${i === 0 ? ' is-on' : ''}"><figcaption class="ss-cap"><span dir="ltr">${pad(i + 1)} / ${pad(n)}</span><b>${it.name}</b></figcaption></figure>`).join('') : ''}
+          ${key ? '' : items.map((it, i) => `<figure class="ss-fig fx-${it.fx}${i === 0 ? ' is-on' : ''}"><img src="/assets/img/${it.img}.webp" alt="${esc(it.name)}" loading="lazy" decoding="async"><span class="fx-layer" aria-hidden="true"></span><span class="fx-edge" aria-hidden="true"></span><span class="fx-sheen" aria-hidden="true"></span>${it.fx === 'gloss' ? '<span class="fx-drop d1"></span><span class="fx-drop d2"></span><span class="fx-drop d3"></span>' : ''}<span class="fx-chip fx-a">${labels(it.fx)[0]}</span><span class="fx-chip fx-b">${labels(it.fx)[1]}</span><figcaption class="ss-cap"><span dir="ltr">${pad(i + 1)} / ${pad(n)}</span><b>${it.name}</b></figcaption></figure>`).join('')}
+        </div>
+        <ol class="ss-steps">
+          <span class="ss-rail" aria-hidden="true"><i></i></span>
+          ${items
+            .map(
+              (it, i) => `
+          <li class="ss-step${i === 0 ? ' is-on' : ''}" data-i="${i}">
+            <span class="ss-n" dir="ltr">${pad(i + 1)}</span>
+            <div class="min-w-0 flex-1">
+              <img class="ss-thumb" src="/assets/img/${it.img}.webp" alt="" loading="lazy" decoding="async">
+              <h3 class="ss-h">${it.name}</h3>
+              <div class="ss-more"><div class="ss-more-in">
+                <p class="ss-p">${it.line}</p>
+                <a href="${it.ask}" target="_blank" rel="noopener" class="ss-ask">${waIcon('h-4 w-4')} ${tr('Ask about this', 'اسأل عن هذا')}</a>
+              </div></div>
+            </div>
+          </li>`
+            )
+            .join('')}
+        </ol>
+      </div>
+    </div>
+  </div>
 </section>`;
 }
 
@@ -3033,7 +3062,12 @@ function pageService(page) {
         hasOfferCatalog: { '@type': 'OfferCatalog', name: t(s.title), itemListElement: s.options.map(([n, d]) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: t(n), description: t(d) } })) },
       },
     },
-    hero + topicSections(s) + cfg.middle(s) + serviceKnowledge(s)
+    hero +
+      // after the ice hero: white, ice, white … — same rhythm and spacing as the About page
+      [topicSections(s), cfg.middle(s), serviceKnowledge(s)]
+        .filter(Boolean)
+        .map((h, i) => `<div class="home-band ${i % 2 ? 'band-ice' : 'bg-white'} py-10 lg:py-14">${h}</div>`)
+        .join('')
   );
 }
 

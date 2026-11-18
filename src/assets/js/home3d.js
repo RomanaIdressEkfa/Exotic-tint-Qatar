@@ -188,6 +188,29 @@ const plant = (S, x, z, s, G, parent) => {
   return g;
 };
 
+const crackTex = () => canvasTex(512, 384, (g, w, h) => {
+  g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 2.2; g.lineCap = 'round';
+  const cx = w * 0.42, cy = h * 0.46;
+  for (let i = 0; i < 11; i++) {
+    let a = (i / 11) * Math.PI * 2 + rnd(-0.2, 0.2), x = cx, y = cy;
+    g.beginPath(); g.moveTo(x, y);
+    for (let k = 0; k < 6; k++) { a += rnd(-0.35, 0.35); const d = rnd(28, 60); x += Math.cos(a) * d; y += Math.sin(a) * d; g.lineTo(x, y); }
+    g.stroke();
+  }
+  g.lineWidth = 1.2;
+  for (let r = 40; r < 200; r += 55) { g.beginPath(); for (let i = 0; i <= 14; i++) { const a = (i / 14) * Math.PI * 2; const rr = r + rnd(-10, 10); g[i ? 'lineTo' : 'moveTo'](cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } g.stroke(); }
+});
+
+// service pages: data-modes="a,b,c" + data-step; main.js fires 'h3:step' when the active step changes
+function stepModes(host, play) {
+  const modes = (host.dataset.modes || '').split(',').filter(Boolean);
+  if (!modes.length) return null;
+  const cur = () => modes[Math.min(modes.length - 1, +(host.dataset.step || 0))];
+  let started = false;
+  host.addEventListener('h3:step', () => { if (started) play(cur()); });
+  return () => { started = true; play(cur()); };
+}
+
 /* ======================================================================
    1. Same sun, two rooms
    ====================================================================== */
@@ -226,7 +249,26 @@ function twin(host) {
     // window
     const cx = 0, cy = G + (wb + wt) / 2, ww = wr - wl, wh = wt - wb;
     [[ww + 0.1, 0.08, cx, G + wb], [ww + 0.1, 0.08, cx, G + wt], [0.08, wh, wl, cy], [0.08, wh, wr, cy], [0.05, wh, 0, cy]].forEach(([w, h, px, py]) => S.add(new THREE.BoxGeometry(w, h, 0.14), frameMat, [px, py, z0], { parent: g }));
-    S.add(new THREE.PlaneGeometry(ww, wh), glassMat, [cx, cy, z0 + 0.02], { parent: g, cast: false, receive: false });
+    const gMat = glassMat.clone();
+    S.add(new THREE.PlaneGeometry(ww, wh), gMat, [cx, cy, z0 + 0.02], { parent: g, cast: false, receive: false });
+    // crack lines (shown in the safety step)
+    const crackMat = new THREE.MeshBasicMaterial({ map: crackTex(), transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+    S.add(new THREE.PlaneGeometry(ww, wh), crackMat, [cx, cy, z0 + 0.07], { parent: g, cast: false, receive: false });
+    // shards (only the plain room's glass falls apart)
+    const shards = [];
+    if (!film) {
+      for (let k = 0; k < 9; k++) {
+        const sg = new THREE.BufferGeometry();
+        const s = rnd(0.25, 0.45);
+        sg.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, s, rnd(-0.1, 0.2), 0, rnd(0, s), s, 0], 3));
+        sg.computeVertexNormals();
+        const m = new THREE.Mesh(sg, new THREE.MeshStandardMaterial({ color: '#cfe6ff', transparent: true, opacity: 0, roughness: 0.05, metalness: 0.2, side: THREE.DoubleSide, depthWrite: false }));
+        const home = new THREE.Vector3(wl + 0.15 + (k % 3) * (ww / 3), G + wb + 0.2 + Math.floor(k / 3) * (wh / 3), z0 + 0.08);
+        m.position.copy(home);
+        g.add(m);
+        shards.push({ m, home });
+      }
+    }
     let filmMesh = null;
     if (film) {
       const fg = new THREE.PlaneGeometry(ww - 0.06, wh - 0.06);
@@ -276,6 +318,7 @@ function twin(host) {
     hg.setAttribute('position', new THREE.BufferAttribute(hpos, 3));
     const heat = new THREE.Points(hg, new THREE.PointsMaterial({ map: radial([[0, 'rgba(255,255,255,1)'], [1, 'rgba(255,255,255,0)']], 64), color: film ? '#93c5fd' : '#ffae5c', size: 0.13, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending }));
     g.add(heat);
+    const light = { v: 1 };
     S.frames.push((t) => {
       for (let i = 0; i < N; i++) {
         const b = base[i], u = (b.ph + t * sp * b.s) % 1;
@@ -291,9 +334,11 @@ function twin(host) {
         hpos[i * 3 + 2] = b.z;
       }
       hg.attributes.position.needsUpdate = true;
-      patchMat.opacity = (film ? 0.22 : 0.55) + Math.sin(t * 1.6) * 0.05;
+      const lv = light.v;
+      patchMat.opacity = ((film ? 0.22 : 0.55) + Math.sin(t * 1.6) * 0.05) * lv;
+      beamMat.opacity = (film ? 0.05 : 0.2) * lv;
     });
-    rooms.push({ g, filmMesh, film });
+    rooms.push({ g, filmMesh, film, gMat, crackMat, shards, patchMat, beamMat, light });
   }
   room(-3.05, false);
   room(3.05, true);
@@ -301,15 +346,77 @@ function twin(host) {
 
   const temps = host.querySelectorAll('[data-h3-temp]'), bars = host.querySelectorAll('[data-h3-bar]');
   const set = (el, v, k) => { el.textContent = Math.round(v); if (bars[k]) bars[k].style.width = Math.max(8, Math.min(100, ((v - 26) / 22) * 100)) + '%'; };
-  S.onStart = () => {
-    const tl = gsap.timeline({ delay: 0.2 });
-    rooms.forEach((r, i) => tl.from(r.g.position, { y: 5, duration: 1.1, ease: 'bounce.out' }, i * 0.2));
-    const f = rooms[1].filmMesh;
-    if (f) tl.to(f.scale, { y: 1, duration: 1.4, ease: 'power3.inOut' }, 1.3);
-    const a = { v: 38 }, b = { v: 38 };
-    tl.to(a, { v: 46, duration: 2.2, ease: 'power2.out', onUpdate: () => set(temps[0], a.v, 0) }, 1.4);
-    tl.to(b, { v: 32, duration: 2.2, ease: 'power2.out', onUpdate: () => set(temps[1], b.v, 1) }, 1.6);
+  // film looks + what each chip says, per mode (modes come from data-modes on service pages; homepage = solar)
+  const FILM = {
+    solar: { color: '#0f2f5f', opacity: 0.62, metalness: 0.4, roughness: 0.15 },
+    skylight: { color: '#123a6b', opacity: 0.58, metalness: 0.45, roughness: 0.15 },
+    safety: { color: '#cfe8ff', opacity: 0.18, metalness: 0.1, roughness: 0.1 },
+    reflective: { color: '#d7e3f1', opacity: 0.92, metalness: 1, roughness: 0.06 },
+    privacy: { color: '#ffffff', opacity: 0.86, metalness: 0, roughness: 1 },
+    blackout: { color: '#04070d', opacity: 0.97, metalness: 0.2, roughness: 0.6 },
+  };
+  const TEMP = { solar: [46, 32], skylight: [48, 33], reflective: [46, 30], blackout: [46, 29] };
+  const chips = host.querySelectorAll('.h3-chip');
+  const L = (host.dataset.words && JSON.parse(host.dataset.words)) || {};
+  const word = (k, d) => L[k] || d;
+  const say = (k, label, value) => {
+    const c = chips[k]; if (!c) return;
+    const v = c.querySelector('.h3-chip-v'), l = c.querySelector('.h3-chip-l');
+    if (label && l) l.textContent = label;
+    if (v && value !== undefined) v.innerHTML = value;
+  };
+  const modes = (host.dataset.modes || 'solar').split(',');
+  let tl = null;
+  function play(mode) {
+    if (tl) tl.kill();
+    const R = rooms[1], P = rooms[0], f = R.filmMesh;
+    const look = FILM[mode] || FILM.solar;
+    tl = gsap.timeline();
+    // reset: film up, glass whole, light normal
+    tl.to(f.scale, { y: 0.001, duration: 0.35, ease: 'power2.in' }, 0);
+    tl.set([R.crackMat, P.crackMat], { opacity: 0 }, 0.35);
+    tl.set(P.gMat, { opacity: 0.16 }, 0.35);
+    P.shards.forEach((s) => { tl.set(s.m.position, { x: s.home.x, y: s.home.y, z: s.home.z }, 0.35); tl.set(s.m.rotation, { x: 0, y: 0, z: 0 }, 0.35); tl.set(s.m.material, { opacity: 0 }, 0.35); });
+    tl.to([R.light, P.light], { v: 1, duration: 0.4 }, 0);
+    tl.call(() => { f.material.color.set(look.color); f.material.opacity = look.opacity; f.material.metalness = look.metalness; f.material.roughness = look.roughness; }, null, 0.36);
+    // the new film rolls down
+    tl.to(f.scale, { y: 1, duration: 1.3, ease: 'power3.inOut' }, 0.45);
+    if (TEMP[mode]) {
+      const [hot, cool] = TEMP[mode];
+      say(0, word('without', 'Without film'), '<b data-h3-temp>38</b>°C');
+      say(1, word('with', 'With Exotic Tint'), '<b data-h3-temp>38</b>°C');
+      const t0 = host.querySelectorAll('[data-h3-temp]');
+      const a = { v: 38 }, b = { v: 38 };
+      tl.to(a, { v: hot, duration: 2, ease: 'power2.out', onUpdate: () => set(t0[0], a.v, 0) }, 0.8);
+      tl.to(b, { v: cool, duration: 2, ease: 'power2.out', onUpdate: () => set(t0[1], b.v, 1) }, 1.0);
+      if (mode === 'blackout') tl.to(R.light, { v: 0.05, duration: 1.2 }, 1.2);
+    } else if (mode === 'safety') {
+      say(0, word('without', 'Without film'), word('holds0', '—'));
+      say(1, word('with', 'With Exotic Tint'), word('holds0', '—'));
+      // impact: both panes crack, the plain one falls apart, the filmed one holds
+      tl.to([P.crackMat, R.crackMat], { opacity: 1, duration: 0.15 }, 1.9);
+      tl.to(P.gMat, { opacity: 0, duration: 0.3 }, 2.15);
+      tl.to(P.crackMat, { opacity: 0, duration: 0.3 }, 2.2);
+      P.shards.forEach((s, i) => {
+        tl.set(s.m.material, { opacity: 0.85 }, 2.15);
+        tl.to(s.m.position, { y: 0.25, z: s.home.z + rnd(0.3, 1.2), x: s.home.x + rnd(-0.4, 0.4), duration: rnd(0.7, 1), ease: 'power2.in' }, 2.15 + i * 0.03);
+        tl.to(s.m.rotation, { x: rnd(-3, 3), z: rnd(-3, 3), duration: 1 }, 2.15);
+      });
+      tl.call(() => { say(0, null, '<span style="color:#ea580c">' + word('shatter', 'Shatters') + '</span>'); say(1, null, '<span style="color:#0878e8">' + word('hold', 'Holds together') + '</span>'); }, null, 2.3);
+    } else if (mode === 'privacy') {
+      say(0, word('without', 'Without film'), word('see', 'See-through'));
+      say(1, word('with', 'With Exotic Tint'), word('private', 'Private'));
+    }
     if (reduce) tl.progress(1);
+  }
+  const cur = () => modes[Math.min(modes.length - 1, +(host.dataset.step || 0))] || modes[0];
+  let started = false;
+  host.addEventListener('h3:step', () => { if (started) play(cur()); });
+  S.onStart = () => {
+    const intro = gsap.timeline({ delay: 0.2 });
+    rooms.forEach((r, i) => intro.from(r.g.position, { y: 5, duration: 1.1, ease: 'bounce.out' }, i * 0.2));
+    intro.call(() => { started = true; play(cur()); }, null, 1.1);
+    if (reduce) intro.progress(1);
   };
 }
 
@@ -417,7 +524,15 @@ function spill(host) {
   // island
   const topY = G + 1.72;
   S.add(S.rbox(4.6, 1.5, 2.0, 0.06), M('#ffffff', { map: walnut(), roughness: 0.5 }), [0, G + 0.82, 0.4]);
-  S.add(S.rbox(5.0, 0.14, 2.4, 0.05), M('#ffffff', { map: marble(), roughness: 0.15, envMapIntensity: 1.2 }), [0, topY - 0.07, 0.4]);
+  const topMat = M('#ffffff', { map: marble(), roughness: 0.15, envMapIntensity: 1.2 });
+  S.add(S.rbox(5.0, 0.14, 2.4, 0.05), topMat, [0, topY - 0.07, 0.4]);
+  const quartz = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#2f343c'; g.fillRect(0, 0, w, h); for (let i = 0; i < 1400; i++) { g.fillStyle = `rgba(${rnd(150, 235)},${rnd(150, 230)},${rnd(140, 220)},${rnd(0.25, 0.7)})`; g.fillRect(rnd(0, w), rnd(0, h), rnd(1, 2.4), rnd(1, 2.4)); } });
+  const SURF = {
+    marble: { map: marble(), color: '#ffffff', roughness: 0.15, metalness: 0 },
+    wood: { map: oak(), color: '#d9985a', roughness: 0.45, metalness: 0 },
+    counter: { map: quartz, color: '#ffffff', roughness: 0.18, metalness: 0.05 },
+    steel: { map: null, color: '#c9ced6', roughness: 0.22, metalness: 1 },
+  };
   // film layer + sheen that sweeps on as it is applied
   const filmMat = new THREE.MeshStandardMaterial({ color: '#7cc0ff', transparent: true, opacity: 0, roughness: 0.05, metalness: 0.2, depthWrite: false });
   S.add(new THREE.BoxGeometry(4.96, 0.004, 2.36), filmMat, [0, topY + 0.003, 0.4], { cast: false, receive: false });
@@ -478,9 +593,12 @@ function spill(host) {
     if (cap) cap.classList.toggle('is-done', k >= stepEls.length);
   };
   let tl = null;
-  function play() {
+  function play(mode) {
     if (tl) tl.kill();
-    tl = gsap.timeline({ repeat: reduce ? 0 : -1, repeatDelay: 1 });
+    const sv = SURF[mode];
+    if (sv) { topMat.map = sv.map; topMat.color.set(sv.color); topMat.roughness = sv.roughness; topMat.metalness = sv.metalness; topMat.needsUpdate = true; }
+    // homepage: loops forever; service page: each step plays once and stays finished
+    tl = gsap.timeline({ repeat: reduce || sv ? 0 : -1, repeatDelay: 1 });
     tl.set(glassPivot.rotation, { z: 0 }).set(glassPivot.position, { x: 0.5 }).set(wine.scale, { x: 1, y: 1, z: 1 }).set(cloth, { visible: false }).set(cloth.position, { x: -3.2 }).set(filmMat, { opacity: 0 });
     blobs.forEach((b) => tl.set(b.scale, { x: 0.0001, y: 0.0001, z: 0.0001 }, 0).set(b.position, { y: topY + 0.01 }, 0));
     sparks.forEach((s) => tl.set(s.scale, { x: 0.001, y: 0.001 }, 0));
@@ -518,8 +636,8 @@ function spill(host) {
     tl.to(glassPivot.rotation, { z: 0, duration: 0.6, ease: 'power2.out' }, 5.4).to(glassPivot.position, { x: 0.5, duration: 0.6 }, 5.4).to(wine.scale, { x: 1, y: 1, z: 1, duration: 0.4 }, 5.8);
   }
   const again = host.closest('[data-h3-wrap]').querySelector('[data-h3-again]');
-  if (again) again.addEventListener('click', play);
-  S.onStart = play;
+  if (again) again.addEventListener('click', () => play());
+  S.onStart = stepModes(host, play) || (() => play());
 }
 
 
@@ -543,16 +661,47 @@ function decorScene(host) {
     g.fillStyle = 'rgba(255,255,255,.55)';
     for (let i = 0; i < 18; i++) g.fillRect(0, h * 0.7 + i * 7, w, 2);
   });
+  // more finishes for the service-page steps
+  const patDecor = canvasTex(1024, 512, (g, w, h) => {
+    const cols = ['rgba(56,189,248,.75)', 'rgba(250,204,21,.7)', 'rgba(244,114,182,.7)', 'rgba(74,222,128,.7)', 'rgba(167,139,250,.7)'];
+    const s = 96;
+    for (let y = -s; y < h + s; y += s / 2) for (let x = -s; x < w + s; x += s) {
+      const ox = (y / (s / 2)) % 2 ? s / 2 : 0;
+      g.fillStyle = cols[Math.floor(rnd(0, cols.length))];
+      g.beginPath(); g.moveTo(x + ox, y - s / 2); g.lineTo(x + ox + s / 2, y); g.lineTo(x + ox, y + s / 2); g.lineTo(x + ox - s / 2, y); g.closePath(); g.fill();
+      g.strokeStyle = 'rgba(30,41,59,.9)'; g.lineWidth = 5; g.stroke();
+    }
+  });
+  const patBrand = canvasTex(1024, 512, (g, w, h) => {
+    g.fillStyle = 'rgba(255,255,255,.9)'; g.fillRect(0, h * 0.42, w, h * 0.2);
+    g.fillStyle = 'rgba(8,120,232,.95)'; g.fillRect(0, h * 0.62, w, h * 0.03);
+    g.globalCompositeOperation = 'destination-out';
+    g.font = `800 ${h * 0.12}px 'Inter', sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('EXOTIC TINT', w / 2, h * 0.52);
+  });
+  const patFrost = canvasTex(1024, 512, (g, w, h) => {
+    g.fillStyle = 'rgba(255,255,255,.86)'; g.fillRect(0, h * 0.18, w, h * 0.66);
+    g.globalCompositeOperation = 'destination-out';
+    for (let i = 0; i < 9; i++) g.fillRect(0, h * 0.24 + i * h * 0.07, w, h * 0.012);
+  });
+  const PAT = { pattern: patDecor, brand: patBrand, frost: patFrost };
+  const overlays = [];
   [-2.6, 0, 2.6].forEach((x, i) => {
     S.add(new THREE.BoxGeometry(2.5, H, 0.04), new THREE.MeshPhysicalMaterial({ color: '#e8f3ff', transparent: true, opacity: 0.18, roughness: 0.05, clearcoat: 1, envMapIntensity: 1.4, depthWrite: false }), [x, G + 0.1 + H / 2, z], { cast: false, receive: false }).renderOrder = 4;
     const pm = new THREE.MeshBasicMaterial({ map: pat, transparent: true, depthWrite: false, toneMapped: false });
-    S.add(new THREE.PlaneGeometry(2.5, H), pm, [x, G + 0.1 + H / 2, z + 0.03], { cast: false, receive: false }).renderOrder = 5;
+    // pivot at the top so the film can roll down
+    const pg = new THREE.PlaneGeometry(2.5, H);
+    pg.translate(0, -H / 2, 0);
+    const o = S.add(pg, pm, [x, G + 0.1 + H, z + 0.03], { cast: false, receive: false });
+    o.renderOrder = 5;
+    overlays.push(o);
   });
   [-3.9, -1.3, 1.3, 3.9].forEach((x) => S.add(S.rbox(0.09, H, 0.09, 0.03), metal, [x, G + 0.1 + H / 2, z]));
   S.add(S.rbox(7.9, 0.09, 0.09, 0.03), metal, [0, G + 0.1 + H, z]);
   // logo on the middle pane
   const logo = canvasTex(256, 256, (g, w) => { g.fillStyle = 'rgba(255,255,255,.95)'; g.beginPath(); g.arc(w / 2, w / 2, w * 0.42, 0, Math.PI * 2); g.fill(); g.globalCompositeOperation = 'destination-out'; g.font = `800 ${w * 0.3}px 'Inter', sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('ET', w / 2, w / 2 + 6); });
-  S.add(new THREE.PlaneGeometry(0.75, 0.75), new THREE.MeshBasicMaterial({ map: logo, transparent: true, depthWrite: false, toneMapped: false }), [0, G + 2.35, z + 0.04], { cast: false, receive: false }).renderOrder = 6;
+  const logoMesh = S.add(new THREE.PlaneGeometry(0.75, 0.75), new THREE.MeshBasicMaterial({ map: logo, transparent: true, depthWrite: false, toneMapped: false }), [0, G + 2.35, z + 0.04], { cast: false, receive: false });
+  logoMesh.renderOrder = 6;
   // office behind and in front
   const wal = M('#ffffff', { map: walnut(), roughness: 0.45 });
   S.add(S.rbox(2.2, 0.08, 1.0, 0.03), wal, [-0.6, G + 0.85, -2.6]);
@@ -564,6 +713,35 @@ function decorScene(host) {
   S.add(S.rbox(1.8, 0.08, 0.8, 0.03), M('#f4f2ee', { roughness: 0.2 }), [1.5, G + 0.5, 1.3]);
   S.add(new THREE.CylinderGeometry(0.06, 0.08, 0.42, 12), metal, [1.5, G + 0.27, 1.3]);
   S.add(S.rbox(2.2, 0.36, 0.9, 0.14), M('#efe6d6', { roughness: 0.95 }), [1.5, G + 0.28, 2.4]);
+  // back wall that gets wallpaper in the wallpaper step
+  const WH = 3.0;
+  S.add(S.rbox(8.4, WH, 0.12, 0.03), M('#f3f1ec', { roughness: 0.9 }), [0, G + WH / 2, -3.3]);
+  const paper = canvasTex(512, 512, (g, w, h) => {
+    g.fillStyle = '#2f3b55'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(214,180,110,.85)'; g.lineWidth = 3;
+    for (let y = 0; y < h; y += 64) for (let x = 0; x < w; x += 64) { g.beginPath(); g.arc(x + 32, y + 32, 22, 0, Math.PI * 2); g.stroke(); g.beginPath(); g.moveTo(x + 32, y + 10); g.lineTo(x + 32, y + 54); g.stroke(); }
+  }, [4, 1.5]);
+  const wg = new THREE.PlaneGeometry(8.2, WH - 0.1);
+  wg.translate(0, -(WH - 0.1) / 2, 0);
+  const wall = S.add(wg, M('#ffffff', { map: paper, roughness: 0.8 }), [0, G + WH - 0.05, -3.23], { cast: false });
+  wall.scale.y = 0.001;
+  let tl = null;
+  function play(mode) {
+    if (tl) tl.kill();
+    tl = gsap.timeline();
+    tl.to(overlays.map((o) => o.scale), { y: 0.001, duration: 0.35, ease: 'power2.in' }, 0);
+    tl.to(wall.scale, { y: 0.001, duration: 0.35, ease: 'power2.in' }, 0);
+    tl.to(logoMesh.scale, { x: 0.001, y: 0.001, duration: 0.25 }, 0);
+    if (PAT[mode]) {
+      tl.call(() => overlays.forEach((o) => { o.material.map = PAT[mode]; o.material.needsUpdate = true; }), null, 0.36);
+      overlays.forEach((o, i) => tl.to(o.scale, { y: 1, duration: 1.1, ease: 'power3.inOut' }, 0.45 + i * 0.25));
+      if (mode === 'brand') tl.to(logoMesh.scale, { x: 1, y: 1, duration: 0.6, ease: 'back.out(2)' }, 1.6);
+    } else if (mode === 'wallpaper') {
+      tl.to(wall.scale, { y: 1, duration: 1.8, ease: 'power2.inOut' }, 0.45);
+    }
+    if (reduce) tl.progress(1);
+  }
+  S.onStart = stepModes(host, play) || (() => { overlays.forEach((o) => { o.scale.y = 1; }); });
 }
 
 /* ======================================================================
@@ -589,10 +767,48 @@ function fabricScene(host) {
   S.root.add(sofa);
   // water beads sitting on the fabric (they don't soak in)
   const drop = new THREE.MeshPhysicalMaterial({ color: '#cfeaff', roughness: 0, metalness: 0, transparent: true, opacity: 0.85, clearcoat: 1, envMapIntensity: 2.2 });
-  [[-1.2, 0.2, 0.09], [-0.7, 0.42, 0.07], [-0.95, -0.05, 0.06], [0.6, 0.3, 0.1], [1.1, 0.05, 0.07], [0.85, 0.5, 0.05], [1.35, 0.35, 0.06], [-0.4, 0.15, 0.05]].forEach(([x, z, r]) => {
-    const d = S.add(new THREE.SphereGeometry(1, 24, 16), drop, [x, G + 0.83 + r * 0.6, -0.5 + z], { cast: false });
+  const drops = [[-1.2, 0.2, 0.09], [-0.7, 0.42, 0.07], [-0.95, -0.05, 0.06], [0.6, 0.3, 0.1], [1.1, 0.05, 0.07], [0.85, 0.5, 0.05], [1.35, 0.35, 0.06], [-0.4, 0.15, 0.05]].map(([x, z, r]) => {
+    const rest = G + 0.83 + r * 0.6;
+    const d = S.add(new THREE.SphereGeometry(1, 24, 16), drop, [x, rest, -0.5 + z], { cast: false });
     d.scale.set(r, r * 0.75, r);
+    return { d, r, rest, x };
   });
+  // coating shimmer that sweeps over the cushions
+  const coatMat = new THREE.MeshBasicMaterial({ color: '#7cc0ff', transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+  S.add(S.rbox(3.5, 0.02, 1.2, 0.01), coatMat, [0, G + 0.85, -0.5], { cast: false, receive: false });
+  const fcloth = S.add(S.rbox(0.8, 0.07, 0.6, 0.03), M('#f5f0e6', { roughness: 1 }), [-2.6, G + 0.9, -0.45]);
+  fcloth.visible = false;
+  const sparkTexF = radial([[0, 'rgba(255,255,255,1)'], [0.25, 'rgba(190,230,255,.9)'], [1, 'rgba(80,170,255,0)']], 128);
+  const fsparks = [[-0.9, -0.3], [0.2, -0.45], [1.0, -0.35]].map(([x, z]) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTexF, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })); s.position.set(x, G + 1.05, z); s.scale.setScalar(0.001); S.root.add(s); return s; });
+  let tl = null;
+  function play(mode) {
+    if (tl) tl.kill();
+    tl = gsap.timeline();
+    const stain = mode === 'stain';
+    drops.forEach((o) => { tl.set(o.d.scale, { x: 0.0001, y: 0.0001, z: 0.0001 }, 0); tl.set(o.d.position, { x: o.x, y: o.rest + 2.4 }, 0); });
+    tl.set(fcloth, { visible: false }, 0);
+    fsparks.forEach((s) => tl.set(s.scale, { x: 0.001, y: 0.001 }, 0));
+    tl.call(() => { drop.color.set(stain ? '#6b3a1e' : '#cfeaff'); drop.opacity = stain ? 0.95 : 0.85; }, null, 0);
+    // 1) coating goes on
+    tl.to(coatMat, { opacity: 0.35, duration: 0.5 }, 0.2).to(coatMat, { opacity: 0, duration: 0.6 }, 0.9);
+    // 2) drops fall, splat and pull up into beads
+    drops.forEach((o, i) => {
+      const at = 1.5 + i * 0.08;
+      tl.set(o.d.scale, { x: o.r * 0.7, y: o.r * 0.9, z: o.r * 0.7 }, at);
+      tl.to(o.d.position, { y: o.rest, duration: 0.45, ease: 'power2.in' }, at);
+      tl.to(o.d.scale, { x: o.r * 1.35, y: o.r * 0.35, z: o.r * 1.35, duration: 0.12 }, at + 0.45);
+      tl.to(o.d.scale, { x: o.r, y: o.r * 0.75, z: o.r, duration: 0.4, ease: 'back.out(2.4)' }, at + 0.57);
+    });
+    if (stain) {
+      // 3) one wipe: stains lift off, fabric is clean
+      tl.set(fcloth, { visible: true }, 3.3).fromTo(fcloth.position, { x: -2.0 }, { x: 2.0, duration: 1.1, ease: 'power1.inOut' }, 3.3);
+      drops.forEach((o) => tl.to(o.d.scale, { x: 0.0001, y: 0.0001, z: 0.0001, duration: 0.18 }, 3.3 + ((o.x + 2.0) / 4.0) * 1.1));
+      tl.set(fcloth, { visible: false }, 4.45);
+      fsparks.forEach((s, i) => tl.to(s.scale, { x: 0.45, y: 0.45, duration: 0.25, yoyo: true, repeat: 1 }, 4.4 + i * 0.12));
+    }
+    if (reduce) tl.progress(1);
+  }
+  S.onStart = stepModes(host, play) || null;
   // side table + glass
   S.add(new THREE.CylinderGeometry(0.42, 0.42, 0.05, 36), M('#f4f2ee', { roughness: 0.2 }), [2.7, G + 0.62, -0.3]);
   S.add(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 10), M('#c9a25e', { metalness: 1, roughness: 0.3 }), [2.7, G + 0.31, -0.3]);

@@ -1812,3 +1812,97 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
 .sa-row:hover .sa-pin { background: var(--grad); color: #fff; }
 @media (min-width: 640px) { .sa-row:nth-last-child(-n+2) { border-bottom: 0; } }
 @media (max-width: 639px) { .sa-row:last-child { border-bottom: 0; } }
+
+/* ======================================================================
+   Service pages — options as one scroll-driven section
+   ====================================================================== */
+.ss-pin { display: grid; gap: 1.5rem; }
+.ss-media { display: none; }
+.ss-steps { position: relative; display: grid; gap: .9rem; padding-inline-start: 0; }
+.ss-rail { display: none; }
+.ss-step { display: flex; gap: 1rem; padding: 1.1rem; border-radius: 22px; background: #fff; border: 1px solid #e6eef8; box-shadow: 0 2px 4px rgba(7,29,56,.03), 0 26px 50px -36px rgba(7,29,56,.35); }
+.ss-n { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 13px; background: var(--grad); font: 800 .85rem 'Inter', sans-serif; color: #fff; box-shadow: 0 12px 24px -12px rgba(8,120,232,.8); }
+.ss-thumb { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 16px; margin-bottom: .9rem; }
+.ss-h { font: 800 1.2rem/1.25 'Inter', 'IBM Plex Sans Arabic', sans-serif; color: var(--ink); }
+.ss-p { margin-top: .4rem; color: var(--muted); line-height: 1.6; }
+.ss-ask { margin-top: .9rem; display: inline-flex; align-items: center; gap: .45rem; border-radius: 99px; background: #e7f9ee; padding: .5rem .95rem; font-size: .85rem; font-weight: 700; color: #137a3f; transition: background .25s, color .25s; }
+.ss-ask:hover { background: #25D366; color: #fff; }
+
+@media (min-width: 1024px) {
+  /* the section is tall; the panel inside it sticks while you scroll through the steps */
+  .ss { height: calc(100vh + (var(--n) - 1) * 62vh); }
+  .ss-pin { position: sticky; top: 104px; height: calc(100vh - 140px); min-height: 520px; max-height: 760px; grid-template-columns: 7fr 5fr; gap: 3rem; align-items: center; }
+  .ss-media { position: relative; display: block; height: 100%; overflow: hidden; border-radius: 30px; background: #e8eef6; box-shadow: 0 2px 4px rgba(7,29,56,.04), 0 50px 90px -50px rgba(7,29,56,.5); }
+  .ss-fig { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .7s ease; }
+  .ss-fig img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+  .ss-fig.is-on { opacity: 1; } .ss-fig.is-on img { transform: scale(1); }
+  .ss-cap { position: absolute; inset-inline-start: 1.25rem; bottom: 1.25rem; display: flex; align-items: center; gap: .75rem; padding: .55rem 1rem .55rem .55rem; border-radius: 16px; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 18px 36px -18px rgba(7,29,56,.5); }
+  [dir='rtl'] .ss-cap { padding: .55rem .55rem .55rem 1rem; }
+  .ss-cap span { border-radius: 10px; background: var(--ink); padding: .3rem .55rem; font-size: .75rem; font-weight: 800; color: #fff; }
+  .ss-cap b { font-weight: 700; color: var(--ink); }
+  .ss-steps { gap: 0; padding-inline-start: 0; }
+  .ss-rail { display: block; position: absolute; inset-inline-start: 19px; top: 20px; bottom: 20px; width: 2px; border-radius: 2px; background: #e3ebf5; }
+  .ss-rail i { display: block; width: 100%; height: calc(var(--p, 0) * 100%); border-radius: 2px; background: var(--grad); }
+  .ss-step { position: relative; padding: .85rem 0; border: 0; border-radius: 0; background: none; box-shadow: none; cursor: pointer; }
+  .ss-thumb { display: none; }
+  .ss-n { position: relative; z-index: 1; background: #fff; color: #9aa6b8; box-shadow: 0 0 0 1px #e3ebf5; transition: background .35s, color .35s, box-shadow .35s; }
+  .ss-step.is-done .ss-n { background: var(--tint); color: var(--brand); box-shadow: none; }
+  .ss-step.is-on .ss-n { background: var(--grad); color: #fff; box-shadow: 0 12px 24px -12px rgba(8,120,232,.8); }
+  .ss-h { padding-top: .45rem; color: #8b97aa; transition: color .35s; }
+  .ss-step.is-done .ss-h { color: #5b6678; }
+  .ss-step.is-on .ss-h { color: var(--ink); font-size: 1.4rem; }
+  .ss-more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .45s ease, opacity .35s ease; }
+  .ss-more > * { min-height: 0; }
+  .ss-more { overflow: hidden; }
+  .ss-step.is-on .ss-more { grid-template-rows: 1fr; opacity: 1; }
+  .ss-more-in { min-height: 0; }
+
+  /* one option only (Smart glass): no pinning, just photo + text */
+  .ss--single { height: auto; }
+  .ss--single .ss-pin { position: static; height: auto; min-height: 0; }
+  .ss--single .ss-media { aspect-ratio: 16 / 11; height: auto; }
+  .ss--single .ss-rail { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .ss-fig, .ss-fig img, .ss-more, .ss-h, .ss-n { transition: none; } }
+
+/* each step plays its film effect ONCE when it becomes active, then stays finished */
+.ss-fig { isolation: isolate; overflow: hidden; }
+.ss-fig .fx-chip { z-index: 2; top: 1.25rem; inset-inline-start: 1.25rem; }
+.ss-fig.is-on .fx-layer { animation: ss-roll 1.6s cubic-bezier(.65,0,.3,1) .5s both; }
+.ss-fig.is-on .fx-edge { animation: ss-edge 1.6s cubic-bezier(.65,0,.3,1) .5s both; }
+.ss-fig.is-on .fx-sheen { animation: ss-sheen 1.3s ease-in-out 2.1s both; }
+.ss-fig.is-on .fx-a { animation: ss-out .4s ease 1.3s both; }
+.ss-fig.is-on .fx-b { animation: ss-in .45s ease 1.5s both; }
+.ss-fig.is-on .fx-drop { animation: fx-drop 6s cubic-bezier(.5,0,.6,1) -.8s 1 both; }
+.ss-fig.is-on .fx-drop.d2 { animation-delay: -.55s; } .ss-fig.is-on .fx-drop.d3 { animation-delay: -.35s; }
+[dir='rtl'] .ss-fig.is-on .fx-drop { animation-name: fx-drop-rtl; }
+@keyframes ss-roll { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes ss-edge { 0% { top: 0; opacity: 0; } 8% { opacity: 1; } 92% { top: calc(100% - 3px); opacity: 1; } 100% { top: calc(100% - 3px); opacity: 0; } }
+@keyframes ss-sheen { 0% { left: -40%; opacity: 0; } 15% { opacity: 1; } 85% { left: 120%; opacity: 1; } 100% { left: 120%; opacity: 0; } }
+@keyframes ss-out { to { opacity: 0; } }
+@keyframes ss-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .ss-fig.is-on .fx-layer { animation: none; transform: scaleY(1); }
+  .ss-fig.is-on .fx-edge, .ss-fig.is-on .fx-sheen, .ss-fig.is-on .fx-drop { animation: none; }
+  .ss-fig.is-on .fx-a { animation: none; opacity: 0; } .ss-fig.is-on .fx-b { animation: none; opacity: 1; }
+}
+
+/* service steps: the page's 3D scene fills the media panel; the step caption floats on top */
+.ss-media.is-3d { display: block; position: relative; aspect-ratio: 4 / 3.4; overflow: hidden; border-radius: 26px; background: #e8eef6; box-shadow: 0 2px 4px rgba(7,29,56,.04), 0 40px 80px -46px rgba(7,29,56,.45); margin-bottom: .5rem; }
+.ss-media.is-3d .ss-stage { position: absolute; inset: 0; aspect-ratio: auto; border-radius: inherit; }
+.ss-media.is-3d .ss-fig { position: absolute; inset: 0; margin: 0; opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+.ss-media.is-3d .ss-fig.is-on { opacity: 1; }
+.ss-media.is-3d .ss-cap { position: absolute; inset-inline-start: 1rem; bottom: 1rem; display: flex; align-items: center; gap: .6rem; padding: .45rem .9rem .45rem .45rem; border-radius: 14px; background: rgba(255,255,255,.92); box-shadow: 0 18px 36px -18px rgba(7,29,56,.5); }
+.ss-media.is-3d .ss-cap span { border-radius: 9px; background: var(--ink); padding: .25rem .5rem; font-size: .72rem; font-weight: 800; color: #fff; }
+.ss-media.is-3d .ss-cap b { font-weight: 700; font-size: .9rem; color: var(--ink); }
+/* the spill scene has its own timeline at the bottom; lift the caption above it */
+.ss-media.is-3d:has(.sp3-time) .ss-cap { bottom: 4.6rem; }
+@media (max-width: 1023px) { .ss-media.is-3d ~ .ss-steps .ss-thumb, .ss-pin:has(.ss-media.is-3d) .ss-thumb { display: none; } }
+@media (min-width: 1024px) { .ss-media.is-3d { aspect-ratio: auto; height: 100%; margin: 0; border-radius: 30px; } .ss-media.is-3d .ss-cap { inset-inline-start: 1.25rem; bottom: 1.25rem; } }
+@media (min-width: 1024px) {
+  .ss-media.is-3d:has(.sp3-time) .ss-cap { bottom: 4.6rem; }
+  /* the two-room scene is wide: give it a wide frame, centred in the pinned panel */
+  .ss-media.is-3d:has([data-h3='twin']) { height: auto; aspect-ratio: 16 / 11; }
+  /* single option (Smart glass): normal framed panel, no pinning */
+  .ss--single .ss-media.is-3d { height: auto; aspect-ratio: 16 / 11; }
+}
