@@ -2353,3 +2353,17 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
   .sv2 .sv2-go svg { color: var(--brand); }
   .sv2-go-t { display: inline; }
 }
+
+/* Phones: How it works steps as a compact row of three tabs, so the 3D picture gets the room */
+@media (max-width: 767px) {
+  .hx-list { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: .5rem !important; margin-top: 1rem !important; }
+  .hx-list .hx-link { display: none !important; }
+  .hx-item { position: relative; flex-direction: column; align-items: flex-start; gap: .55rem !important; padding: .8rem .75rem .9rem !important; border-radius: 18px !important; transform: none !important; background: rgba(255,255,255,.7); box-shadow: inset 0 0 0 1px #e1eaf5; }
+  .hx-item.is-on { background: #fff; box-shadow: inset 0 0 0 1.5px #0878e8, 0 18px 34px -22px rgba(8,120,232,.6); }
+  .hx-item .hx-node { width: 36px !important; height: 36px !important; border-radius: 11px !important; }
+  .hx-item .hx-node svg { width: 18px; height: 18px; }
+  .hx-item .hx-h { font-size: .86rem !important; line-height: 1.25; }
+  .hx-item .hx-p { display: none !important; }
+  .hx-item .hx-bar { inset-inline: .75rem; bottom: .45rem; }
+  .hx-stage { aspect-ratio: 1 / 1.08 !important; }
+}
