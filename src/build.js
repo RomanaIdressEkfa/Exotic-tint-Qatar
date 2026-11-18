@@ -3434,7 +3434,7 @@ function pagePost(page) {
       </nav>
       <div class="mt-8 max-w-4xl">
         <span class="chip"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('edit', 'h-4 w-4', 2.2)}</span>${t(p.cat)}</span>
-        <h1 class="mt-5 text-balance font-head text-[2.2rem] font-extrabold leading-[1.1] text-ink sm:text-[3rem]">${t(p.title)}</h1>
+        <h1 class="post-h1 mt-5 max-w-3xl text-balance font-head text-[2.2rem] font-extrabold leading-[1.1] text-ink sm:text-[3rem]">${t(p.title)}</h1>
         <div class="mt-7 flex flex-wrap items-center gap-5 text-sm text-muted">
           <span class="flex items-center gap-2.5">${mark('h-10 w-10 shadow')}<b class="text-ink">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</b></span>
           <span class="flex items-center gap-1.5">${icon('calendar', 'h-4 w-4')} ${fmtDate(p.date)}</span>
