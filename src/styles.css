@@ -2338,3 +2338,18 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
   .hx-area { gap: .4rem; padding: .5rem .85rem .5rem .6rem; border-radius: 99px; background: #f5f9ff; border: 1px solid #e1ecf8; font-size: .9rem !important; font-weight: 700; color: var(--ink) !important; }
   .hx-area svg { width: 1rem; height: 1rem; color: var(--brand); }
 }
+
+/* Phones: Our services as an even swipe carousel — same-size cards, centred picture, clear Explore pill */
+.sv2-go-t { display: none; }
+@media (max-width: 767px) {
+  .sv2 .sv2-tile { flex: 0 0 82%; min-height: 0; gap: 0; padding: 1.35rem 1.35rem 1.25rem; }
+  .sv2 .sv2-big { flex-basis: 82%; padding: 1.35rem 1.35rem 1.25rem; }
+  .sv2 .sv2-tile .sv2-h, .sv2 .sv2-big .sv2-h { max-width: none; font-size: 1.35rem; line-height: 1.2; }
+  /* stacked, nothing overlaps: title, then the picture in its own space, then Explore */
+  .sv2 .sv2-tile .sv2-img, .sv2 .sv2-big .sv2-img { position: relative; z-index: 0; left: auto; right: auto; bottom: auto; display: block; width: 100%; height: 220px; margin: 1rem 0 1.1rem; object-fit: cover; object-position: center 40%; border-radius: 18px; filter: none; box-shadow: 0 16px 30px -18px rgba(7,29,56,.4); -webkit-mask-image: none; mask-image: none; }
+  [dir='rtl'] .sv2 .sv2-tile .sv2-img, [dir='rtl'] .sv2 .sv2-big .sv2-img { left: auto; right: auto; }
+  .sv2 .sv2-tile .sv2-go, .sv2 .sv2-big .sv2-go { position: static; align-self: flex-start; margin-top: auto; width: auto; height: auto; display: inline-flex; gap: .4rem; padding: .55rem .9rem .55rem 1rem; border-radius: 99px; background: rgba(255,255,255,.95); color: var(--ink); font-size: .85rem; font-weight: 700; box-shadow: 0 12px 26px -12px rgba(7,29,56,.45); }
+  [dir='rtl'] .sv2 .sv2-tile .sv2-go { padding: .55rem 1rem .55rem .9rem; }
+  .sv2 .sv2-go svg { color: var(--brand); }
+  .sv2-go-t { display: inline; }
+}

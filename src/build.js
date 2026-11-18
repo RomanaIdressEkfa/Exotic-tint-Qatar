@@ -502,7 +502,7 @@ function servicesGrid() {
         <div class="sv2-top"><span class="sv2-n" dir="ltr">${pad(i + 1)}</span><span class="sv2-count">${n} ${n === 1 ? tr('solution', 'حل') : tr('solutions', 'حلول')}</span></div>
         <h3 class="sv2-h">${t(s.title)}</h3>
         <img src="/assets/img/svc3d-${R[s.slug]}.webp" alt="${esc(t(s.title))} — ${esc(t(s.short))}" class="sv2-img" loading="lazy" decoding="async" width="560" height="700">
-        <span class="sv2-go" aria-hidden="true">${arrow('h-4 w-4')}</span>
+        <span class="sv2-go" aria-hidden="true"><span class="sv2-go-t">${tr('Explore', 'استكشف')}</span>${arrow('h-4 w-4')}</span>
       </a>`;
   };
   return `
