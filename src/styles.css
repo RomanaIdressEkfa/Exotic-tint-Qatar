@@ -2367,3 +2367,35 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
   .hx-item .hx-bar { inset-inline: .75rem; bottom: .45rem; }
   .hx-stage { aspect-ratio: 1 / 1.08 !important; }
 }
+
+/* Phones: Same sun, two rooms — no repeated labels, rooms fill the frame, facts in one tidy card */
+@media (max-width: 640px) {
+  .tw2-vs, .tw2-tag { display: none !important; }
+  .tw2-stage { aspect-ratio: 16 / 11 !important; }
+  .tw2-facts { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 0 !important; margin-top: 1rem !important; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px rgba(8,120,232,.08), 0 18px 34px -24px rgba(7,29,56,.35); overflow: hidden; }
+  .tw2-fact { flex-direction: column; align-items: center; gap: .5rem; padding: 1rem .5rem !important; border-radius: 0 !important; background: none !important; box-shadow: none !important; text-align: center; }
+  .tw2-fact + .tw2-fact { border-inline-start: 1px solid #edf2f8; }
+  .tw2-fact .tw2-ic { width: 34px; height: 34px; border-radius: 11px; }
+  .tw2-fact .tw2-ic svg { width: 17px; height: 17px; }
+  .tw2-fact .tw2-big { font-size: 1.35rem; }
+  .tw2-fact .tw2-l { margin-top: .2rem; font-size: .74rem; line-height: 1.25; }
+  .tw2-fact .tw2-p { display: none; }
+}
+
+/* Phones & tablets: Smart glass reads top-down — title and intro, then the 3D room, then the details */
+@media (max-width: 1023px) {
+  .sm2 { gap: 0 !important; }
+  .sm2-text { display: contents; }
+  .sm2-text > .eyebrow { order: 1; justify-self: start; }
+  .sm2-text > .h3-title { order: 2; margin-top: .75rem; }
+  .sm2-text > .h3-line { order: 3; margin-top: .75rem; }
+  .sm2 > .sm2-stage { order: 4; margin-top: 1.4rem; }
+  .sm2-text > .sm2-uses { order: 5; margin-top: 1.25rem !important; }
+  .sm2-text > .sm3-facts { order: 6; margin-top: .75rem; }
+}
+@media (max-width: 640px) {
+  .sm2 .rm2 { transform: scale(.82); transform-origin: bottom right; bottom: 14px; inset-inline-end: 14px; }
+  [dir='rtl'] .sm2 .rm2 { transform-origin: bottom left; }
+  .sm3-facts span { padding: .7rem .6rem; }
+  .sm3-facts b { font-size: .92rem; }
+}

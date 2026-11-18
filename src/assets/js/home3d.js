@@ -358,7 +358,8 @@ function twin(host) {
   const TEMP = { solar: [46, 32], skylight: [48, 33], reflective: [46, 30], blackout: [46, 29] };
   const chips = host.querySelectorAll('.h3-chip');
   const L = (host.dataset.words && JSON.parse(host.dataset.words)) || {};
-  const word = (k, d) => L[k] || d;
+  // no translations given (homepage): keep the labels already in the page, in its own language
+  const word = (k, d) => L[k] || (host.dataset.words ? d : null);
   const say = (k, label, value) => {
     const c = chips[k]; if (!c) return;
     const v = c.querySelector('.h3-chip-v'), l = c.querySelector('.h3-chip-l');
