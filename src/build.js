@@ -403,8 +403,8 @@ function sectionHead({ eyebrow, title, text, center = false, dark = false }) {
 function archVisual({ image, alt, top, bottom }) {
   return `
   <div class="relative mx-auto w-full max-w-[440px] py-6" data-parallax>
-    <div class="orbit orbit-spin inset-[-6%] hidden sm:block" data-a="orbit"></div>
-    <div class="orbit orbit-spin-rev inset-[-16%] hidden opacity-60 sm:block" data-a="orbit"></div>
+    <div class="orbit orbit-a orbit-spin hidden sm:block" data-a="orbit"></div>
+    <div class="orbit orbit-b orbit-spin-rev hidden opacity-60 sm:block" data-a="orbit"></div>
     <span class="absolute start-[2%] top-[12%] text-2xl text-gold-500" data-a="pop" data-depth="18">✦</span>
     <span class="absolute bottom-[18%] end-[-2%] h-3 w-3 rounded-full bg-gold-400" data-a="pop" data-depth="-14"></span>
     <div class="arch relative aspect-[4/5]" data-a="arch">
@@ -694,14 +694,17 @@ function statsCard() {
 </section>`;
 }
 
-/* Book on WhatsApp (FinCoach "app" section): phone with a live chat on the left, QR + buttons on the right */
+/* Book on WhatsApp: tilted phone on a gradient disc with an orbit of icons · QR card with two buttons */
 function waBook() {
   const wa = waHello();
+  const orbit = [['sun', -45], ['shield', 45], ['home', 135], ['phone', 225]]; // evenly spaced, 90° apart
   return `
-<section class="pb-16 lg:pb-20">
+<section>
   <div class="container-site">
-    <div class="wb glow-card" ${reveal()}>
+    <div class="wb" ${reveal()}>
       <div class="wb-art" aria-hidden="true">
+        <div class="wb-stage">
+        <span class="wb-ring">${orbit.map(([ic, a], i) => `<span class="wb-arm" style="--a:${a}deg"><span class="wb-orb" style="rotate:${-a}deg;animation-delay:${i * 0.8}s"><span class="wb-orb-in">${icon(ic, 'h-4 w-4', 2.2)}</span></span></span>`).join('')}</span>
         <span class="wb-disc"></span>
         <div class="wb-phone">
           <div class="wb-top"><img src="/assets/img/logo-mark.webp" alt="" class="h-7 w-7 rounded-full bg-ink p-0.5"><span><b>Exotic Tint</b><small>${tr('online', 'متصل')}</small></span>${waIcon('ms-auto h-4 w-4')}</div>
@@ -712,16 +715,21 @@ function waBook() {
             <p class="wb-msg wb-them wb-typing"><i></i><i></i><i></i></p>
           </div>
         </div>
-        <div class="wb-float"><span class="wb-float-ic">${icon('check', 'h-3.5 w-3.5', 3)}</span><span><span class="block text-[11px] text-muted">${tr('Free estimate', 'تقدير مجاني')}</span><span class="block font-head text-[0.95rem] font-bold text-ink">${tr('No hidden fees', 'دون رسوم خفية')}</span></span></div>
+        </div>
       </div>
       <div class="wb-text">
-        <span class="wb-pill"><i></i>${tr('WhatsApp booking', 'الحجز عبر واتساب')}</span>
-        <h2 class="cv-title">${tr('Your tint,<br><span class="text-grad">booked in one chat</span>', 'تظليلك،<br><span class="text-grad">محجوز في محادثة واحدة</span>')}</h2>
+        <span class="wb-pill">${tr('WhatsApp booking', 'الحجز عبر واتساب')}</span>
+        <h2 class="wb-h">${tr('Your tint,<br><span class="text-grad">booked in one chat</span>', 'تظليلك،<br><span class="text-grad">محجوز في محادثة واحدة</span>')}</h2>
+        <p class="wb-sub">${tr('Send a photo, get a free estimate and pick a time — all on WhatsApp.', 'أرسل صورة، احصل على تقدير مجاني واختر الموعد — كل ذلك عبر واتساب.')}</p>
         <div class="wb-qr">
-          <div class="wb-qr-code">${QR}</div>
-          <div>
-            <p class="font-head text-[1.05rem] font-bold text-ink">${tr('Scan to chat', 'امسح للمحادثة')}</p>
-            <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary mt-3 !py-2.5 !text-sm">${waIcon('h-4 w-4')} ${tr('Chat on WhatsApp', 'تحدث عبر واتساب')}</a>
+          <div class="wb-qr-code"><span class="wb-c wb-c1"></span><span class="wb-c wb-c2"></span>${QR}<img src="/assets/img/logo-mark.webp" alt="" class="wb-qr-logo"></div>
+          <div class="min-w-0">
+            <p class="font-head text-[1.15rem] font-bold text-ink">${tr('Chat with us', 'تحدث معنا')}</p>
+            <p class="mt-0.5 text-sm text-muted">${tr('Scan the QR code or tap a button below.', 'امسح رمز QR أو اضغط أحد الأزرار أدناه.')}</p>
+            <div class="mt-4 flex flex-wrap gap-2.5">
+              <a href="${wa}" target="_blank" rel="noopener" class="wb-badge">${waIcon('h-6 w-6 text-[#25D366]')}<span><small>${tr('Chat on', 'تحدث عبر')}</small><b>WhatsApp</b></span></a>
+              <a href="tel:${C.site.phoneRaw}" class="wb-badge">${icon('phone', 'h-5 w-5', 2)}<span><small>${tr('Call us', 'اتصل بنا')}</small><b dir="ltr">${C.site.phone}</b></span></a>
+            </div>
           </div>
         </div>
       </div>
@@ -730,75 +738,6 @@ function waBook() {
 </section>`;
 }
 
-/* Why Exotic Tint — bento: one large photo story + three focused cards */
-function whyChoose() {
-  const wa = waHello();
-  return `
-<section class="pb-16 lg:pb-20">
-  <div class="container-site">
-    <div ${reveal()}>
-      <span class="eyebrow">${tr('Why Exotic Tint', 'لماذا إكزوتك تينت')}</span>
-      <h2 class="cv-title">${tr('Why clients <span class="text-grad">choose us</span>', 'لماذا <span class="text-grad">يختارنا العملاء</span>')}</h2>
-    </div>
-    <div class="wb2 mt-9">
-      <a href="${href('contact/')}" class="wb2-hero" ${reveal(60)}>
-        <img src="/assets/img/bl-villa.webp" alt="${tr('Modern villa in Qatar', 'فيلا حديثة في قطر')}" loading="lazy" decoding="async">
-        <div class="wb2-glass">
-          <span class="wb2-k">${icon('pin', 'h-4 w-4', 2.2)} ${tr('On-site, across Qatar', 'في الموقع، في أنحاء قطر')}</span>
-          <p class="wb2-big">${tr('We come to you.', 'نأتي إليك.')}</p>
-          <div class="wb2-areas">${C.areas.slice(0, 5).map((a) => `<span>${t(a)}</span>`).join('')}</div>
-        </div>
-      </a>
-      <div class="wb2-stat" ${reveal(120)}>
-        <p class="wb2-k2">${tr('Ceramic films that work', 'أفلام سيراميك فعّالة')}</p>
-        <div class="wb2-nums">
-          <div><p class="wb2-n" dir="ltr">99<span>%</span></p><p class="wb2-l">${tr('UV blocked', 'حجب الأشعة')}</p></div>
-          <span class="wb2-div"></span>
-          <div><p class="wb2-n" dir="ltr">98<span>%</span></p><p class="wb2-l">${tr('Solar heat rejected, up to', 'صد حرارة الشمس، حتى')}</p></div>
-        </div>
-        <div class="wb2-meter"><span></span></div>
-      </div>
-      <div class="wb2-card" ${reveal(160)}>
-        <span class="wb2-ic">${icon('wallet', 'h-5 w-5', 2.2)}</span>
-        <h3 class="wb2-h">${tr('Flat-rate pricing', 'أسعار ثابتة')}</h3>
-        <a href="${wa}" target="_blank" rel="noopener" class="wb2-link">${waIcon('h-4 w-4')} ${tr('Get my estimate', 'احصل على تقديري')}</a>
-      </div>
-      <div class="wb2-card" ${reveal(200)}>
-        <div class="wb2-icons">${C.services.map((s) => `<span style="background:${SV[s.slug].bg}" title="${esc(t(s.title))}">${img3d(SV[s.slug].emoji, 'h-7 w-7')}</span>`).join('')}</div>
-        <h3 class="wb2-h">${tr('One team, five services', 'فريق واحد، خمس خدمات')}</h3>
-        <a href="${href('service/')}" class="wb2-link">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
-      </div>
-    </div>
-  </div>
-</section>`;
-}
-
-
-/* Client stories — three clean review cards */
-function storiesSection() {
-  const card = (r, i) => `
-      <figure class="rv" ${reveal(i * 80)}>
-        <div class="rv-top">${starsRow('h-4 w-4')}<span class="rv-tag">${t(r.service)}</span></div>
-        <blockquote class="rv-q">“${t(r.text)}”</blockquote>
-        <figcaption class="rv-who">
-          <span class="rv-av">${r.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</span>
-          <span><span class="rv-name">${r.name}</span><span class="rv-role">${t(r.role)}</span></span>
-        </figcaption>
-      </figure>`;
-  return `
-<section class="pb-16 lg:pb-20">
-  <div class="container-site">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end" ${reveal()}>
-      <div>
-        <span class="eyebrow">${tr('Client stories', 'قصص العملاء')}</span>
-        <h2 class="cv-title">${tr('Loved by clients <span class="text-grad">across Qatar</span>', 'محبوب لدى العملاء <span class="text-grad">في أنحاء قطر</span>')}</h2>
-      </div>
-      <a href="${href('reviews/')}" class="lb-all">${tr('All reviews', 'كل التقييمات')} <span>${arrow('h-4 w-4')}</span></a>
-    </div>
-    <div class="mt-9 grid gap-5 md:grid-cols-3">${C.testimonials.map(card).join('')}</div>
-  </div>
-</section>`;
-}
 
 /* Latest blog — three compact cards, last section before the footer */
 function latestBlog() {
@@ -1575,39 +1514,28 @@ function gallery() {
 </section>`;
 }
 
-/* Service areas (from the original site) */
+/* Service areas: copy + buttons on one side, a clean numbered list of areas on the other */
 function areasSection() {
   return `
-<section class="pb-20 lg:pb-28">
-  <div class="container-site">
-    <div class="relative overflow-hidden rounded-[28px] border border-[#d3e8fd] bg-gradient-to-br from-tint via-white to-tint-2 p-7 shadow-glow sm:p-12">
-      <div class="pointer-events-none absolute inset-0 dots opacity-50 [mask-image:radial-gradient(ellipse_at_70%_50%,#000_20%,transparent_70%)]"></div>
-      <div class="relative grid items-center gap-12 lg:grid-cols-12">
-        <div class="lg:col-span-5">
-          ${sectionHead({
-            eyebrow: tr('Service areas', 'مناطق الخدمة'),
-            title: tr('Across Qatar. <span class="text-grad">At your door.</span>', 'في كل قطر. <span class="text-grad">عند بابك.</span>'),
-          })}
-          <div class="mt-8 flex flex-wrap gap-3" ${reveal(120)}>
-            <a href="${href('contact/')}#quote" class="btn btn-primary">${tr('Check availability', 'تحقق من التوفر')} ${arrow()}</a>
-            <a href="${waLink(tr('Hello, do you cover my area? I am in ', 'مرحباً، هل تغطون منطقتي؟ أنا في '))}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-4 w-4 text-[#25D366]')} ${tr('Ask about your area', 'اسأل عن منطقتك')}</a>
-          </div>
-          <div class="mt-8 flex items-center gap-4 rounded-2xl border border-line bg-white p-4 shadow-card" ${reveal(160)}>
-            ${img3d('truck', 'h-14 w-14 shrink-0 drop-shadow-lg')}
-            <div><p class="font-head font-bold text-ink">${tr('Mobile service — we come to you', 'خدمة متنقلة — نأتي إليك')}</p></div>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:col-span-7">
-          ${C.areas
-            .map(
-              (a, i) => `<div class="group flex items-center gap-3 rounded-2xl border border-line bg-white p-3.5 shadow-card transition hover:-translate-y-0.5 hover:border-gold-300 sm:p-4 " ${reveal(i * 50)}>
-            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-tint transition group-hover:bg-gold-100">${img3d('pin', 'h-7 w-7')}</span>
-            <span class="min-w-0"><span class="block truncate font-head text-[1.05rem] font-bold text-ink">${t(a)}</span></span>
-          </div>`
-            )
-            .join('')}
-        </div>
+<section>
+  <div class="container-site grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+    <div class="lg:col-span-5" ${reveal()}>
+      <span class="eyebrow">${tr('Service areas', 'مناطق الخدمة')}</span>
+      <h2 class="mt-4 text-balance font-head text-[2rem] font-extrabold leading-[1.1] text-ink sm:text-[2.6rem]">${tr('Across Qatar. <span class="text-grad">At your door.</span>', 'في كل قطر. <span class="text-grad">عند بابك.</span>')}</h2>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="${href('contact/')}#quote" class="btn btn-primary">${tr('Check availability', 'تحقق من التوفر')} ${arrow()}</a>
+        <a href="${waLink(tr('Hello, do you cover my area? I am in ', 'مرحباً، هل تغطون منطقتي؟ أنا في '))}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-4 w-4 text-[#25D366]')} ${tr('Ask about your area', 'اسأل عن منطقتك')}</a>
       </div>
+      <p class="sa-note"><span class="sa-note-ic">${icon('truck', 'h-5 w-5', 2)}</span>${tr('Mobile service — we come to you', 'خدمة متنقلة — نأتي إليك')}</p>
+    </div>
+    <div class="sa-card lg:col-span-7" ${reveal(120)}>
+      <div class="sa-head">
+        <span class="font-head text-lg font-extrabold text-ink">${tr('Areas we cover', 'المناطق التي نغطيها')}</span>
+        <span class="sa-live"><i></i>${tr('7 days a week', '٧ أيام في الأسبوع')}</span>
+      </div>
+      <ol class="sa-list">
+        ${C.areas.map((a, i) => `<li class="sa-row"><span class="sa-n" dir="ltr">${pad(i + 1)}</span><span class="sa-name">${t(a)}</span><span class="sa-pin">${icon('pin', 'h-4 w-4', 2.2)}</span></li>`).join('')}
+      </ol>
     </div>
   </div>
 </section>`;
@@ -2019,7 +1947,6 @@ function pageHome(page) {
 /* Hero: copy on one side, a layered photo collage with a spinning seal and glass chips on the other,
    and a white stats bar rising from the bottom (same rhythm as the homepage hero). */
 function aboutHero() {
-  const ring = 'EXOTIC TINT · QATAR · ON-SITE · 7 DAYS · '; // Latin in both languages, like the logo
   const stats = [
     ['shield', '99', '%', tr('UV blocked', 'حجب الأشعة')],
     ['thermo', '98', '%', tr('Heat rejected, up to', 'صد الحرارة، حتى')],
@@ -2053,14 +1980,7 @@ function aboutHero() {
         <div class="ab-col" data-parallax>
           <div class="ab-glow" aria-hidden="true"></div>
           <div class="ab-ph ab-ph1" data-a="up" data-depth="10"><img src="/assets/img/commercial.webp" alt="${tr('Window film installed on a commercial glass façade in Qatar', 'فيلم نوافذ مركّب على واجهة زجاجية تجارية في قطر')}" fetchpriority="high"></div>
-          <div class="ab-ph ab-ph2" data-a="fly-bl" data-depth="-18"><img src="/assets/img/frosted.webp" alt="${tr('Decorative frosted film on office glass', 'فيلم مصنفر زخرفي على زجاج مكتب')}" decoding="async"></div>
-          <div class="ab-ph ab-ph3" data-a="fly-tr" data-depth="22"><img src="/assets/img/marble.webp" alt="${tr('Clear protection film on a marble surface', 'فيلم حماية شفاف على سطح رخامي')}" decoding="async"></div>
-          <div class="ab-seal" data-a="pop" data-depth="-26" aria-hidden="true">
-            <svg viewBox="0 0 120 120" direction="ltr"><defs><path id="ab-ring" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs><text direction="ltr" unicode-bidi="isolate"><textPath href="#ab-ring" textLength="285">${ring}</textPath></text></svg>
-            <img src="/assets/img/logo-mark.webp" alt="">
-          </div>
-          <div class="ab-c1" data-a="pop" data-depth="30"><div class="float-chip floaty flex items-center gap-3 p-2.5 pe-4">${img3d('pin', 'h-10 w-10 drop-shadow-lg')}<span><span class="block text-xs text-muted">${tr('We come to you', 'نأتي إليك')}</span><span class="block font-head text-[0.98rem] font-extrabold text-ink">${tr('Across Qatar', 'في أنحاء قطر')}</span></span></div></div>
-          <div class="ab-c2" data-a="pop" data-depth="-20"><div class="float-chip floaty-2 flex items-center gap-3 p-2.5 pe-4"><span class="ico !h-10 !w-10">${icon('shield', 'h-5 w-5', 2.2)}</span><span><span class="block text-xs text-muted">${tr('Every job', 'كل عمل')}</span><span class="block font-head text-[0.98rem] font-extrabold text-ink">${tr('Quality checked', 'جودة مفحوصة')}</span></span></div></div>
+          <div class="ab-c1" data-a="pop" data-depth="30"><div class="float-chip floaty flex items-center gap-3 p-2.5 pe-4"><span class="mv-ic">${icon('pin', 'h-5 w-5', 2.2)}</span><span><span class="block text-xs text-muted">${tr('We come to you', 'نأتي إليك')}</span><span class="block font-head text-[0.98rem] font-extrabold text-ink">${tr('Across Qatar', 'في أنحاء قطر')}</span></span></div></div>
         </div>
       </div>
     </div>
@@ -2087,9 +2007,9 @@ function aboutHero() {
 /* Our story: an editorial statement, a signed photo card, and three pillars */
 function aboutStory() {
   const pillars = [
-    ['bulb', tr('Our mission', 'رسالتنا'), tr('Cooler, more private, better-protected spaces', 'مساحات أبرد وأكثر خصوصية وحماية'), tr('Films and coatings chosen for Qatar’s sun — so rooms stay bright, comfortable and protected.', 'أفلام وطلاءات مختارة لشمس قطر — لتبقى الغرف مضيئة ومريحة ومحمية.')],
-    ['wrench', tr('Our craft', 'حرفتنا'), tr('Installed like it was always there', 'تركيب كأنه جزء أصلي'), tr('Deep-cleaned glass, films cut to fit, edges sealed and smoothed — then checked before handover.', 'زجاج منظّف بعمق، أفلام مقصوصة بالمقاس، حواف مثبتة ومنعّمة — ثم فحص قبل التسليم.')],
-    ['trophy', tr('Our promise', 'وعدنا'), tr('Clear prices, no surprises', 'أسعار واضحة دون مفاجآت'), tr('A free estimate and a flat rate for every job. No hidden fees, ever.', 'تقدير مجاني وسعر ثابت لكل عمل. دون رسوم خفية، أبداً.')],
+    ['sun', tr('Our materials', 'موادنا'), tr('Films made for Qatar’s heat', 'أفلام مصممة لحرارة قطر'), tr('Films and coatings chosen for Qatar’s sun — so rooms stay bright, comfortable and protected.', 'أفلام وطلاءات مختارة لشمس قطر — لتبقى الغرف مضيئة ومريحة ومحمية.')],
+    ['layers', tr('Our craft', 'حرفتنا'), tr('Installed like it was always there', 'تركيب كأنه جزء أصلي'), tr('Deep-cleaned glass, films cut to fit, edges sealed and smoothed — then checked before handover.', 'زجاج منظّف بعمق، أفلام مقصوصة بالمقاس، حواف مثبتة ومنعّمة — ثم فحص قبل التسليم.')],
+    ['wallet', tr('Our promise', 'وعدنا'), tr('Clear prices, no surprises', 'أسعار واضحة دون مفاجآت'), tr('A free estimate and a flat rate for every job. No hidden fees, ever.', 'تقدير مجاني وسعر ثابت لكل عمل. دون رسوم خفية، أبداً.')],
   ];
   return `
 <section>
@@ -2117,11 +2037,10 @@ function aboutStory() {
         .map(
           ([ic, k, h, p], i) => `
       <article class="ab-pillar" ${reveal(i * 90)}>
-        <div class="flex items-start justify-between gap-4">
-          ${img3d(ic, 'ab-pillar-ic')}
-          <span class="ab-pillar-n" dir="ltr">${pad(i + 1)}</span>
+        <div class="flex items-center gap-3">
+          <span class="mv-ic">${icon(ic, 'h-5 w-5', 2.2)}</span>
+          <span class="mv-k"><span dir="ltr">${pad(i + 1)}</span> — ${k}</span>
         </div>
-        <p class="ab-pillar-k">${k}</p>
         <h3 class="ab-pillar-h">${h}</h3>
       </article>`
         )
@@ -2131,38 +2050,34 @@ function aboutStory() {
 </section>`;
 }
 
-/* How we work: dark navy shell with the five-step process on a glowing rail */
-function aboutProcess() {
-  const ic = ['chat', 'pin', 'drop', 'layers', 'badge'];
+
+/* Mission & vision — one clean card, two halves */
+function aboutMission() {
+  const items = [
+    ['shield', tr('Our mission', 'رسالتنا'), tr('Cooler, more private, better-protected spaces', 'مساحات أبرد وأكثر خصوصية وحماية'), tr('To bring the right film to every home, office and building in Qatar — fitted properly, at one fair flat price.', 'أن نوفّر الفيلم المناسب لكل منزل ومكتب ومبنى في قطر — بتركيب متقن وسعر ثابت وعادل.')],
+    ['star', tr('Our vision', 'رؤيتنا'), tr('Qatar’s most trusted name in film & protection', 'الاسم الأكثر ثقة في الأفلام والحماية في قطر'), tr('To be known for quality you can see and service you can count on — on every job, big or small.', 'أن نُعرف بجودة تراها وخدمة تعتمد عليها — في كل عمل، كبيراً كان أو صغيراً.')],
+  ];
   return `
 <section>
   <div class="container-site">
-    <div class="ab-flow">
-      <div class="ab-flow-aurora" aria-hidden="true"><span></span><span></span></div>
-      <div class="pointer-events-none absolute inset-0 grid-lines-dark opacity-70"></div>
-      <div class="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end" ${reveal()}>
-        <div class="max-w-2xl">
-          <span class="eyebrow !text-gold-300">${tr('How we work', 'طريقة عملنا')}</span>
-          <h2 class="ab-flow-title">${tr('Five steps to a <span class="text-grad-light">flawless finish</span>', 'خمس خطوات نحو <span class="text-grad-light">نتيجة مثالية</span>')}</h2>
+    <div ${reveal()}>
+      <span class="eyebrow">${tr('Mission &amp; vision', 'الرسالة والرؤية')}</span>
+      <h2 class="mt-4 text-balance font-head text-[2rem] font-extrabold leading-[1.1] text-ink sm:text-[2.6rem]">${tr('What <span class="text-grad">drives us</span>', 'ما الذي <span class="text-grad">يحركنا</span>')}</h2>
+    </div>
+    <div class="mv mt-10" ${reveal(100)}>
+      ${items
+        .map(
+          ([ic, k, h, p], i) => `
+      <article class="mv-item">
+        <div class="flex items-center gap-3">
+          <span class="mv-ic">${icon(ic, 'h-5 w-5', 2.2)}</span>
+          <span class="mv-k"><span dir="ltr">${pad(i + 1)}</span> — ${k}</span>
         </div>
-        <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-primary w-max">${waIcon('h-5 w-5')} ${tr('Start on WhatsApp', 'ابدأ عبر واتساب')}</a>
-      </div>
-      <ol class="ab-steps">
-        <li class="ab-rail" aria-hidden="true"><span></span></li>
-        ${C.process
-          .map(
-            ([a, b], i) => `
-        <li class="ab-step" ${reveal(i * 110)}>
-          <span class="ab-node"><span dir="ltr">${pad(i + 1)}</span></span>
-          <div class="ab-card">
-            <span class="ab-card-ic">${icon(ic[i] || 'check', 'h-4 w-4', 2.2)}</span>
-            <h3>${t(a)}</h3>
-            <p>${t(b)}</p>
-          </div>
-        </li>`
-          )
-          .join('')}
-      </ol>
+        <h3 class="mv-h">${h}</h3>
+        <p class="mv-p">${p}</p>
+      </article>`
+        )
+        .join('')}
     </div>
   </div>
 </section>`;
@@ -2172,7 +2087,7 @@ function pageAbout(page) {
   const body =
     aboutHero() +
     // after the ice hero: white, ice, white, ... (same rhythm as the homepage)
-    [aboutStory(), servicesGrid(), aboutProcess(), whyChoose(), areasSection(), storiesSection(), waBook()]
+    [aboutStory(), waBook(), areasSection(), aboutMission()]
       .map((html, i) => `<div class="home-band ${i % 2 ? 'band-ice' : 'bg-white'} py-12 lg:py-16">${html}</div>`)
       .join('');
   return layout(
@@ -3481,7 +3396,7 @@ function write(file, html) {
 }
 
 (async () => {
-  QR = await QRCode.toString(`https://wa.me/${C.site.whatsapp}`, { type: 'svg', margin: 0, color: { dark: '#12233D', light: '#0000' } });
+  QR = await QRCode.toString(`https://wa.me/${C.site.whatsapp}`, { type: 'svg', margin: 0, errorCorrectionLevel: 'H', color: { dark: '#12233D', light: '#0000' } });
   QR = QR.replace('<svg ', '<svg class="h-full w-full" role="img" aria-label="WhatsApp QR code" ');
   let count = 0;
   for (const lang of LANGS) {
