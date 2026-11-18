@@ -22,8 +22,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        head: ['"Albert Sans"', '"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
-        sans: ['"Albert Sans"', '"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
+        head: ['"Inter"', '"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
+        sans: ['"Inter"', '"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
         arabic: ['"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
       },
       maxWidth: { site: '82rem' },

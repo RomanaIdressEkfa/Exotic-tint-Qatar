@@ -228,17 +228,20 @@
 
 /* Footer: live open/closed status (Qatar time, 8 AM – 6 PM daily) + back-to-top ring */
 (function () {
-  var badge = document.querySelector('[data-open-status]');
-  if (badge) {
+  var badges = document.querySelectorAll('[data-open-status]');
+  if (badges.length) {
     var h;
     try { h = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Qatar' }).format(new Date())); }
     catch (e) { h = (new Date().getUTCHours() + 3) % 24; }
     var open = h >= 8 && h < 18;
-    badge.querySelector('[data-open-label]').textContent = open ? badge.dataset.open : badge.dataset.closed;
-    if (!open) {
-      badge.querySelector('[data-open-dot]').style.background = '#f59e0b';
-      badge.querySelector('[data-open-ping]').style.display = 'none';
-    }
+    Array.prototype.forEach.call(badges, function (badge) {
+      badge.querySelector('[data-open-label]').textContent = open ? badge.dataset.open : badge.dataset.closed;
+      if (!open) {
+        badge.classList.add('is-closed');
+        badge.querySelector('[data-open-dot]').style.background = '#f59e0b';
+        badge.querySelector('[data-open-ping]').style.display = 'none';
+      }
+    });
   }
   var top = document.querySelector('[data-to-top]');
   var ring = document.querySelector('[data-top-ring]');
@@ -833,5 +836,17 @@
 (function () {
   Array.prototype.forEach.call(document.querySelectorAll('[data-fx]'), function (el) {
     new IntersectionObserver(function (es) { el.classList.toggle('is-in', es[0].isIntersecting); }, { threshold: 0.35 }).observe(el);
+  });
+})();
+
+/* Contact cards: copy phone / email */
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function (btn) {
+    btn.addEventListener('click', function () {
+      var v = btn.getAttribute('data-copy');
+      var done = function () { btn.classList.add('is-copied'); setTimeout(function () { btn.classList.remove('is-copied'); }, 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done, done);
+      else { var t = document.createElement('textarea'); t.value = v; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); done(); }
+    });
   });
 })();

@@ -551,7 +551,7 @@ function decorScene(host) {
   [-3.9, -1.3, 1.3, 3.9].forEach((x) => S.add(S.rbox(0.09, H, 0.09, 0.03), metal, [x, G + 0.1 + H / 2, z]));
   S.add(S.rbox(7.9, 0.09, 0.09, 0.03), metal, [0, G + 0.1 + H, z]);
   // logo on the middle pane
-  const logo = canvasTex(256, 256, (g, w) => { g.fillStyle = 'rgba(255,255,255,.95)'; g.beginPath(); g.arc(w / 2, w / 2, w * 0.42, 0, Math.PI * 2); g.fill(); g.globalCompositeOperation = 'destination-out'; g.font = `800 ${w * 0.3}px 'Albert Sans', sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('ET', w / 2, w / 2 + 6); });
+  const logo = canvasTex(256, 256, (g, w) => { g.fillStyle = 'rgba(255,255,255,.95)'; g.beginPath(); g.arc(w / 2, w / 2, w * 0.42, 0, Math.PI * 2); g.fill(); g.globalCompositeOperation = 'destination-out'; g.font = `800 ${w * 0.3}px 'Inter', sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('ET', w / 2, w / 2 + 6); });
   S.add(new THREE.PlaneGeometry(0.75, 0.75), new THREE.MeshBasicMaterial({ map: logo, transparent: true, depthWrite: false, toneMapped: false }), [0, G + 2.35, z + 0.04], { cast: false, receive: false }).renderOrder = 6;
   // office behind and in front
   const wal = M('#ffffff', { map: walnut(), roughness: 0.45 });

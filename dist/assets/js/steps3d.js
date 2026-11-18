@@ -32,7 +32,7 @@ function init() {
   let S = {};
   try { S = JSON.parse(host.dataset.s3d || '{}'); } catch (e) { /* keep defaults */ }
   S = Object.assign({ name: 'Exotic Tint', online: 'online', villa: 'Villa · 14 windows', reply: 'Got it! Your quote is ready', measured: 'Measured', dims: '5.2 m × 2.0 m', f1: 'Regular tint', f2: 'Nano ceramic', f3: 'Super nano ceramic' }, S);
-  const FONT = getComputedStyle(document.body).fontFamily || "'Albert Sans', sans-serif";
+  const FONT = getComputedStyle(document.body).fontFamily || "'Inter', sans-serif";
 
   /* ---------- renderer / scene / camera ---------- */
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });

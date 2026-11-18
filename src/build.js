@@ -59,6 +59,7 @@ const P = {
   info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
   quote: '<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .01-1 1.03V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>',
   star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
   instagram: '<rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/>',
 };
 const icon = (name, cls = 'h-5 w-5', sw = 1.9) =>
@@ -192,7 +193,7 @@ function head(page, meta) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 ${(page.key === 'home' || page.service) ? '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>' : ''}
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
 <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
 ${(page.key === 'home' || (page.service && page.service.slug === 'architectural-window-film-solutions')) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
@@ -1893,9 +1894,9 @@ function testimonials() {
   </div>
 </section>`;
 }
-function faqSection(items, title) {
+function faqSection(items, title, pad = 'pb-20 lg:pb-28') {
   return `
-<section class="pb-20 lg:pb-28" data-assemble>
+<section class="${pad}" data-assemble>
   <div class="container-site grid gap-12 lg:grid-cols-12">
     <div class="lg:col-span-5">
       ${sectionHead({ eyebrow: tr('FAQ', 'الأسئلة الشائعة'), title: title || tr('Questions? <span class="text-grad">Answered.</span>', 'لديك أسئلة؟ <span class="text-grad">إليك الإجابات.</span>') })}
@@ -1927,18 +1928,10 @@ function faqSection(items, title) {
 </section>`;
 }
 
-function quoteSection() {
+function quoteForm(cls) {
   const opt = (v) => `<option value="${esc(v)}">${v}</option>`;
   return `
-<section id="quote" class="pb-20 lg:pb-28">
-  <div class="container-site">
-    ${sectionHead({
-      eyebrow: tr('Free estimate', 'تقدير مجاني'),
-      title: tr('Book your tint <span class="text-grad">in 60 seconds</span>', 'احجز تظليلك <span class="text-grad">في ٦٠ ثانية</span>'),
-      text: tr('Fill in a few details — your request goes straight to our team on WhatsApp.', 'أدخل بعض التفاصيل — يصل طلبك مباشرة إلى فريقنا عبر واتساب.'),
-    })}
-    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-12" data-assemble>
-      <form class="relative bg-white p-6 sm:p-10 lg:col-span-7" data-a="left" data-quote-form novalidate
+      <form class="${cls}" data-a="left" data-quote-form novalidate
         data-msg-intro="${esc(tr('Hello Exotic Tint for Trading and Contracting! I would like a free quote.', 'مرحباً إكزوتك تينت للتجارة والمقاولات! أرغب في الحصول على عرض سعر مجاني.'))}"
         data-l-name="${esc(tr('Name', 'الاسم'))}" data-l-phone="${esc(tr('Phone', 'الهاتف'))}" data-l-service="${esc(tr('Service', 'الخدمة'))}" data-l-area="${esc(tr('Area', 'المنطقة'))}" data-l-message="${esc(tr('Details', 'التفاصيل'))}" data-wa="${C.site.whatsapp}">
         <div class="pointer-events-none absolute inset-0 dots opacity-30 [mask-image:linear-gradient(180deg,#000,transparent_50%)]"></div>
@@ -1951,7 +1944,21 @@ function quoteSection() {
         </div>
         <p class="relative mt-4 hidden items-center gap-2 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-600" data-form-error>${icon('info', 'h-4 w-4', 2.2)} ${tr('Please add your name and phone number.', 'يرجى إدخال الاسم ورقم الهاتف.')}</p>
         <button type="submit" class="btn btn-primary relative mt-6 w-full !py-4">${waIcon('h-5 w-5')} ${tr('Send request on WhatsApp', 'أرسل الطلب عبر واتساب')}</button>
-      </form>
+      </form>`;
+}
+
+function quoteSection() {
+  const opt = (v) => `<option value="${esc(v)}">${v}</option>`;
+  return `
+<section id="quote" class="pb-20 lg:pb-28">
+  <div class="container-site">
+    ${sectionHead({
+      eyebrow: tr('Free estimate', 'تقدير مجاني'),
+      title: tr('Book your tint <span class="text-grad">in 60 seconds</span>', 'احجز تظليلك <span class="text-grad">في ٦٠ ثانية</span>'),
+      text: tr('Fill in a few details — your request goes straight to our team on WhatsApp.', 'أدخل بعض التفاصيل — يصل طلبك مباشرة إلى فريقنا عبر واتساب.'),
+    })}
+    <div class="mt-10 grid overflow-hidden rounded-[28px] border border-line shadow-soft lg:grid-cols-12" data-assemble>
+      ${quoteForm('relative bg-white p-6 sm:p-10 lg:col-span-7')}
       <div class="relative p-6 sm:p-10 navy-bg lg:col-span-5" data-a="right">
         <div class="pointer-events-none absolute inset-0 grid-lines-dark"></div>
         <div class="relative">
@@ -2851,12 +2858,12 @@ const TW_SCENES = {
     <path ${K('k-draw', 1.4, 1)} pathLength="1" d="M186 64 L170 262" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
     <path ${K('k-draw', 1.5, 1)} pathLength="1" d="M214 64 L232 262" stroke="${SUN}" stroke-width="4" stroke-linecap="round" fill="none"/>
     <path d="M20 268 H380" stroke="#d6e2ef" stroke-width="2"/>${sofa(60, 234)}
-    <g ${K('k-out', 2.3, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#fed7aa" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${HEAT}" font-family="Albert Sans,sans-serif">46°</text></g>
-    <g ${K('k-fade', 2.5, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#bfdbfe" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${BLUE}" font-family="Albert Sans,sans-serif">32°</text></g>`,
+    <g ${K('k-out', 2.3, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#fed7aa" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${HEAT}" font-family="Inter,sans-serif">46°</text></g>
+    <g ${K('k-fade', 2.5, 0.5)}><rect x="296" y="196" width="76" height="40" rx="20" fill="#fff" stroke="#bfdbfe" stroke-width="2"/><text x="334" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="${BLUE}" font-family="Inter,sans-serif">32°</text></g>`,
 
   smartOff: () => smartBase(false) + crystals(false) + switchG(false),
   smartOn: () => smartBase('on') + crystals(true) + switchG(true) + `<path ${K('k-draw', 0.5, 0.7)} pathLength="1" d="M318 246 H296 V200" stroke="${BLUE}" stroke-width="3" fill="none" stroke-dasharray="1"/>`,
-  smartClear: () => smartBase('clear') + switchG(true, true) + check(300, 60, 0.9) + `<g ${K('k-fade', 0.5, 0.5)}><rect x="160" y="236" width="80" height="30" rx="15" fill="${NAVY}"/><text x="200" y="256" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="Albert Sans,sans-serif">&lt; 1s</text></g>`,
+  smartClear: () => smartBase('clear') + switchG(true, true) + check(300, 60, 0.9) + `<g ${K('k-fade', 0.5, 0.5)}><rect x="160" y="236" width="80" height="30" rx="15" fill="${NAVY}"/><text x="200" y="256" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="Inter,sans-serif">&lt; 1s</text></g>`,
 
   marble: () => `
     <polygon points="50,170 350,170 392,254 8,254" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
@@ -3164,45 +3171,204 @@ function pageService(page) {
   );
 }
 
-function pageContact(page) {
-  const cards = [
-    ['phone', t(C.ui.callUs), `<span dir="ltr">${C.site.phone}</span>`, `tel:${C.site.phoneRaw}`, 'linear-gradient(160deg,#EAF5FF,#F4F9FF)'],
-    ['wa', 'WhatsApp', tr('Chat with a specialist', 'تحدث مع مختص'), `https://wa.me/${C.site.whatsapp}`, 'linear-gradient(160deg,#E2F8EA,#F6FDF8)'],
-    ['mail', tr('Email us', 'راسلنا'), C.site.email, `mailto:${C.site.email}`, 'linear-gradient(160deg,#E6EFFF,#F7FAFF)'],
-    ['instagram', 'Instagram', '@exotic_tint_qatar', C.site.instagram, 'linear-gradient(160deg,#FCE7F3,#FFF7FB)'],
-  ];
-  const body = `
-${pageHero({
-  chip: `<span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('chat', 'h-4 w-4', 2.2)}</span>${tr('Contact', 'تواصل معنا')}`,
-  title: tr('Get a free estimate <span class="text-grad">in minutes</span>', 'احصل على تقدير مجاني <span class="text-grad">خلال دقائق</span>'),
-  text: tr('Reach out for expert advice in Doha. Whether it’s window film, smart glass or surface protection, we’re here to help with precision and care.', 'تواصل معنا للحصول على استشارة متخصصة في الدوحة. سواء كانت أفلام نوافذ أو زجاجاً ذكياً أو حماية أسطح، نحن هنا لمساعدتك بدقة وعناية.'),
-  crumbs: [[t(C.ui.nav.contact)]],
-  image: 'frosted',
-  alt: tr('Frosted film on office glass', 'فيلم مصنفر على زجاج مكتب'),
-  chips: chipHeat(),
-})}
-<section class="py-20">
-  <div class="container-site grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-    ${cards
-      .map(
-        ([ic, title, value, link, bg], i) => `<a href="${link}" ${link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} class="svc-card flex flex-col !p-7" style="background:${bg};color:#12233D" ${reveal(i * 70)}>
-        <span class="ico ${ic === 'wa' ? '!bg-[#25D366] !text-white' : ''}">${ic === 'wa' ? waIcon() : icon(ic, 'h-5 w-5', 2.1)}</span>
-        <span class="mt-8 text-sm font-semibold text-muted">${title}</span>
-        <span class="mt-1 break-all font-head text-lg font-bold text-ink">${value}</span>
-        <span class="mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-gold-700">${tr('Open', 'افتح')} ${arrow('h-3.5 w-3.5')}</span>
-      </a>`
-      )
-      .join('')}
+/* ----------------------------------------------------------- Contact page */
+/* Same visual language as the homepage & About: photo + floating glass chips + a white bar rising from the hero,
+   then a photo-led estimate form, then the map with a floating info panel. */
+const cxBubble = (me, text, time) =>
+  `<div class="flex ${me ? 'justify-end' : 'justify-start'}" data-chat-msg><div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug shadow-sm ${me ? 'rounded-ee-md bg-[#d9fdd3] text-ink' : 'rounded-es-md bg-white text-ink'}">${text}<span class="ms-2 inline-block align-bottom text-[10px] text-muted">${time}${me ? ' ✓✓' : ''}</span></div></div>`;
+
+function contactHero() {
+  return `
+<section class="px-2.5 sm:px-3">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    ${aurora()}
+    <div class="pointer-events-none absolute inset-0 grid-lines"></div>
+    <div class="container-site relative grid items-center gap-6 pb-10 pt-10 lg:grid-cols-12 lg:gap-4 lg:pb-12 lg:pt-6">
+      <div class="lg:col-span-5">
+        <nav class="flex flex-wrap items-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
+          <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>
+          ${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}<span class="font-semibold text-ink">${t(C.ui.nav.contact)}</span>
+        </nav>
+        <span class="chip mt-6" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('chat', 'h-4 w-4', 2.2)}</span>${tr('Contact Exotic Tint Qatar', 'تواصل مع إكزوتك تينت قطر')}</span>
+        <h1 class="mt-6 font-head text-[2.5rem] font-extrabold leading-[1.03] text-ink min-[400px]:text-[2.9rem] sm:text-[3.8rem] lg:text-[3.5rem] xl:text-[4.2rem]">
+          <span class="block" data-split>${tr('Let’s talk about', 'لنتحدث عن')}</span>
+          <span class="block text-grad" data-a="up">${tr('your glass.', 'زجاجك.')}</span>
+        </h1>
+        <p class="mt-5 max-w-lg text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Window tinting, smart glass and surface protection across Qatar. Send us a photo — a specialist replies within minutes with advice and a free, flat-rate estimate.', 'تظليل النوافذ والزجاج الذكي وحماية الأسطح في كل قطر. أرسل لنا صورة — يرد عليك مختص خلال دقائق بالنصيحة وتقدير مجاني بسعر ثابت.')}</p>
+        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+          <a href="#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
+          <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="relative lg:col-span-7" data-a="up">
+        <div class="cx-stage">
+          <div class="cx-halo" aria-hidden="true"></div>
+          <div class="cx-phone">
+            <div class="overflow-hidden rounded-[30px] bg-[#efe7dd]">
+              <div class="flex items-center gap-3 bg-[#075E54] px-4 py-3 text-white">
+                ${mark('h-9 w-9')}
+                <div class="min-w-0 flex-1"><p class="truncate text-sm font-semibold">Exotic Tint Qatar</p><p class="text-[11px] text-white/75" data-status data-typing-label="${tr('typing…', 'يكتب…')}" data-online-label="${tr('online', 'متصل الآن')}">${tr('online', 'متصل الآن')}</p></div>
+                ${icon('phone', 'h-4 w-4')}
+              </div>
+              <div class="cx-chatbox space-y-2.5 p-4" data-chat>
+                <p class="mx-auto w-max rounded-lg bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-muted">${tr('TODAY', 'اليوم')}</p>
+                ${cxBubble(true, tr('Hi! Can I get a quote for my office glass? 🏢', 'مرحباً! هل يمكنني الحصول على عرض سعر لزجاج مكتبي؟ 🏢'), '09:41')}
+                ${cxBubble(false, tr('Of course! 👋 Send us a photo and the rough size.', 'بالتأكيد! 👋 أرسل لنا صورة والمقاس التقريبي.'), '09:42')}
+                <div class="flex justify-end" data-chat-msg><div class="h-20 w-32 overflow-hidden rounded-2xl rounded-ee-md border-4 border-[#d9fdd3]"><img src="/assets/img/cs-office.webp" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async"></div></div>
+                ${cxBubble(false, tr('Thanks! Free on-site visit tomorrow at 10 AM? ✅', 'شكراً! زيارة مجانية لموقعك غداً الساعة ١٠ صباحاً؟ ✅'), '09:43')}
+                ${cxBubble(true, tr('Perfect, see you then 🙏', 'ممتاز، أراكم غداً 🙏'), '09:44')}
+                <div class="typing hidden w-max rounded-2xl rounded-es-md bg-white px-4 py-3 shadow-sm" data-typing><span></span><span></span><span></span></div>
+              </div>
+              <div class="flex items-center gap-2 px-3 pb-4"><span class="flex-1 rounded-full bg-white px-4 py-2 text-xs text-muted">${tr('Message', 'رسالة')}</span><span class="grid h-9 w-9 place-items-center rounded-full bg-[#25D366] text-white">${waIcon('h-4 w-4')}</span></div>
+            </div>
+          </div>
+          <a href="tel:${C.site.phoneRaw}" class="cx-f cx-f1 float-chip floaty"><span class="cx-ring">${icon('phone', 'h-5 w-5', 2.2)}</span><span><span class="block text-[11px] text-muted">${t(C.ui.callUs)}</span><span class="block font-head text-sm font-extrabold text-ink" dir="ltr">${C.site.phone}</span></span></a>
+          <a href="mailto:${C.site.email}" class="cx-f cx-f2 float-chip floaty-2"><span class="cx-fi cx-mail">${icon('mail', 'h-5 w-5', 2.2)}</span><span><span class="block text-[11px] text-muted">${tr('Email us', 'راسلنا')}</span><span class="block font-head text-sm font-extrabold text-ink">${tr('Send photos & sizes', 'أرسل الصور والمقاسات')}</span></span></a>
+          <span class="cx-f cx-f3 float-chip floaty">${img3d('pin', 'h-10 w-10 drop-shadow-lg')}<span><span class="block text-[11px] text-muted">${tr('We come to you', 'نأتي إليك')}</span><span class="block font-head text-sm font-extrabold text-ink">${tr('Across Qatar', 'في أنحاء قطر')}</span></span></span>
+        </div>
+      </div>
+    </div>
+
   </div>
-</section>
-${quoteSection()}
-${mapSection()}`;
+</section>`;
+}
+
+function contactForm() {
+  const copyBtn = (v) => `<button type="button" class="cx-act" data-copy="${esc(v)}" aria-label="${tr('Copy', 'نسخ')}" title="${tr('Copy', 'نسخ')}">${icon('copy', 'h-4 w-4', 2)}<span class="cx-copied">${icon('check', 'h-4 w-4', 2.6)}</span></button>`;
+  const cards = [
+    { ico: icon('phone', 'h-6 w-6', 2), cls: '', label: tr('Call us', 'اتصل بنا'), value: C.site.phone, sub: tr('Daily · 8:00 AM – 6:00 PM', 'يومياً · ٨:٠٠ ص – ٦:٠٠ م'), link: `tel:${C.site.phoneRaw}`, actIco: icon('phone', 'h-4 w-4', 2.2), actLabel: t(C.ui.callUs), copy: C.site.phone },
+    { ico: waIcon('h-6 w-6'), cls: 'is-wa', label: 'WhatsApp', value: C.site.phone, sub: tr('Fastest reply — usually within minutes', 'أسرع رد — عادةً خلال دقائق'), link: waHello(), actIco: waIcon('h-4 w-4'), actLabel: 'WhatsApp', copy: '+' + C.site.whatsapp },
+    { ico: icon('mail', 'h-6 w-6', 2), cls: '', label: tr('Email us', 'راسلنا'), value: C.site.email, sub: tr('Send photos, sizes or drawings', 'أرسل الصور أو المقاسات أو المخططات'), link: `mailto:${C.site.email}`, actIco: icon('arrow', 'h-4 w-4', 2.2), actLabel: tr('Email', 'البريد'), copy: C.site.email },
+  ];
+  const socials = [
+    [C.site.instagram, 'Instagram', icon('instagram', 'h-[18px] w-[18px]', 2), 'background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)'],
+    [C.site.facebook, 'Facebook', fbIcon('h-[18px] w-[18px]'), 'background:#1877F2'],
+    [C.site.tiktok, 'TikTok', ttIcon('h-[18px] w-[18px]'), 'background:#111'],
+    [waHello(), 'WhatsApp', waIcon('h-[18px] w-[18px]'), 'background:#25D366'],
+  ];
+  const services = [...C.services.map((s) => t(s.title)), tr('Not sure yet', 'لم أحدد بعد')];
+  const shortName = (s, i) => (i < C.services.length ? t(C.services[i].short) : s);
+  return `
+<section id="quote" class="scroll-mt-28">
+  <div class="container-site grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
+    <div class="lg:col-span-5" ${reveal()}>
+      <span class="eyebrow">${tr('Get in touch', 'تواصل معنا')}</span>
+      <h2 class="mt-4 text-balance font-head text-[2rem] font-extrabold leading-[1.1] text-ink sm:text-[2.6rem]">${tr('We’d love to hear from you', 'يسعدنا أن نسمع منك')}</h2>
+      <div class="mt-7 space-y-4">
+        ${cards
+          .map(
+            (c) => `
+        <div class="cx-card">
+          <span class="cx-card-ico ${c.cls}">${c.ico}</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[11px] font-bold uppercase tracking-[0.14em] text-muted">${c.label}</span>
+            <a href="${c.link}" ${c.link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} class="mt-1 block truncate font-head text-[1.2rem] font-extrabold text-ink transition hover:text-gold-700 sm:text-[1.3rem]" dir="ltr">${c.value}</a>
+            <span class="mt-0.5 block text-sm text-muted">${c.sub}</span>
+          </span>
+          <span class="flex shrink-0 flex-col gap-2">
+            <a href="${c.link}" ${c.link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} class="cx-act is-main ${c.cls}" aria-label="${esc(c.actLabel)}">${c.actIco}</a>
+            ${copyBtn(c.copy)}
+          </span>
+        </div>`
+          )
+          .join('')}
+      </div>
+      <p class="cx-note">${icon('shield', 'h-4 w-4 shrink-0', 2.2)}<span><b>${tr('Free estimate:', 'تقدير مجاني:')}</b> ${tr('send a photo of your glass — we reply with a flat-rate price, no obligation.', 'أرسل صورة لزجاجك — ونرد بسعر ثابت دون أي التزام.')}</span></p>
+      <div class="mt-6 flex items-center gap-3">
+        <span class="text-sm font-semibold text-ink">${tr('Follow us', 'تابعنا')}</span>
+        ${socials.map(([u, n, ic, bg]) => `<a href="${u}" target="_blank" rel="noopener" class="cx-soc" style="${bg}" aria-label="${n}">${ic}</a>`).join('')}
+      </div>
+    </div>
+
+    <div class="lg:col-span-7" ${reveal(120)}>
+      <form class="cx-inq" data-quote-form novalidate
+        data-msg-intro="${esc(tr('Hello Exotic Tint for Trading and Contracting! I would like a free quote.', 'مرحباً إكزوتك تينت للتجارة والمقاولات! أرغب في الحصول على عرض سعر مجاني.'))}"
+        data-l-name="${esc(tr('Name', 'الاسم'))}" data-l-phone="${esc(tr('Phone', 'الهاتف'))}" data-l-service="${esc(tr('Service', 'الخدمة'))}" data-l-area="${esc(tr('Area', 'المنطقة'))}" data-l-message="${esc(tr('Details', 'التفاصيل'))}" data-wa="${C.site.whatsapp}">
+        <h3 class="font-head text-[1.6rem] font-extrabold text-ink sm:text-[1.85rem]">${tr('Send us an inquiry', 'أرسل لنا استفسارك')}</h3>
+        <p class="mt-1 text-sm text-muted">${tr('Your request goes straight to our team on WhatsApp.', 'يصل طلبك مباشرة إلى فريقنا عبر واتساب.')}</p>
+        <fieldset class="mt-6">
+          <legend class="sr-only">${tr('Service', 'الخدمة')}</legend>
+          <div class="flex flex-wrap gap-2">
+            ${services.map((s, i) => `<label class="cx-pill"><input type="radio" name="service" value="${esc(s)}" ${i === 0 ? 'checked' : ''}><span>${shortName(s, i)}</span></label>`).join('')}
+          </div>
+        </fieldset>
+        <div class="mt-6 grid gap-x-4 gap-y-5 sm:grid-cols-2">
+          <div><label class="cx-lbl" for="q-name">${tr('Full name', 'الاسم الكامل')} *</label><input id="q-name" name="name" required autocomplete="name" class="cx-in" placeholder="${tr('e.g. Ahmed Al-Kuwari', 'مثال: أحمد الكواري')}"></div>
+          <div><label class="cx-lbl" for="q-phone">${tr('Mobile number', 'رقم الجوال')} *</label><input id="q-phone" name="phone" required type="tel" autocomplete="tel" class="cx-in" placeholder="+974 XXXX XXXX" dir="ltr"></div>
+          <div class="sm:col-span-2"><label class="cx-lbl" for="q-area">${tr('Area', 'المنطقة')}</label><select id="q-area" name="area" class="cx-in">${C.areas.map((a) => `<option value="${esc(t(a))}">${t(a)}</option>`).join('')}<option value="${esc(tr('Other', 'أخرى'))}">${tr('Other', 'أخرى')}</option></select></div>
+          <div class="sm:col-span-2"><label class="cx-lbl" for="q-msg">${tr('Your message', 'رسالتك')}</label><textarea id="q-msg" name="message" rows="4" class="cx-in resize-none" placeholder="${tr('Tell us what you need — number of windows, glass or surface size…', 'أخبرنا بما تحتاجه — عدد النوافذ، مقاس الزجاج أو السطح…')}"></textarea></div>
+        </div>
+        <p class="mt-4 hidden items-center gap-2 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-600" data-form-error>${icon('info', 'h-4 w-4', 2.2)} ${tr('Please add your name and phone number.', 'يرجى إدخال الاسم ورقم الهاتف.')}</p>
+        <button type="submit" class="cx-send mt-7">${waIcon('h-5 w-5')} ${tr('Send inquiry', 'أرسل الاستفسار')}</button>
+      </form>
+    </div>
+  </div>
+</section>`;
+}
+
+function contactMap() {
+  const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Doha, Qatar');
+  return `
+<section>
+  <div class="container-site">
+    <div class="cx-mapwrap" ${reveal()}>
+      <div class="cx-mapbox"><iframe data-map title="${tr('Map of Doha, Qatar', 'خريطة الدوحة، قطر')}" src="https://www.google.com/maps?q=Doha%2C%20Qatar&z=12&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      <div class="cx-visit">
+        <span class="eyebrow">${tr('Where we work', 'أين نعمل')}</span>
+        <h2 class="mt-3 font-head text-[1.9rem] font-extrabold leading-tight text-ink">${tr('Based in Doha', 'مقرنا في الدوحة')}</h2>
+        <p class="mt-3 font-semibold leading-relaxed text-ink">${tr('Doha, Qatar', 'الدوحة، قطر')}<br><span class="font-normal text-muted">${tr('On-site installation anywhere in Qatar', 'تركيب في موقعك في أي مكان في قطر')}</span></p>
+        <div class="mt-5 space-y-3 border-t border-line pt-5">
+          <p class="flex items-center gap-3 text-[.95rem] text-muted"><span class="cx-dot">${icon('clock', 'h-4 w-4', 2.2)}</span>${t(C.site.hours)}</p>
+          <a href="tel:${C.site.phoneRaw}" class="flex items-center gap-3 text-[.95rem] font-semibold text-ink transition hover:text-gold-700"><span class="cx-dot">${icon('phone', 'h-4 w-4', 2.2)}</span><span dir="ltr">${C.site.phone}</span></a>
+        </div>
+        <a href="${maps}" target="_blank" rel="noopener" class="cx-send mt-6 w-full">${tr('Open in Google Maps', 'افتح في خرائط Google')} ${arrow('h-4 w-4')}</a>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+function pageContact(page) {
+  const body =
+    contactHero() +
+    `<div class="home-band bg-white pb-8 pt-10 lg:pb-10 lg:pt-14">${contactForm()}</div>` +
+    `<div class="home-band bg-white pb-12 pt-4 lg:pb-16 lg:pt-6">${contactMap()}</div>`;
+  const url = C.site.domain + base(L) + page.path;
+  const biz = {
+    '@type': 'LocalBusiness',
+    '@id': C.site.domain + '/#business',
+    name: 'Exotic Tint for Trading and Contracting',
+    alternateName: ['Exotic Tint Qatar', 'إكزوتك تينت للتجارة والمقاولات'],
+    url: C.site.domain + '/',
+    logo: C.site.domain + '/assets/img/logo-light.webp',
+    image: C.site.domain + '/assets/img/residential.webp',
+    telephone: C.site.phoneRaw,
+    email: C.site.email,
+    priceRange: '$$',
+    address: { '@type': 'PostalAddress', addressLocality: 'Doha', addressCountry: 'QA' },
+    areaServed: C.areas.map((x) => ({ '@type': 'City', name: x[0] })),
+    openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], opens: '08:00', closes: '18:00' },
+    contactPoint: [
+      { '@type': 'ContactPoint', contactType: 'customer service', telephone: C.site.phoneRaw, email: C.site.email, areaServed: 'QA', availableLanguage: ['English', 'Arabic'] },
+      { '@type': 'ContactPoint', contactType: 'sales', url: 'https://wa.me/' + C.site.whatsapp, areaServed: 'QA', availableLanguage: ['English', 'Arabic'] },
+    ],
+    sameAs: [C.site.instagram],
+  };
   return layout(
     page,
     {
-      title: tr('Contact Us — Free Window Tint Estimate | Exotic Tint Qatar', 'تواصل معنا — تقدير مجاني للتظليل | إكزوتك تينت قطر'),
-      description: tr(`Call ${C.site.phone} or WhatsApp us for a free flat-rate estimate. Window tinting and protection films across Qatar, 7 days a week.`, `اتصل على ${C.site.phone} أو راسلنا على واتساب لتقدير مجاني بسعر ثابت. تظليل وأفلام حماية في كل قطر، ٧ أيام في الأسبوع.`),
+      title: tr('Contact Exotic Tint Qatar — Free Window Tinting Estimate in Doha', 'تواصل مع إكزوتك تينت قطر — تقدير مجاني لتظليل النوافذ في الدوحة'),
+      description: tr(`Contact Exotic Tint Qatar for window tinting, smart glass & surface protection. Call or WhatsApp ${C.site.phone} for a free estimate, 7 days a week.`, `تواصل مع إكزوتك تينت قطر لتظليل النوافذ والزجاج الذكي وحماية الأسطح. اتصل أو راسلنا عبر واتساب على ${C.site.phone} لتقدير مجاني، ٧ أيام في الأسبوع.`),
+      crumb: t(C.ui.nav.contact),
       image: 'frosted',
+      jsonld: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          { '@type': 'ContactPage', '@id': url + '#page', url, name: tr('Contact Exotic Tint Qatar', 'تواصل مع إكزوتك تينت قطر'), inLanguage: L === 'ar' ? 'ar-QA' : 'en-QA', about: { '@id': biz['@id'] } },
+          biz
+        ],
+      },
     },
     body
   );
