@@ -902,3 +902,44 @@
   if (!sun || !('IntersectionObserver' in window)) { if (sun) sun.classList.add('is-up'); return; }
   new IntersectionObserver(function (es, o) { if (es[0].isIntersecting) { sun.classList.add('is-up'); o.disconnect(); } }, { threshold: 0.35 }).observe(sun.parentNode);
 })();
+
+/* Smart glass remote: each switch replays the finger tap, IR beam and glass flash */
+(function () {
+  var st = document.querySelector('.sm2-stage');
+  var rm = st && st.querySelector('.rm2');
+  if (!rm) return;
+  var last = null;
+  new MutationObserver(function () {
+    var p = st.classList.contains('is-private');
+    if (p === last) return;
+    last = p;
+    rm.setAttribute('data-press', p ? 'private' : 'clear');
+    [rm, st].forEach(function (e) { e.classList.remove('is-tap'); void e.offsetWidth; e.classList.add('is-tap'); });
+  }).observe(st, { attributes: true, attributeFilter: ['class'] });
+})();
+
+/* Knowledge section: click a topic to show its card; gently auto-advances while visible */
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-kn]'), function (box) {
+    var tabs = box.querySelectorAll('[data-kn-tab]'), panels = box.querySelectorAll('[data-kn-panel]');
+    var i = 0, timer = null, seen = false, hover = false;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function show(k, fromUser) {
+      i = (k + tabs.length) % tabs.length;
+      Array.prototype.forEach.call(tabs, function (t, n) { t.classList.toggle('is-on', n === i); t.setAttribute('aria-selected', String(n === i)); });
+      Array.prototype.forEach.call(panels, function (p, n) { p.classList.toggle('is-on', n === i); });
+      if (fromUser && window.innerWidth < 1024) tabs[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+    function tick() {
+      clearTimeout(timer);
+      box.classList.remove('is-auto'); void box.offsetWidth;
+      if (reduce || !seen || hover) return;
+      box.classList.add('is-auto');
+      timer = setTimeout(function () { show(i + 1); tick(); }, 8000);
+    }
+    Array.prototype.forEach.call(tabs, function (t, n) { t.addEventListener('click', function () { show(n, true); tick(); }); });
+    box.addEventListener('mouseenter', function () { hover = true; tick(); });
+    box.addEventListener('mouseleave', function () { hover = false; tick(); });
+    new IntersectionObserver(function (es) { seen = es[0].isIntersecting; tick(); }, { threshold: 0.3 }).observe(box);
+  });
+})();

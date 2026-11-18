@@ -246,7 +246,9 @@ function header(page) {
       <a href="${base(other)}${page.path}" hreflang="${other}" lang="${other}" class="hidden items-center gap-2 rounded-full px-3 py-2 font-semibold text-ink transition hover:text-gold-700 sm:inline-flex ${other === 'ar' ? 'font-arabic' : ''}"><span class="grid h-9 w-9 place-items-center rounded-full bg-[#f2f4f7]">${icon('globe', 'h-4 w-4')}</span><span class="lg:hidden xl:inline">${t(C.ui.langSwitch)}</span></a>
       <a href="${href('contact/')}#quote" class="btn btn-dark hidden !px-6 !py-3 md:inline-flex">${t(C.ui.quote)}</a>
       <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-outline hidden !py-3 xl:inline-flex">${waIcon('h-4 w-4 text-[#25D366]')} WhatsApp</a>
-      <button type="button" id="menu-open" class="grid h-11 w-11 place-items-center rounded-xl bg-[#f2f4f7] text-ink lg:hidden" aria-label="${t(C.ui.menu)}" aria-expanded="false" aria-controls="drawer">${icon('menu', 'h-5 w-5', 2.2)}</button>
+      <a href="${base(other)}${page.path}" hreflang="${other}" lang="${other}" class="mh-btn mh-lang sm:hidden ${other === 'ar' ? 'font-arabic' : ''}" aria-label="${t(C.ui.langSwitch)}">${other === 'ar' ? 'ع' : 'EN'}</a>
+      <a href="${waHello()}" target="_blank" rel="noopener" class="mh-btn mh-wa md:hidden" aria-label="WhatsApp">${waIcon('h-5 w-5')}</a>
+      <button type="button" id="menu-open" class="mh-btn mh-menu grid h-11 w-11 place-items-center rounded-xl bg-[#f2f4f7] text-ink lg:hidden" aria-label="${t(C.ui.menu)}" aria-expanded="false" aria-controls="drawer">${icon('menu', 'h-5 w-5', 2.2)}</button>
     </div>
   </div>
 </header>
@@ -372,7 +374,7 @@ function footer() {
   </div>
 </footer>
 
-<a href="${waHello()}" target="_blank" rel="noopener" aria-label="${t(C.ui.whatsapp)}" class="fixed bottom-5 end-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_14px_30px_-8px_rgba(37,211,102,.7)] transition hover:scale-105">
+<a href="${waHello()}" target="_blank" rel="noopener" aria-label="${t(C.ui.whatsapp)}" class="wa-float fixed bottom-5 end-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_14px_30px_-8px_rgba(37,211,102,.7)] transition hover:scale-105">
   <span class="ping-soft absolute inset-0 rounded-full bg-[#25D366]"></span>${waIcon('relative h-7 w-7')}
 </a>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -781,10 +783,14 @@ function homeTwin() {
   return `
 <section class="py-14 lg:py-20">
   <div class="container-site" data-h3-wrap>
-    <div class="mx-auto max-w-2xl text-center" ${reveal()}>
-      <span class="eyebrow center justify-center">${tr('The difference', 'الفرق')}</span>
-      <h2 class="h3-title">${tr('Same sun. <span class="text-grad">Two rooms.</span>', 'نفس الشمس. <span class="text-grad">غرفتان.</span>')}</h2>
-      <p class="h3-line mx-auto">${tr('Plain glass on the left, Exotic Tint ceramic film on the right. Same window, same sun — a very different room.', 'زجاج عادي على اليسار وفيلم سيراميك إكزوتك تينت على اليمين. نفس النافذة ونفس الشمس — وغرفة مختلفة تماماً.')}</p>
+    <div class="tw2-head" ${reveal()}>
+      <span class="tw2-badge">${icon('sun', 'h-4 w-4', 2.4)} ${tr('The difference', 'الفرق')}</span>
+      <h2 class="tw2-h">${tr('Same sun.', 'نفس الشمس.')} <span class="text-grad">${tr('Two rooms.', 'غرفتان.')}</span></h2>
+      <div class="tw2-vs" aria-label="${esc(tr('Plain glass 46°C versus Exotic Tint film 32°C', 'زجاج عادي ٤٦° مقابل فيلم إكزوتك تينت ٣٢°'))}">
+        <span class="tw2-pill tw2-hot"><i></i>${tr('Plain glass', 'زجاج عادي')} <b dir="ltr">46°C</b></span>
+        <span class="tw2-x">VS</span>
+        <span class="tw2-pill tw2-cool"><i></i>${tr('Exotic Tint film', 'فيلم إكزوتك تينت')} <b dir="ltr">32°C</b></span>
+      </div>
     </div>
     ${h3Stage('twin', 'tp-solar', chip('h3-cl', tr('Without film', 'بدون فيلم'), 'hot') + chip('h3-cr', tr('With Exotic Tint', 'مع إكزوتك تينت'), 'cool') + `<div class="tw2-sun" aria-hidden="true"><i class="tw2-rays"></i><i class="tw2-glow"></i><i class="tw2-core"></i></div><span class="tw2-same">${icon('sun', 'h-3.5 w-3.5', 2.4)} ${tr('Same sun', 'نفس الشمس')}</span><span class="tw2-tag tw2-tl">${tr('Plain glass', 'زجاج عادي')}</span><span class="tw2-tag tw2-tr">${tr('Exotic Tint film', 'فيلم إكزوتك تينت')}</span>`, 'tw2-stage mt-10')}
     <div class="tw2-facts" ${reveal(120)}>
@@ -804,20 +810,31 @@ function homeSmart() {
   <div class="container-site">
     <div class="sm2" data-h3-wrap>
       ${h3Stage('smart', 'tp-smart', `
-        <div class="sm2-panel">
-          <div class="flex items-center justify-between gap-3"><span class="sm2-k">${tr('Glass control', 'التحكم بالزجاج')}</span><span class="sm2-live"><i></i>${tr('Live', 'مباشر')}</span></div>
-          <p class="sm2-state"><span class="h3-s0">${tr('Clear', 'شفاف')}</span><span class="h3-s1">${tr('Private', 'خاص')}</span></p>
-          <div class="h3-toggle" role="group"><button type="button" data-h3-mode="clear" aria-pressed="true">${tr('Clear', 'شفاف')}</button><button type="button" data-h3-mode="private" aria-pressed="false">${tr('Private', 'خاص')}</button></div>
-        </div>`, 'sm2-stage')}
+        <span class="sm2-status" aria-live="polite"><i></i><span class="h3-s0">${tr('Glass: Clear', 'الزجاج: شفاف')}</span><span class="h3-s1">${tr('Glass: Private', 'الزجاج: خاص')}</span></span>
+        <span class="sm2-flash" aria-hidden="true"></span>
+        <div class="rm2" role="group" aria-label="${tr('Smart film remote', 'ريموت الفيلم الذكي')}" data-press="clear">
+          <span class="rm2-beam" aria-hidden="true"><i></i></span>
+          <span class="rm2-ir" aria-hidden="true"><i></i></span>
+          <button type="button" class="rm2-b" data-h3-mode="clear" aria-pressed="true"><span class="rm2-ring"></span><span class="rm2-cap">ON</span><span class="rm2-l">${tr('Clear', 'شفاف')}</span></button>
+          <button type="button" class="rm2-b" data-h3-mode="private" aria-pressed="false"><span class="rm2-ring"></span><span class="rm2-cap">OFF</span><span class="rm2-l">${tr('Private', 'خاص')}</span></button>
+          <span class="rm2-logo" aria-hidden="true"><img src="/assets/img/logo-mark.webp" alt="" width="18" height="18">EXOTIC</span>
+          <svg class="rm2-hand" viewBox="0 0 64 80" aria-hidden="true"><path d="M22 6c3.3 0 6 2.7 6 6v22l3.5-1c3-.8 6 .9 6.9 3.8l.2.7 2.6-.6c3-.7 6 1.1 6.8 4.1l.2.8 1.8-.3c3.1-.5 6 1.6 6.6 4.7L58 62c1.6 9.6-5.3 18-15 18H33c-5 0-9.6-2.6-12.2-6.9L9.3 54.4c-1.7-2.8-.8-6.5 2-8.2 2.6-1.6 6-.9 7.8 1.6L16 44V12c0-3.3 2.7-6 6-6z" fill="#fde7d4" stroke="#c8957a" stroke-width="2" stroke-linejoin="round"/><path d="M19 14h6" stroke="#e7b9a0" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      `, 'sm2-stage')}
       <div class="sm2-text" ${reveal(60)}>
         <span class="eyebrow">${tr('Smart glass', 'الزجاج الذكي')}</span>
         <h2 class="h3-title">${tr('Private <span class="text-grad">at a tap.</span>', 'خصوصية <span class="text-grad">بلمسة.</span>')}</h2>
         <p class="h3-line">${tr('Switchable film is applied to your existing glass. Power on — clear. Power off — frosted, in under a second.', 'يُركّب الفيلم الذكي على زجاجك الحالي. تشغيل — شفاف. إطفاء — مصنفر، في أقل من ثانية.')}</p>
-        <ul class="sm2-uses">
+        <ul class="sm2-uses sm3-list">
           ${use('building', tr('Meeting rooms', 'غرف الاجتماعات'), tr('Open by day, private for calls.', 'مفتوحة نهاراً وخاصة للمكالمات.'))}
           ${use('home', tr('Bathrooms & bedrooms', 'الحمامات وغرف النوم'), tr('Light in, view out — only when you want.', 'ضوء ورؤية — فقط عندما تريد.'))}
           ${use('shield', tr('Clinics & offices', 'العيادات والمكاتب'), tr('Privacy for patients and staff.', 'خصوصية للمرضى والموظفين.'))}
         </ul>
+        <div class="sm3-facts">
+          <span><b>${tr('&lt; 1 sec', '&lt; ثانية')}</b>${tr('to switch', 'للتحويل')}</span>
+          <span><b>${tr('Existing', 'الزجاج')}</b>${tr('glass, no new panes', 'الحالي دون تغيير')}</span>
+          <span><b>${tr('Remote', 'ريموت')}</b>${tr('switch or app', 'مفتاح أو تطبيق')}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -832,7 +849,7 @@ function homeSpill() {
     [tr('Beads up', 'يتجمع'), tr("It beads up — can't soak in", 'يتجمع — لا يتسرب')],
     [tr('Wiped', 'مسح'), tr('One wipe — gone', 'مسحة واحدة — اختفى')],
   ];
-  const surf = [['🪨', tr('Marble', 'الرخام')], ['🪵', tr('Wood', 'الخشب')], ['🍽️', tr('Countertops', 'الأسطح')], ['✨', tr('Steel', 'الستيل')]];
+  const surf = [['marble', tr('Marble', 'الرخام'), tr('No etching', 'دون تآكل')], ['wood', tr('Wood', 'الخشب'), tr('No water rings', 'دون حلقات ماء')], ['counter', tr('Countertops', 'الأسطح'), tr('Daily wear', 'الاستخدام اليومي')], ['steel', tr('Steel', 'الستيل'), tr('No fingerprints', 'دون بصمات')]];
   const overlay = `
         <div class="sp3-now" aria-live="polite"><span class="sp3-now-n" data-sp-n dir="ltr">01</span><span data-sp-t>${steps[0][1]}</span></div>
         <div class="sp3-time">${steps.map(([s, long], i) => `<div class="sp3-seg" data-h3-step data-label="${esc(long)}" style="--d:${[1.6, 1.2, 0.9, 1.75][i]}s"><span>${s}</span><i><b></b></i></div>`).join('')}</div>`;
@@ -844,7 +861,8 @@ function homeSpill() {
         <span class="eyebrow">${tr('Surface protection', 'حماية الأسطح')}</span>
         <h2 class="h3-title">${tr('Spill it. <span class="text-grad">Wipe it.</span>', 'اسكبه. <span class="text-grad">امسحه.</span>')}</h2>
         <p class="h3-line">${tr('A clear film seals the surface, so liquids sit on top and wipe straight off — no stains, no etching.', 'فيلم شفاف يغلق السطح، فتبقى السوائل فوقه وتُمسح فوراً — بلا بقع ولا تآكل.')}</p>
-        <div class="sp3-surf">${surf.map(([e, l]) => `<span><b aria-hidden="true"></b>${l}</span>`).join('')}</div>
+        <ul class="sp5-mat">${surf.map(([k, l]) => `<li><i class="sp4-sw sp4-${k}" aria-hidden="true"></i>${l}</li>`).join('')}</ul>
+        <p class="sp5-facts"><span><b>${tr('7–10 yrs', '٧–١٠ سنوات')}</b> ${tr('protection', 'حماية')}</span><span><b>${tr('Invisible', 'غير مرئي')}</b> ${tr('finish', 'اللمسة')}</span><span><b>${tr('Cheaper', 'أرخص')}</b> ${tr('than restoring', 'من الترميم')}</span></p>
         <button type="button" class="sp3-replay" data-h3-again><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> ${tr('Replay', 'إعادة')}</button>
       </div>
       ${h3Stage('spill', 'tp-counter', overlay, 'sp3-stage')}
@@ -859,7 +877,7 @@ function seoRows() {
   const post = POSTS.find((p) => p.slug.startsWith('super-nano-ceramic')) || POSTS[0];
   const rows = [
     {
-      img: 'bl-villa', chip: ['45°C+', tr('Qatar summers', 'صيف قطر')],
+      img: 'kn-heat', chip: ['45°C+', tr('Qatar summers', 'صيف قطر')],
       h: tr('Why Window Film Matters in Qatar’s Heat', 'لماذا أفلام النوافذ مهمة في حرارة قطر'),
       p: [
         tr('With summer temperatures above 45°C, untreated glass lets <strong>solar heat</strong> and <strong>UV rays</strong> pour into homes and offices. Rooms overheat, the AC works harder and furniture fades.', 'مع تجاوز حرارة الصيف ٤٥ درجة، يسمح الزجاج غير المعالج بدخول <strong>حرارة الشمس</strong> و<strong>الأشعة فوق البنفسجية</strong> إلى المنازل والمكاتب. ترتفع حرارة الغرف، ويعمل المكيف بجهد أكبر، ويبهت الأثاث.'),
@@ -868,7 +886,7 @@ function seoRows() {
       link: [href('service/architectural-window-film-solutions/'), tr('See window films', 'شاهد أفلام النوافذ')],
     },
     {
-      img: 'bl-ceramic', chip: [tr('Nano ceramic', 'نانو سيراميك'), tr('No fading', 'لا يبهت')],
+      img: 'kn-ceramic', chip: [tr('Nano ceramic', 'نانو سيراميك'), tr('No fading', 'لا يبهت')],
       h: tr('Nano Ceramic vs Regular Tint', 'النانو سيراميك أم التظليل العادي'),
       p: [
         tr('<strong>Regular dyed tint</strong> mainly darkens the glass. <strong>Nano ceramic film</strong> uses ceramic particles to reject infrared heat without heavy darkening, so rooms stay bright and cool.', '<strong>التظليل العادي</strong> يُعتم الزجاج بشكل أساسي. أما <strong>فيلم النانو سيراميك</strong> فيستخدم جزيئات سيراميكية لصد الحرارة دون تعتيم كبير، فتبقى الغرف مضيئة وباردة.'),
@@ -877,7 +895,7 @@ function seoRows() {
       link: [href(post.slug + '/'), tr('Read the full comparison', 'اقرأ المقارنة الكاملة')],
     },
     {
-      img: 'commercial', chip: ['7/7', tr('8 AM – 6 PM', '٨ ص – ٦ م')],
+      img: 'kn-install', chip: ['7/7', tr('8 AM – 6 PM', '٨ ص – ٦ م')],
       h: tr('How Window Film Installation Works', 'كيف يتم تركيب أفلام النوافذ'),
       p: [
         tr('Send photos or sizes of your glass on <strong>WhatsApp</strong> and we reply with a <strong>free estimate</strong>. Booking takes less than 60 seconds.', 'أرسل صور أو مقاسات الزجاج عبر <strong>واتساب</strong> وسنرد بـ<strong>تقدير مجاني</strong>. الحجز يستغرق أقل من ٦٠ ثانية.'),
@@ -886,7 +904,7 @@ function seoRows() {
       link: [waHello(), tr('Start on WhatsApp', 'ابدأ عبر واتساب'), true],
     },
     {
-      img: 'residential', chip: [tr('On-site', 'في الموقع'), tr('Across Qatar', 'في أنحاء قطر')],
+      img: 'kn-doha', chip: [tr('On-site', 'في الموقع'), tr('Across Qatar', 'في أنحاء قطر')],
       h: tr('Window Tinting Across Doha &amp; Qatar', 'تظليل النوافذ في الدوحة وأنحاء قطر'),
       p: [
         tr('We install in <strong>Doha</strong>, <strong>Lusail</strong>, <strong>The Pearl</strong>, <strong>West Bay</strong>, <strong>Al Rayyan</strong>, <strong>Al Gharrafa</strong>, <strong>Al Kheesa</strong>, <strong>Al Wakra</strong> and the surrounding areas.', 'نقوم بالتركيب في <strong>الدوحة</strong> و<strong>لوسيل</strong> و<strong>اللؤلؤة</strong> و<strong>الخليج الغربي</strong> و<strong>الريان</strong> و<strong>الغرافة</strong> و<strong>الخيسة</strong> و<strong>الوكرة</strong> والمناطق المحيطة.'),
@@ -895,7 +913,7 @@ function seoRows() {
       link: [href('contact/'), tr('Contact us', 'تواصل معنا')],
     },
     {
-      img: 'cs-office', chip: [tr('Flat rate', 'سعر ثابت')],
+      img: 'kn-price', chip: [tr('Flat rate', 'سعر ثابت')],
       h: tr('Clear Pricing, Free Estimate', 'أسعار واضحة وتقدير مجاني'),
       p: [
         tr('Every job is quoted at an affordable <strong>flat rate</strong> with <strong>no hidden fees</strong>. The price depends on the film you choose and the size of your glass.', 'كل عمل يُسعّر بـ<strong>سعر ثابت</strong> مناسب <strong>دون رسوم خفية</strong>. يعتمد السعر على نوع الفيلم ومساحة الزجاج.'),
@@ -913,31 +931,38 @@ function seoRows() {
 
 /* Shared renderer for knowledge rows (homepage + service pages) */
 function knowledgeRows({ title, intro, rows }) {
-  const row = (r, i) => `
-    <article class="sr-row${i % 2 ? ' sr-rev' : ''}" ${reveal()}>
-      <div class="sr-img">
-        <img src="/assets/img/${r.img}.webp" alt="${esc(r.h.replace(/&amp;/g, '&'))}" loading="lazy" decoding="async">
-        <span class="sr-no" dir="ltr">${pad(i + 1)}</span>
-        <span class="sr-chip"><b>${r.chip[0]}</b>${r.chip[1] ? `<span>${r.chip[1]}</span>` : ''}</span>
-      </div>
-      <div class="sr-text">
-        <h3 class="sr-h">${r.h}</h3>
-        ${r.p.map((x) => `<p class="sr-p">${x}</p>`).join('')}
-        <a href="${r.link[0]}"${r.link[2] ? ' target="_blank" rel="noopener"' : ''} class="sr-link">${r.link[1]} ${arrow('h-4 w-4')}</a>
-      </div>
-    </article>`;
+  // Topic list on the left, one card on the right (same pattern as How it works).
+  // Every answer stays in the page for search engines; only the active one is shown.
+  const tab = (r, i) => `
+        <button type="button" class="kn-tab${i ? '' : ' is-on'}" role="tab" aria-selected="${!i}" data-kn-tab="${i}">
+          <span class="kn-n" dir="ltr">${pad(i + 1)}</span><span class="kn-t">${r.h}</span><span class="kn-bar"><i></i></span>
+        </button>`;
+  const panel = (r, i) => `
+        <article class="kn-panel kn-c${i % 5}${i ? '' : ' is-on'}" role="tabpanel" data-kn-panel="${i}">
+          <div class="kn-img">
+            <img src="/assets/img/${r.img}.webp" alt="${esc(r.h.replace(/&amp;/g, '&'))}" loading="lazy" decoding="async">
+            <span class="kn-chip"><b>${r.chip[0]}</b>${r.chip[1] ? `<span>${r.chip[1]}</span>` : ''}</span>
+          </div>
+          <div class="kn-body">
+            <h3 class="kn-h">${r.h}</h3>
+            ${r.p.map((x) => `<p class="kn-p">${x}</p>`).join('')}
+            <a href="${r.link[0]}"${r.link[2] ? ' target="_blank" rel="noopener"' : ''} class="kn-link">${r.link[1]} ${arrow('h-4 w-4')}</a>
+          </div>
+        </article>`;
   return `
 <section class="py-14 lg:py-20">
   <div class="container-site">
-    <div class="sr-head" ${reveal()}>
-      <h2 class="sr-title">${title}</h2>
-      ${intro ? `<p class="sr-intro">${intro}</p>` : ''}
+    <div class="kn" data-kn ${reveal()}>
+      <div class="kn-side">
+        <h2 class="kn-title">${title}</h2>
+        ${intro ? `<p class="kn-intro">${intro}</p>` : ''}
+        <div class="kn-tabs" role="tablist">${rows.map(tab).join('')}</div>
+      </div>
+      <div class="kn-card">${rows.map(panel).join('')}</div>
     </div>
-    <div class="sr-list">${rows.map(row).join('')}</div>
   </div>
 </section>`;
 }
-
 
 /* Service-page knowledge rows: answers people search for, specific to each service */
 function serviceKnowledge(s) {

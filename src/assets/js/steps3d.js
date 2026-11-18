@@ -208,7 +208,7 @@ function init() {
   sun.position.copy(sunPos).multiplyScalar(1.6);
   sun.target.position.set(-1, 0, -1);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(innerWidth < 700 ? 1024 : 2048, innerWidth < 700 ? 1024 : 2048);
   Object.assign(sun.shadow.camera, { left: -11, right: 11, top: 11, bottom: -11, near: 1, far: 40 });
   sun.shadow.bias = -0.0008;
   sun.shadow.radius = 4;

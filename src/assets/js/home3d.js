@@ -171,7 +171,7 @@ function lights(S, sunPos, sunColor = '#ffd9a8', sunI = 2.4) {
   sun.position.set(...sunPos);
   sun.target.position.set(0, 0, 0.5);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(innerWidth < 700 ? 1024 : 2048, innerWidth < 700 ? 1024 : 2048);
   Object.assign(sun.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: 1, far: 50 });
   sun.shadow.bias = -0.0008;
   sun.shadow.radius = 4;
