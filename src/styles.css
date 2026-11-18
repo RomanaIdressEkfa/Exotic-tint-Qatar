@@ -2444,3 +2444,15 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
   .kn-p + .kn-p { display: none; }
   .kn-link { margin-top: .8rem; font-size: .88rem; }
 }
+
+/* Phones: no label chips on the What to Know pictures */
+@media (max-width: 767px) { .kn-chip { display: none !important; } }
+
+/* Phones: AOS-style reveal classes (set by main.js) */
+@media (max-width: 767px) {
+  .js .aos { opacity: 0; transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); will-change: opacity, transform; }
+  .js .aos.aos-up { transform: translateY(42px); }
+  .js .aos.aos-left { transform: translateX(-64px); }
+  .js .aos.aos-right { transform: translateX(64px); }
+  .js .aos.aos-in, .js [data-reveal].aos.aos-in { opacity: 1; transform: none; }
+}

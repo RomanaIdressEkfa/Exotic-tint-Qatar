@@ -943,3 +943,41 @@
     new IntersectionObserver(function (es) { seen = es[0].isIntersecting; tick(); }, { threshold: 0.3 }).observe(box);
   });
 })();
+
+/* Phones: AOS-style reveals across the whole page — headings fade up, the blocks after them slide in
+   from the left and right alternately. Skips the hero, pinned step sections and GSAP-driven elements. */
+(function () {
+  if (window.innerWidth >= 768 || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var main = document.getElementById('main');
+  if (!main) return;
+  var skip = '[data-a], [data-hero], [data-ss], [data-hf], .ss, .pin-spacer';
+  var targets = [];
+  Array.prototype.forEach.call(main.children, function (block, bi) {
+    if (bi === 0) return; // the hero has its own intro
+    Array.prototype.forEach.call(block.querySelectorAll('.container-site'), function (c) {
+      if (c.closest(skip) || c.parentElement.closest('.container-site')) return;
+      var n = 0;
+      Array.prototype.forEach.call(c.children, function (el) {
+        if (el.matches(skip) || el.querySelector('[data-ss], [data-hf]')) return;
+        // a grid/flex row of cards: reveal each card on its own
+        var cs = getComputedStyle(el);
+        if (cs.display === 'contents') return; // layout-only wrapper (no box to animate)
+        // a grid/flex row of cards: reveal each card on its own — but a sideways-swipe row as one block
+        var swipe = /auto|scroll/.test(cs.overflowX);
+        var kids = !swipe && el.children.length > 1 && /grid|flex/.test(cs.display) && !el.matches('h1,h2,h3,p,a,ul,ol') ? el.children : [el];
+        Array.prototype.forEach.call(kids, function (k) {
+          if (k.matches(skip) || getComputedStyle(k).display === 'contents') return;
+          var heading = n === 0 || k.matches('h2, h3, .eyebrow') || !!k.querySelector(':scope > h2');
+          k.classList.add('aos', heading ? 'aos-up' : (n % 2 ? 'aos-right' : 'aos-left'));
+          targets.push(k);
+          n++;
+        });
+      });
+    });
+  });
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('aos-in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+  targets.forEach(function (t) { io.observe(t); });
+})();
