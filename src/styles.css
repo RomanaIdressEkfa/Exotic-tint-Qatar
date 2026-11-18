@@ -2399,3 +2399,48 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
   .sm3-facts span { padding: .7rem .6rem; }
   .sm3-facts b { font-size: .92rem; }
 }
+
+/* Phones & tablets: Spill it, wipe it reads top-down — title, the 3D kitchen with Replay under it, then details */
+@media (max-width: 1023px) {
+  .sp3 { gap: 0 !important; }
+  .sp3-text { display: contents; }
+  .sp3-text > .eyebrow { order: 1; justify-self: start; }
+  .sp3-text > .h3-title { order: 2; margin-top: .75rem; }
+  .sp3-text > .h3-line { order: 3; margin-top: .75rem; }
+  .sp3 > .sp3-stage { order: 4; margin-top: 1.4rem; }
+  .sp3-text > .sp3-replay { order: 5; justify-self: center; margin-top: 1rem !important; }
+  .sp3-text > .sp5-mat { order: 6; margin-top: 1.4rem; }
+  .sp3-text > .sp5-facts { order: 7; }
+}
+@media (max-width: 640px) { .sp3 > .sp3-stage { aspect-ratio: 1 / 1.05 !important; } }
+
+/* Phones: What to Know — topics as an even row of numbers (the card shows the full title), fuller picture */
+@media (max-width: 767px) {
+  .kn-tabs { display: flex !important; gap: .45rem !important; overflow: visible !important; margin-inline: 0 !important; padding: 0 !important; }
+  .kn-tab { flex: 1 1 0 !important; justify-content: center; padding: .55rem 0 !important; border-radius: 16px !important; background: rgba(255,255,255,.75) !important; box-shadow: inset 0 0 0 1px #e1eaf5 !important; }
+  .kn-tab.is-on { background: #fff !important; box-shadow: inset 0 0 0 1.5px #0878e8, 0 14px 26px -18px rgba(8,120,232,.6) !important; }
+  .kn-tab .kn-t { display: none; }
+  .kn-tab .kn-n { width: 34px; height: 34px; border-radius: 11px; font-size: .78rem; }
+  .kn-card { margin-top: 1rem; }
+  .kn-img { aspect-ratio: 16 / 10 !important; }
+  .kn-img img { transform: scale(.98) !important; }
+}
+
+/* Phones: Spill section — surfaces and facts as two centred cards (no lopsided rows) */
+@media (max-width: 640px) {
+  .sp3 .sp5-mat { display: grid !important; grid-template-columns: repeat(4, 1fr); gap: 0 !important; flex-wrap: nowrap; padding: .9rem .4rem; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px rgba(8,120,232,.08), 0 18px 34px -24px rgba(7,29,56,.35); }
+  .sp3 .sp5-mat li { flex-direction: column; justify-content: center; gap: .45rem !important; font-size: .78rem !important; font-weight: 700; white-space: normal !important; text-align: center; }
+  .sp3 .sp5-mat .sp4-sw { width: 34px !important; height: 34px !important; border-radius: 11px !important; }
+  .sp3 .sp5-facts { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; margin-top: .75rem !important; padding: .9rem .4rem !important; border: 0 !important; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px rgba(8,120,232,.08), 0 18px 34px -24px rgba(7,29,56,.35); text-align: center; font-size: .76rem !important; }
+  .sp3 .sp5-facts span { display: grid !important; gap: .15rem; padding: 0 .3rem !important; margin: 0 !important; border: 0 !important; }
+  .sp3 .sp5-facts span + span { border-inline-start: 1px solid #edf2f8 !important; }
+  .sp3 .sp5-facts b { font-size: .98rem !important; }
+}
+/* Phones: What to Know — one short paragraph, tighter type (the rest stays in the page for search) */
+@media (max-width: 767px) {
+  .kn-body { padding: 1.15rem 1.15rem 1.3rem !important; }
+  .kn-h { font-size: 1.12rem !important; line-height: 1.3; }
+  .kn-p { margin-top: .5rem; font-size: .9rem !important; line-height: 1.6 !important; color: #5b6678; }
+  .kn-p + .kn-p { display: none; }
+  .kn-link { margin-top: .8rem; font-size: .88rem; }
+}
