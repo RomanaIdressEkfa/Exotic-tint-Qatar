@@ -1594,7 +1594,7 @@ function blogSection() {
       ${sectionHead({ eyebrow: tr('Insights & guides', 'مقالات وأدلة'), title: tr('From our <span class="text-grad">blog</span>', 'من <span class="text-grad">مدونتنا</span>') })}
     </div>
     <div class="mt-10 grid gap-5 lg:grid-cols-12">
-      <a href="${href(f.slug + '/')}" class="group relative min-h-[460px] overflow-hidden rounded-[28px] shadow-soft lg:col-span-7" ${reveal()}>
+      <a href="${href(f.slug + '/')}" class="bl-feat group relative min-h-[460px] overflow-hidden rounded-[28px] shadow-soft lg:col-span-7" ${reveal()}>
         <img src="/assets/img/${f.img}.webp" alt="${esc(t(f.title))}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent"></div>
         <span class="absolute start-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-gold-700 shadow">${icon('star', 'h-3.5 w-3.5', 2.4)} ${tr('Editor’s pick', 'اختيار المحرر')}</span>
@@ -1913,7 +1913,7 @@ function pageHero({ chip, title, text, crumbs = [], image, alt, chips = {} }) {
         <span class="chip mt-6" data-a="left">${chip}</span>
         <h1 class="mt-5 text-balance font-head text-[2.15rem] font-extrabold leading-[1.08] text-ink min-[400px]:text-[2.5rem] sm:text-[3.2rem] lg:text-[2.9rem] xl:text-[3.4rem]" data-split>${title}</h1>
         ${text ? `<p class="mt-5 max-w-xl text-[1.1rem] leading-relaxed text-muted" data-a="up">${text}</p>` : ''}
-        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+        <div class="hero-actions mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} ${t(C.ui.whatsapp)}</a>
         </div>
@@ -1997,7 +1997,7 @@ function aboutHero() {
           <span class="block text-grad" data-a="up">${tr('Done properly.', 'بإتقان.')}</span>
         </h1>
         <p class="mt-5 max-w-lg text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Exotic Tint for Trading and Contracting is a Qatar team of film specialists. We install window film, smart glass, surface protection and interior finishes — on-site, at your home, office or building.', 'إكزوتك تينت للتجارة والمقاولات فريق قطري من مختصي الأفلام. نركّب أفلام النوافذ والزجاج الذكي وحماية الأسطح والتشطيبات الداخلية — في موقعك، في منزلك أو مكتبك أو مبناك.')}</p>
-        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+        <div class="hero-actions mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
         </div>
@@ -2151,7 +2151,7 @@ function pageServices(page) {
       </nav>
       <h1 class="mx-auto mt-5 max-w-3xl text-balance font-head text-[2.3rem] font-extrabold leading-[1.06] text-ink sm:text-[3.4rem]"><span data-split>${tr('Five ways to protect', 'خمس طرق لحماية')}</span> <span class="text-grad" data-a="up">${tr('what you love.', 'ما تحب.')}</span></h1>
       <p class="mx-auto mt-4 max-w-xl text-[1.06rem] leading-relaxed text-muted" data-a="up">${tr('Scroll to see each film at work — installed on-site across Qatar.', 'مرّر لترى كل فيلم أثناء العمل — نركّبه في موقعك في أنحاء قطر.')}</p>
-      <div class="mt-7 flex flex-wrap justify-center gap-2" data-a="up">
+      <div class="sv-jump mt-7 flex flex-wrap justify-center gap-2" data-a="up">
         ${S.map((s) => `<a href="#svc-${s.slug}" class="inline-flex items-center gap-2 rounded-full border border-white bg-white/80 px-3.5 py-2 text-sm font-semibold text-ink shadow-card backdrop-blur transition hover:-translate-y-0.5 hover:text-gold-700">${icon(s.icon, 'h-4 w-4 text-gold-600', 2.2)}${t(s.short)}</a>`).join('')}
       </div>
     </div>
@@ -2196,10 +2196,10 @@ function pageServices(page) {
       <span class="eyebrow"><span class="font-head text-gold-600">${num(pad(i + 1))}</span> ${t(s.short)}</span>
       <h2 class="mt-3 font-head text-[1.85rem] font-extrabold leading-[1.1] text-ink sm:text-[2.3rem]">${t(s.title)}</h2>
       <p class="mt-3 text-[1.02rem] leading-relaxed text-muted">${t(s.summary)}</p>
-      <ul class="mt-5 grid gap-2 sm:grid-cols-2">
+      <ul class="sv-opts mt-5 grid gap-2 sm:grid-cols-2">
         ${s.options.slice(0, 6).map(([b]) => `<li class="flex items-center gap-2.5 text-[0.95rem] font-semibold text-ink-2"><span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-tint text-gold-700">${icon('check', 'h-3.5 w-3.5', 3)}</span>${t(b)}</li>`).join('')}
       </ul>
-      <div class="mt-6 flex flex-wrap gap-3">
+      <div class="sv-acts mt-6 flex flex-wrap gap-3">
         <a href="${href('service/' + s.slug + '/')}" class="btn btn-primary !py-3 text-sm">${t(C.ui.learnMore)} ${arrow()}</a>
         <a href="${waLink(tr('Hello, I would like a quote for ', 'مرحباً، أرغب في عرض سعر لخدمة ') + t(s.title))}" target="_blank" rel="noopener" class="btn btn-white !py-3 text-sm">${waIcon('h-4 w-4 text-[#25D366]')} ${tr('Free quote', 'عرض مجاني')}</a>
       </div>
@@ -3034,7 +3034,7 @@ function pageService(page) {
           <span class="block text-grad" data-a="up">${cfg.h1[1]}</span>
         </h1>
         <p class="mt-5 max-w-md text-[1.08rem] leading-relaxed text-muted" data-a="up">${cfg.sub}</p>
-        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+        <div class="hero-actions mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="${wa}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Get a price', 'اعرف السعر')}</a>
           <a href="tel:${C.site.phoneRaw}" class="btn btn-white">${icon('phone', 'h-4 w-4')} <span dir="ltr">${C.site.phone}</span></a>
         </div>
@@ -3122,7 +3122,7 @@ function contactHero() {
           <span class="block text-grad" data-a="up">${tr('your glass.', 'زجاجك.')}</span>
         </h1>
         <p class="mt-5 max-w-lg text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Window tinting, smart glass and surface protection across Qatar. Send us a photo — a specialist replies within minutes with advice and a free, flat-rate estimate.', 'تظليل النوافذ والزجاج الذكي وحماية الأسطح في كل قطر. أرسل لنا صورة — يرد عليك مختص خلال دقائق بالنصيحة وتقدير مجاني بسعر ثابت.')}</p>
-        <div class="mt-8 flex flex-wrap gap-3" data-a="up">
+        <div class="hero-actions mt-8 flex flex-wrap gap-3" data-a="up">
           <a href="#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
           <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
         </div>
@@ -3182,7 +3182,7 @@ function contactForm() {
     <div class="lg:col-span-5" ${reveal()}>
       <span class="eyebrow">${tr('Get in touch', 'تواصل معنا')}</span>
       <h2 class="mt-4 text-balance font-head text-[2rem] font-extrabold leading-[1.1] text-ink sm:text-[2.6rem]">${tr('We’d love to hear from you', 'يسعدنا أن نسمع منك')}</h2>
-      <div class="mt-7 space-y-4">
+      <div class="cx-cards mt-7 space-y-4">
         ${cards
           .map(
             (c) => `
@@ -3214,7 +3214,7 @@ function contactForm() {
         <p class="mt-1 text-sm text-muted">${tr('Your request goes straight to our team on WhatsApp.', 'يصل طلبك مباشرة إلى فريقنا عبر واتساب.')}</p>
         <fieldset class="mt-6">
           <legend class="sr-only">${tr('Service', 'الخدمة')}</legend>
-          <div class="flex flex-wrap gap-2">
+          <div class="cx-pills flex flex-wrap gap-2">
             ${services.map((s, i) => `<label class="cx-pill"><input type="radio" name="service" value="${esc(s)}" ${i === 0 ? 'checked' : ''}><span>${shortName(s, i)}</span></label>`).join('')}
           </div>
         </fieldset>
@@ -3310,13 +3310,13 @@ ${pageHero({
   alt: tr('Tinted villa', 'فيلا مظللة'),
   chips: chipHeat(),
 })}
-<section class="py-20 lg:py-28">
+<section class="rv-sec py-20 lg:py-28">
   <div class="container-site">
     ${sectionHead({ eyebrow: tr('Client stories', 'قصص العملاء'), title: tr('Real results, <span class="text-grad">real clients</span>', 'نتائج حقيقية <span class="text-grad">لعملاء حقيقيين</span>'), center: true })}
-    <div class="mt-12 grid gap-5 md:grid-cols-2">
+    <div class="rv-grid mt-12 grid gap-5 md:grid-cols-2">
       ${C.testimonials
         .map(
-          (r, i) => `<figure class="relative overflow-hidden rounded-[28px] border border-line bg-white p-8 shadow-card transition hover:-translate-y-1 hover:shadow-soft" ${reveal(i * 80)}>
+          (r, i) => `<figure class="rv-card relative overflow-hidden rounded-[28px] border border-line bg-white p-8 shadow-card transition hover:-translate-y-1 hover:shadow-soft" ${reveal(i * 80)}>
         <div class="pointer-events-none absolute -end-12 -top-12 h-40 w-40 rounded-full bg-tint"></div>
         <div class="relative flex items-center justify-between">${starsRow()}<span class="ico !h-11 !w-11">${icon('quote', 'h-5 w-5', 2)}</span></div>
         <blockquote class="relative mt-6 font-head text-xl font-semibold leading-snug text-ink">${t(r.text)}</blockquote>
@@ -3336,7 +3336,7 @@ ${reviewUs()}`;
 }
 
 function postCard(p, i) {
-  return `<a href="${href(p.slug + '/')}" class="group flex flex-col overflow-hidden rounded-[28px] border border-line bg-white shadow-card transition hover:-translate-y-1.5 hover:shadow-soft" ${reveal(i * 80)}>
+  return `<a href="${href(p.slug + '/')}" class="pc-card group flex flex-col overflow-hidden rounded-[28px] border border-line bg-white shadow-card transition hover:-translate-y-1.5 hover:shadow-soft" ${reveal(i * 80)}>
     <div class="relative aspect-[16/10] overflow-hidden"><img src="/assets/img/${p.img}.webp" alt="${esc(t(p.title))}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
       <span class="absolute start-4 top-4 rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase text-gold-700 shadow">${t(p.cat)}</span></div>
     <div class="flex flex-1 flex-col p-6">
@@ -3362,7 +3362,7 @@ ${blogSection()}
 <section class="pb-20 lg:pb-28">
   <div class="container-site">
     ${sectionHead({ eyebrow: tr('All articles', 'كل المقالات'), title: tr('Latest <span class="text-grad">posts</span>', 'أحدث <span class="text-grad">المقالات</span>') })}
-    <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">${POSTS.map(postCard).join('')}</div>
+    <div class="pc-grid mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">${POSTS.map(postCard).join('')}</div>
   </div>
 </section>`;
   return layout(page, { title: tr('Blog — Window Tint & Protection Guides | Exotic Tint for Trading and Contracting', 'المدونة — أدلة التظليل والحماية | إكزوتك تينت للتجارة والمقاولات'), description: tr('Guides on window tinting, nano ceramic film and marble protection in Qatar.', 'أدلة عن تظليل النوافذ وأفلام النانو سيراميك وحماية الرخام في قطر.'), image: 'blog-ceramic' }, body);
