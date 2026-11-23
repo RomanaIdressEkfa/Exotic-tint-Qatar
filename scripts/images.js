@@ -109,6 +109,7 @@ async function keyWhite(input) {
       await sharp(mark).trim().resize(180, 180, { fit: 'contain', background: '#071D38' }).png().toFile(path.join(out, 'apple-touch-icon.png'));
     } else {
       await sharp(src).resize({ width: 1800, withoutEnlargement: true }).sharpen({ sigma: 0.7 }).webp({ quality: 88, smartSubsample: true }).toFile(path.join(out, name + '.webp'));
+      if (name.startsWith('pf-')) await sharp(src).rotate().resize({ width: 720, withoutEnlargement: true }).webp({ quality: 80 }).toFile(path.join(out, name + '-sm.webp'));
     }
     console.log('✓', name);
   }

@@ -981,3 +981,68 @@
   }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
   targets.forEach(function (t) { io.observe(t); });
 })();
+
+/* What to know (phones): Read more opens the full answer */
+document.addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('[data-kn-more]');
+  if (!b) return;
+  var p = b.closest('.kn-panel'), open = !p.classList.contains('is-open');
+  p.classList.toggle('is-open', open);
+  b.setAttribute('aria-expanded', String(open));
+});
+
+/* Portfolio: category filter + lightbox (arrows, swipe, Esc) */
+(function () {
+  var grid = document.querySelector('[data-pf]');
+  if (!grid) return;
+  var items = [].slice.call(grid.querySelectorAll('[data-pf-item]'));
+  var chips = [].slice.call(document.querySelectorAll('[data-pf-filter]'));
+  var box = document.querySelector('[data-pf-box]'), img = box.querySelector('[data-pf-img]'), cap = box.querySelector('[data-pf-cap]');
+  var list = items, cur = 0;
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      var k = c.dataset.pfFilter;
+      chips.forEach(function (x) { var on = x === c; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', String(on)); });
+      items.forEach(function (it) { it.classList.toggle('is-hidden', k !== 'all' && it.dataset.pfItem !== k); });
+      list = items.filter(function (it) { return !it.classList.contains('is-hidden'); });
+    });
+  });
+  function show(i) {
+    cur = (i + list.length) % list.length;
+    var el = list[cur].querySelector('img');
+    img.src = el.dataset.full; img.alt = el.alt;
+    cap.textContent = list[cur].querySelector('.pf-tag').textContent + ' · ' + (cur + 1) + ' / ' + list.length;
+  }
+  function open(i) { show(i); box.hidden = false; document.body.style.overflow = 'hidden'; box.querySelector('[data-pf-close]').focus(); }
+  function close() { box.hidden = true; document.body.style.overflow = ''; }
+  items.forEach(function (it) { it.addEventListener('click', function () { open(list.indexOf(it)); }); });
+  var rtl = document.documentElement.dir === 'rtl';
+  box.querySelector('[data-pf-prev]').addEventListener('click', function () { show(cur - 1); });
+  box.querySelector('[data-pf-next]').addEventListener('click', function () { show(cur + 1); });
+  box.querySelector('[data-pf-close]').addEventListener('click', close);
+  box.addEventListener('click', function (e) { if (e.target === box) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (box.hidden) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight') show(cur + (rtl ? -1 : 1));
+    if (e.key === 'ArrowLeft') show(cur + (rtl ? 1 : -1));
+  });
+  var x0 = null;
+  box.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  box.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + ((dx < 0) !== rtl ? 1 : -1)); x0 = null; });
+})();
+
+/* Services dropdown: the feature panel follows the hovered service */
+(function () {
+  var feat = document.querySelector('[data-mg-feat]');
+  if (!feat) return;
+  var img = feat.querySelector('[data-mg-fimg]'), ft = feat.querySelector('[data-mg-ft]'), fn = feat.querySelector('[data-mg-fn]');
+  var items = [].slice.call(document.querySelectorAll('.mg-item[data-mg-img]'));
+  items.forEach(function (it) {
+    it.addEventListener('mouseenter', function () {
+      items.forEach(function (x) { x.classList.toggle('is-on', x === it); });
+      if (img.getAttribute('src') !== it.dataset.mgImg) { img.style.opacity = '0'; setTimeout(function () { img.src = it.dataset.mgImg; img.style.opacity = '1'; }, 150); }
+      ft.textContent = it.dataset.mgT; fn.textContent = it.dataset.mgN; feat.href = it.href;
+    });
+  });
+})();

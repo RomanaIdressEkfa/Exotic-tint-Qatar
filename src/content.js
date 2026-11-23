@@ -108,7 +108,7 @@ const services = [
     ],
     faq: [
       [['Can people see the film?', 'هل يظهر الفيلم؟'], ['Not really. We match gloss or matte to your surface, and trim the edges flush.', 'تقريباً لا. نطابق اللمعة أو المطفي مع السطح ونقص الحواف بدقة.']],
-      [['Is it cheaper than restoration?', 'هل هو أرخص من الترميم؟'], ['Yes. Restoration can cost QAR 120–250/m² every few years. Film is around QAR 80–120/m², once.', 'نعم. قد يكلف الترميم ١٢٠–٢٥٠ ريال/م² كل بضع سنوات. الفيلم حوالي ٨٠–١٢٠ ريال/م² مرة واحدة.']],
+      [['Is it cheaper than restoration?', 'هل هو أرخص من الترميم؟'], ['Over time, yes. Restoration has to be repeated every few years, while film is installed once and lasts 7–10 years. Send us the size for a free, exact quote.', 'على المدى الطويل نعم. الترميم يتكرر كل بضع سنوات، أما الفيلم فيُركّب مرة واحدة ويدوم ٧–١٠ سنوات. أرسل لنا المساحة لتحصل على عرض سعر مجاني ودقيق.']],
       [['Can it be removed?', 'هل يمكن إزالته؟'], ['Yes. It peels off cleanly without damaging the surface underneath.', 'نعم. يُزال بسهولة دون أن يضر السطح تحته.']],
     ],
   },

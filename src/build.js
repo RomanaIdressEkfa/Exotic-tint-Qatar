@@ -4,6 +4,14 @@ const path = require('path');
 const QRCode = require('qrcode');
 const C = require('./content');
 const POSTS = require('./blog');
+const PORTFOLIO = (() => {
+  // interleave categories so every column of the masonry grid shows a mix of work
+  const raw = require('./portfolio'), by = {}, out = [];
+  raw.forEach((p) => (by[p.cat] = by[p.cat] || []).push(p));
+  const lists = Object.values(by);
+  for (let i = 0; out.length < raw.length; i++) lists.forEach((l) => l[i] && out.push(l[i]));
+  return out;
+})();
 
 const DIST = path.join(__dirname, '..', 'dist');
 const LANGS = ['en', 'ar'];
@@ -124,6 +132,7 @@ const PAGES = [
   { key: 'about', path: 'about/' },
   { key: 'services', path: 'service/' },
   ...C.services.map((s) => ({ key: 'service', path: `service/${s.slug}/`, service: s })),
+  { key: 'portfolio', path: 'portfolio/' },
   { key: 'reviews', path: 'reviews/' },
   { key: 'blogs', path: 'blogs/' },
   ...POSTS.map((p) => ({ key: 'post', path: `${p.slug}/`, post: p })),
@@ -204,15 +213,21 @@ ${graph.map((g) => `<script type="application/ld+json">${JSON.stringify(g)}</scr
 function header(page) {
   const other = L === 'en' ? 'ar' : 'en';
   const cur = (k) => (page.key === k ? ' aria-current="page"' : '');
+  const MG = { 'architectural-window-film-solutions': 'pf-sky-4', 'smart-glass-privacy-solutions': 'pf-priv-3', 'surface-protection-solutions': 'pf-surf-5', 'decorative-interior-solutions': 'pf-win-3', 'fabric-material-protection': 'nano' };
+  const mgImg = (s) => (MG[s.slug].startsWith('pf-') ? MG[s.slug] + '-sm' : MG[s.slug]);
   const megaItems = C.services
     .map(
-      (s) => `<a href="${href('service/' + s.slug + '/')}" class="mg-item">
-        <span class="mg-ic" style="background:${SV[s.slug].bg}">${img3d(SV[s.slug].emoji, 'h-6 w-6')}</span>
-        <span class="mg-t">${t(s.title)}</span>
-        ${arrow('mg-arr h-4 w-4')}
+      (s, i) => `<a href="${href('service/' + s.slug + '/')}" class="mg-item${i ? '' : ' is-on'}" data-mg-img="/assets/img/${mgImg(s)}.webp" data-mg-t="${esc(t(s.title))}" data-mg-n="${num(s.options.length)} ${s.options.length === 1 ? tr('solution', 'حل') : tr('solutions', 'حلول')}">
+        <img class="mg-thumb" src="/assets/img/${mgImg(s)}.webp" alt="" loading="lazy" decoding="async">
+        <span class="min-w-0"><span class="mg-t">${t(s.title)}</span><span class="mg-s">${t(s.short)}</span></span>
       </a>`
     )
     .join('');
+  const s0 = C.services[0];
+  const megaFeature = `<a href="${href('service/' + s0.slug + '/')}" class="mg-feat" data-mg-feat>
+          <img src="/assets/img/${mgImg(s0)}.webp" alt="" data-mg-fimg loading="lazy" decoding="async">
+          <span class="mg-feat-b"><span class="mg-feat-n" data-mg-fn>${num(s0.options.length)} ${tr('solutions', 'حلول')}</span><span class="mg-feat-t" data-mg-ft>${t(s0.title)}</span></span>
+        </a>`;
   return `
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">${t(C.ui.skip)}</a>
 
@@ -234,17 +249,23 @@ function header(page) {
       <div class="has-mega" data-mega>
         <button type="button" class="nav-link" aria-expanded="false" data-mega-btn${page.key === 'service' || page.key === 'services' ? ' aria-current="page"' : ''}>${t(C.ui.nav.services)} ${icon('chevron', 'chev h-4 w-4')}</button>
         <div class="mega" data-mega-panel>
-          <div class="mg-list">${megaItems}</div>
-          <a href="${href('service/')}" class="mg-all">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
+          <div class="mg-grid">
+            <div class="mg-list">${megaItems}</div>
+            ${megaFeature}
+          </div>
+          <div class="mg-foot">
+            <a href="${href('service/')}" class="mg-all">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
+            <a href="${waHello()}" target="_blank" rel="noopener" class="mg-wa">${waIcon('h-4 w-4')} ${tr('Free quote on WhatsApp', 'عرض مجاني عبر واتساب')}</a>
+          </div>
         </div>
       </div>
       <a href="${href('about/')}" class="nav-link"${cur('about')}>${t(C.ui.nav.about)}</a>
+      <a href="${href('portfolio/')}" class="nav-link"${cur('portfolio')}>${tr('Portfolio', 'أعمالنا')}</a>
       <a href="${href('blogs/')}" class="nav-link"${page.key === 'blogs' || page.key === 'post' ? ' aria-current="page"' : ''}>${tr('Blog', 'المدونة')}</a>
-      <a href="${href('contact/')}" class="nav-link"${cur('contact')}>${t(C.ui.nav.contact)}</a>
     </nav>
     <div class="flex items-center gap-2.5">
       <a href="${base(other)}${page.path}" hreflang="${other}" lang="${other}" class="hidden items-center gap-2 rounded-full px-3 py-2 font-semibold text-ink transition hover:text-gold-700 sm:inline-flex ${other === 'ar' ? 'font-arabic' : ''}"><span class="grid h-9 w-9 place-items-center rounded-full bg-[#f2f4f7]">${icon('globe', 'h-4 w-4')}</span><span class="lg:hidden xl:inline">${t(C.ui.langSwitch)}</span></a>
-      <a href="${href('contact/')}#quote" class="btn btn-dark hidden !px-6 !py-3 md:inline-flex">${t(C.ui.quote)}</a>
+      <a href="${href('contact/')}" class="btn btn-dark hidden !px-6 !py-3 md:inline-flex"${page.key === 'contact' ? ' aria-current="page"' : ''}>${tr('Contact Us', 'تواصل معنا')}</a>
       <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-outline hidden !py-3 xl:inline-flex">${waIcon('h-4 w-4 text-[#25D366]')} WhatsApp</a>
       <a href="${base(other)}${page.path}" hreflang="${other}" lang="${other}" class="mh-btn mh-lang sm:hidden ${other === 'ar' ? 'font-arabic' : ''}" aria-label="${t(C.ui.langSwitch)}">${other === 'ar' ? 'ع' : 'EN'}</a>
       <a href="${waHello()}" target="_blank" rel="noopener" class="mh-btn mh-wa md:hidden" aria-label="WhatsApp">${waIcon('h-5 w-5')}</a>
@@ -269,6 +290,7 @@ function header(page) {
       </div>
     </details>
     <a href="${href('about/')}" class="dr-link">${t(C.ui.nav.about)} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
+    <a href="${href('portfolio/')}" class="dr-link">${tr('Portfolio', 'أعمالنا')} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
     <a href="${href('blogs/')}" class="dr-link">${tr('Blog', 'المدونة')} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
     <a href="${href('contact/')}" class="dr-link">${t(C.ui.nav.contact)} ${icon('chevron', 'h-4 w-4 -rotate-90 rtl:rotate-90 text-[#9aa7b8]', 2.2)}</a>
     <a href="${base(other)}${page.path}" class="dr-lang ${other === 'ar' ? 'font-arabic' : ''}">${icon('globe', 'h-4 w-4')} ${t(C.ui.langSwitch)}</a>
@@ -341,7 +363,7 @@ function footer() {
       </div>
       <div class="${colCls} border-s border-white/10 ps-5 md:border-s-0 md:ps-0 lg:border-s lg:px-8">
         ${head(tr('Company', 'الشركة'))}
-        <ul class="mt-5 space-y-2.5">${[[t(C.ui.nav.home), href()], [t(C.ui.nav.about), href('about/')], [tr('Reviews', 'التقييمات'), href('reviews/')], [tr('Blog', 'المدونة'), href('blogs/')], [t(C.ui.nav.contact), href('contact/')]].map(link).join('')}</ul>
+        <ul class="mt-5 space-y-2.5">${[[t(C.ui.nav.home), href()], [t(C.ui.nav.about), href('about/')], [tr('Portfolio', 'أعمالنا'), href('portfolio/')], [tr('Reviews', 'التقييمات'), href('reviews/')], [tr('Blog', 'المدونة'), href('blogs/')], [t(C.ui.nav.contact), href('contact/')]].map(link).join('')}</ul>
       </div>
       <div class="${colCls} col-span-2 border-t border-white/10 md:col-span-1 md:border-s md:border-t-0 md:ps-8">
         ${head(tr('Follow us', 'تابعنا'))}
@@ -792,7 +814,7 @@ function homeTwin() {
         <span class="tw2-pill tw2-cool"><i></i>${tr('Exotic Tint film', 'فيلم إكزوتك تينت')} <b dir="ltr">32°C</b></span>
       </div>
     </div>
-    ${h3Stage('twin', 'tp-solar', chip('h3-cl', tr('Without film', 'بدون فيلم'), 'hot') + chip('h3-cr', tr('With Exotic Tint', 'مع إكزوتك تينت'), 'cool') + `<div class="tw2-sun" aria-hidden="true"><i class="tw2-rays"></i><i class="tw2-glow"></i><i class="tw2-core"></i></div><span class="tw2-same">${icon('sun', 'h-3.5 w-3.5', 2.4)} ${tr('Same sun', 'نفس الشمس')}</span><span class="tw2-tag tw2-tl">${tr('Plain glass', 'زجاج عادي')}</span><span class="tw2-tag tw2-tr">${tr('Exotic Tint film', 'فيلم إكزوتك تينت')}</span>`, 'tw2-stage mt-10')}
+    ${h3Stage('twin', 'tp-solar', chip('h3-cl', tr('Without film', 'بدون فيلم'), 'hot') + chip('h3-cr', tr('With Exotic Tint', 'مع إكزوتك تينت'), 'cool') + `<div class="tw2-sun" aria-hidden="true"><i class="tw2-rays"></i><i class="tw2-glow"></i><i class="tw2-core"></i></div><div class="sp3-now tw3-now" aria-live="polite"><span class="sp3-now-n" data-tw-n dir="ltr">01</span><span data-tw-t>${tr('The same sun hits both rooms', 'الشمس نفسها على الغرفتين')}</span></div><div class="sp3-time tw3-time">${[[tr('Same sun', 'نفس الشمس'), tr('The same sun hits both rooms', 'الشمس نفسها على الغرفتين'), 2.4], [tr('Film on', 'تركيب الفيلم'), tr('Exotic Tint film goes on the right', 'فيلم إكزوتك تينت على اليمين'), 2], [tr('Heat bounces', 'الحرارة ترتد'), tr('Heat bounces off the film', 'الحرارة ترتد عن الفيلم'), 2.6], [tr('14°C cooler', 'أبرد بـ١٤°'), tr('14°C cooler — the AC can rest', 'أبرد بـ١٤ درجة — والمكيف يرتاح'), 2.6]].map(([s, l, d], i) => `<div class="sp3-seg tw3-seg" data-tw-seg data-label="${esc(l)}" style="--d:${d}s"><em dir="ltr">${i + 1}</em><span>${s}</span><i><b></b></i></div>`).join('')}</div>`, 'tw2-stage tw-story mt-10')}
     <div class="tw2-facts" ${reveal(120)}>
       ${fact('thermo', '98%', tr('Heat rejected, up to', 'صد الحرارة، حتى'), tr('Ceramic particles bounce infrared heat back outside.', 'جزيئات السيراميك ترد الحرارة إلى الخارج.'))}
       ${fact('shield', '99%', tr('UV blocked', 'حجب الأشعة'), tr('Protects skin, floors and furniture from fading.', 'يحمي البشرة والأرضيات والأثاث من البهتان.'))}
@@ -856,13 +878,12 @@ function homeSpill() {
   return `
 <section class="py-14 lg:py-20">
   <div class="container-site">
-    <div class="sp3" data-h3-wrap>
+    <div class="sp3 sp6" data-h3-wrap>
       <div class="sp3-text" ${reveal()}>
         <span class="eyebrow">${tr('Surface protection', 'حماية الأسطح')}</span>
         <h2 class="h3-title">${tr('Spill it. <span class="text-grad">Wipe it.</span>', 'اسكبه. <span class="text-grad">امسحه.</span>')}</h2>
         <p class="h3-line">${tr('A clear film seals the surface, so liquids sit on top and wipe straight off — no stains, no etching.', 'فيلم شفاف يغلق السطح، فتبقى السوائل فوقه وتُمسح فوراً — بلا بقع ولا تآكل.')}</p>
-        <ul class="sp5-mat">${surf.map(([k, l]) => `<li><i class="sp4-sw sp4-${k}" aria-hidden="true"></i>${l}</li>`).join('')}</ul>
-        <p class="sp5-facts"><span><b>${tr('7–10 yrs', '٧–١٠ سنوات')}</b> ${tr('protection', 'حماية')}</span><span><b>${tr('Invisible', 'غير مرئي')}</b> ${tr('finish', 'اللمسة')}</span><span><b>${tr('Cheaper', 'أرخص')}</b> ${tr('than restoring', 'من الترميم')}</span></p>
+        <p class="sp9-mat">${surf.map(([k, l]) => `<span>${l}</span>`).join('')}</p>
         <button type="button" class="sp3-replay" data-h3-again><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> ${tr('Replay', 'إعادة')}</button>
       </div>
       ${h3Stage('spill', 'tp-counter', overlay, 'sp3-stage')}
@@ -883,7 +904,7 @@ function seoRows() {
         tr('With summer temperatures above 45°C, untreated glass lets <strong>solar heat</strong> and <strong>UV rays</strong> pour into homes and offices. Rooms overheat, the AC works harder and furniture fades.', 'مع تجاوز حرارة الصيف ٤٥ درجة، يسمح الزجاج غير المعالج بدخول <strong>حرارة الشمس</strong> و<strong>الأشعة فوق البنفسجية</strong> إلى المنازل والمكاتب. ترتفع حرارة الغرف، ويعمل المكيف بجهد أكبر، ويبهت الأثاث.'),
         tr('<strong>Heat rejection window film</strong> stops up to 98% of that heat at the glass and blocks 99% of UV — while keeping your daylight and your view.', '<strong>أفلام العزل الحراري</strong> توقف حتى ٩٨٪ من تلك الحرارة عند الزجاج وتحجب ٩٩٪ من الأشعة — مع الحفاظ على ضوء النهار والإطلالة.'),
       ],
-      link: [href('service/architectural-window-film-solutions/'), tr('See window films', 'شاهد أفلام النوافذ')],
+      link: [href('discover-the-top-5-benefits-of-window-tinting-for-homes-in-qatar-stay-cool-cut-energy-bills-protect-interiors-enjoy-privacy-with-exotic-tint-qatar/'), tr('Read the full article', 'اقرأ المقال كاملاً')],
     },
     {
       img: 'kn-ceramic', chip: [tr('Nano ceramic', 'نانو سيراميك'), tr('No fading', 'لا يبهت')],
@@ -892,7 +913,7 @@ function seoRows() {
         tr('<strong>Regular dyed tint</strong> mainly darkens the glass. <strong>Nano ceramic film</strong> uses ceramic particles to reject infrared heat without heavy darkening, so rooms stay bright and cool.', '<strong>التظليل العادي</strong> يُعتم الزجاج بشكل أساسي. أما <strong>فيلم النانو سيراميك</strong> فيستخدم جزيئات سيراميكية لصد الحرارة دون تعتيم كبير، فتبقى الغرف مضيئة وباردة.'),
         tr('Ceramic film does not interfere with <strong>phone or GPS signals</strong>, and it will not fade or turn purple over time.', 'فيلم السيراميك لا يؤثر على <strong>إشارة الجوال أو الـ GPS</strong>، ولا يبهت أو يتغير لونه مع الوقت.'),
       ],
-      link: [href(post.slug + '/'), tr('Read the full comparison', 'اقرأ المقارنة الكاملة')],
+      link: [href(post.slug + '/'), tr('Read the full article', 'اقرأ المقال كاملاً')],
     },
     {
       img: 'kn-install', chip: ['7/7', tr('8 AM – 6 PM', '٨ ص – ٦ م')],
@@ -901,7 +922,7 @@ function seoRows() {
         tr('Send photos or sizes of your glass on <strong>WhatsApp</strong> and we reply with a <strong>free estimate</strong>. Booking takes less than 60 seconds.', 'أرسل صور أو مقاسات الزجاج عبر <strong>واتساب</strong> وسنرد بـ<strong>تقدير مجاني</strong>. الحجز يستغرق أقل من ٦٠ ثانية.'),
         tr('Our team then comes to you for <strong>on-site installation</strong> at your home, office or building — seven days a week.', 'ثم يأتي فريقنا إليك لـ<strong>التركيب في الموقع</strong> في منزلك أو مكتبك أو مبناك — سبعة أيام في الأسبوع.'),
       ],
-      link: [waHello(), tr('Start on WhatsApp', 'ابدأ عبر واتساب'), true],
+      link: [href('how-window-film-installation-works-in-qatar/'), tr('Read the full article', 'اقرأ المقال كاملاً')],
     },
     {
       img: 'kn-doha', chip: [tr('On-site', 'في الموقع'), tr('Across Qatar', 'في أنحاء قطر')],
@@ -910,7 +931,7 @@ function seoRows() {
         tr('We install in <strong>Doha</strong>, <strong>Lusail</strong>, <strong>The Pearl</strong>, <strong>West Bay</strong>, <strong>Al Rayyan</strong>, <strong>Al Gharrafa</strong>, <strong>Al Kheesa</strong>, <strong>Al Wakra</strong> and the surrounding areas.', 'نقوم بالتركيب في <strong>الدوحة</strong> و<strong>لوسيل</strong> و<strong>اللؤلؤة</strong> و<strong>الخليج الغربي</strong> و<strong>الريان</strong> و<strong>الغرافة</strong> و<strong>الخيسة</strong> و<strong>الوكرة</strong> والمناطق المحيطة.'),
         tr('Villas, apartments, offices and commercial buildings — the work is done at your property, so there is nothing to bring to a workshop.', 'فلل وشقق ومكاتب ومبانٍ تجارية — يتم العمل في عقارك، فلا حاجة لإحضار شيء إلى ورشة.'),
       ],
-      link: [href('contact/'), tr('Contact us', 'تواصل معنا')],
+      link: [href('window-tinting-across-doha-and-qatar/'), tr('Read the full article', 'اقرأ المقال كاملاً')],
     },
     {
       img: 'kn-price', chip: [tr('Flat rate', 'سعر ثابت')],
@@ -919,7 +940,7 @@ function seoRows() {
         tr('Every job is quoted at an affordable <strong>flat rate</strong> with <strong>no hidden fees</strong>. The price depends on the film you choose and the size of your glass.', 'كل عمل يُسعّر بـ<strong>سعر ثابت</strong> مناسب <strong>دون رسوم خفية</strong>. يعتمد السعر على نوع الفيلم ومساحة الزجاج.'),
         tr('We accept secure <strong>cashless payment</strong>, and the estimate is always free.', 'نقبل <strong>الدفع الإلكتروني</strong> الآمن، والتقدير مجاني دائماً.'),
       ],
-      link: [href('contact/') + '#quote', tr('Get a free quote', 'احصل على عرض مجاني')],
+      link: [href('window-film-pricing-free-estimate/'), tr('Read the full article', 'اقرأ المقال كاملاً')],
     },
   ];
   return knowledgeRows({
@@ -946,6 +967,7 @@ function knowledgeRows({ title, intro, rows }) {
           <div class="kn-body">
             <h3 class="kn-h">${r.h}</h3>
             ${r.p.map((x) => `<p class="kn-p">${x}</p>`).join('')}
+            ${r.p.length > 1 ? `<button type="button" class="kn-more" data-kn-more aria-expanded="false"><span class="kn-more-a">${tr('Read more', 'اقرأ المزيد')}</span><span class="kn-more-b">${tr('Show less', 'عرض أقل')}</span> ${icon('chevron', 'h-4 w-4', 2.4)}</button>` : ''}
             <a href="${r.link[0]}"${r.link[2] ? ' target="_blank" rel="noopener"' : ''} class="kn-link">${r.link[1]} ${arrow('h-4 w-4')}</a>
           </div>
         </article>`;
@@ -972,17 +994,17 @@ function serviceKnowledge(s) {
     'architectural-window-film-solutions': {
       title: tr('Window Film for Homes &amp; Buildings: <span class="text-grad">What to Know</span>', 'أفلام النوافذ للمنازل والمباني: <span class="text-grad">ما يجب معرفته</span>'),
       rows: [
-        { img: 'tp-solar', chip: [tr('Up to 98%', 'حتى ٩٨٪'), tr('heat blocked', 'حرارة محجوبة')],
+        { img: 'pf-sky-4', chip: [tr('Up to 98%', 'حتى ٩٨٪'), tr('heat blocked', 'حرارة محجوبة')],
           h: tr('How Solar Control Film Cools a Room', 'كيف يبرّد فيلم التحكم الحراري الغرفة'),
           p: [tr('Most of the heat that comes through glass is <strong>infrared</strong>. A <strong>nano ceramic solar control film</strong> reflects and absorbs it at the window, so far less heat reaches the room.', 'معظم الحرارة التي تمر عبر الزجاج هي <strong>أشعة تحت حمراء</strong>. <strong>فيلم النانو سيراميك للتحكم الحراري</strong> يعكسها ويمتصها عند النافذة، فيصل إلى الغرفة قدر أقل بكثير من الحرارة.'),
               tr('Daylight still comes in, so rooms stay bright — and the AC has less work to do.', 'ويبقى ضوء النهار يدخل، فتبقى الغرف مشرقة — ويعمل المكيف أقل.')],
           link: quote },
-        { img: 'tp-safety', chip: [tr('Safety', 'أمان'), tr('Holds glass', 'يمسك الزجاج')],
+        { img: 'pf-win-10', chip: [tr('Safety', 'أمان'), tr('Holds glass', 'يمسك الزجاج')],
           h: tr('Safety &amp; Security Film for Glass', 'أفلام الأمان والحماية للزجاج'),
           p: [tr('<strong>Safety film</strong> bonds to the glass, so if a pane breaks the pieces stay together instead of falling into the room.', '<strong>فيلم الأمان</strong> يلتصق بالزجاج، فإذا انكسر اللوح بقيت القطع متماسكة بدل أن تسقط في الغرفة.'),
               tr('Thicker <strong>security films</strong> also slow down break-ins — useful for ground-floor villas, shopfronts and offices.', 'كما أن <strong>أفلام الحماية</strong> الأسمك تُبطئ محاولات الاقتحام — وهي مفيدة للفلل الأرضية والمحلات والمكاتب.')],
           link: quote },
-        { img: 'tp-privacy', chip: [tr('Privacy', 'خصوصية'), tr('By day', 'نهاراً')],
+        { img: 'pf-win-7', chip: [tr('Privacy', 'خصوصية'), tr('By day', 'نهاراً')],
           h: tr('Privacy, Reflective or Blackout?', 'خصوصية أم عاكس أم تعتيم؟'),
           p: [tr('<strong>Reflective film</strong> gives a mirror look from outside during the day. <strong>Privacy film</strong> darkens the view in. <strong>Blackout film</strong> stops all light — for bedrooms, cinemas and storage.', '<strong>الفيلم العاكس</strong> يعطي مظهر مرآة من الخارج نهاراً. <strong>فيلم الخصوصية</strong> يحجب الرؤية إلى الداخل. <strong>فيلم التعتيم</strong> يوقف الضوء كلياً — لغرف النوم والسينما والتخزين.'),
               tr('Tell us the room and we recommend the right one — many buildings mix several.', 'أخبرنا عن الغرفة ونوصي بالمناسب — كثير من المباني تجمع عدة أنواع.')],
@@ -1012,20 +1034,20 @@ function serviceKnowledge(s) {
     'surface-protection-solutions': {
       title: tr('Surface Protection Film: <span class="text-grad">What to Know</span>', 'أفلام حماية الأسطح: <span class="text-grad">ما يجب معرفته</span>'),
       rows: [
-        { img: 'bl-marble', chip: [tr('Marble', 'رخام'), tr('No etching', 'دون تآكل')],
+        { img: 'pf-surf-6', chip: [tr('Marble', 'رخام'), tr('No etching', 'دون تآكل')],
           h: tr('Why Marble Needs Protection', 'لماذا يحتاج الرخام إلى حماية'),
           p: [tr('Marble is softer than it looks. <strong>Lemon, vinegar and coffee</strong> etch dull marks into it, and keys and cups leave <strong>scratches</strong>.', 'الرخام أنعم مما يبدو. <strong>الليمون والخل والقهوة</strong> تترك آثار تآكل باهتة، والمفاتيح والأكواب تترك <strong>خدوشاً</strong>.'),
               tr('A clear <strong>marble protection film</strong> takes the damage instead, and wipes clean.', '<strong>فيلم حماية الرخام</strong> الشفاف يتحمل الضرر بدلاً منه، ويُمسح بسهولة.')],
           link: quote },
-        { img: 'tp-wood', chip: [tr('Wood &amp; steel', 'خشب وستانلس')],
+        { img: 'pf-surf-3', chip: [tr('Wood &amp; steel', 'خشب وستانلس')],
           h: tr('Wood, Countertops &amp; Stainless Steel', 'الخشب وأسطح المطابخ والستانلس'),
           p: [tr('On <strong>wood</strong> the film stops water rings and heat marks. On <strong>countertops</strong> and dining tables it takes daily wear.', 'على <strong>الخشب</strong> يمنع الفيلم حلقات الماء وآثار الحرارة. وعلى <strong>أسطح المطابخ</strong> وطاولات الطعام يتحمل الاستخدام اليومي.'),
               tr('On <strong>stainless steel</strong> — lifts, appliances, doors — it keeps fingerprints and scratches off.', 'وعلى <strong>الستانلس ستيل</strong> — المصاعد والأجهزة والأبواب — يمنع البصمات والخدوش.')],
           link: quote },
-        { img: 'cs-marble', chip: [tr('QAR 80–120/m²', '٨٠–١٢٠ ريال/م²'), tr('once', 'مرة واحدة')],
+        { img: 'pf-surf-1', chip: [tr('7–10 years', '٧–١٠ سنوات'), tr('one install', 'تركيب واحد')],
           h: tr('Film vs Restoration: The Cost', 'الفيلم أم الترميم: التكلفة'),
-          p: [tr('Marble <strong>restoration</strong> can cost <strong>QAR 120–250/m²</strong> and often needs repeating every few years.', 'قد يكلف <strong>ترميم</strong> الرخام <strong>١٢٠–٢٥٠ ريال/م²</strong> وغالباً يتكرر كل بضع سنوات.'),
-              tr('Protection film is around <strong>QAR 80–120/m²</strong>, lasts <strong>7–10 years</strong>, and peels off cleanly if you ever want it removed.', 'فيلم الحماية حوالي <strong>٨٠–١٢٠ ريال/م²</strong>، ويدوم <strong>٧–١٠ سنوات</strong>، ويُزال بسهولة إذا أردت ذلك.')],
+          p: [tr('Marble <strong>restoration</strong> is costly, messy and often needs repeating every few years.', '<strong>ترميم</strong> الرخام مكلف ومزعج وغالباً يتكرر كل بضع سنوات.'),
+              tr('Protection film is installed <strong>once</strong>, lasts <strong>7–10 years</strong>, and peels off cleanly if you ever want it removed.', 'فيلم الحماية يُركّب <strong>مرة واحدة</strong>، ويدوم <strong>٧–١٠ سنوات</strong>، ويُزال بسهولة إذا أردت ذلك. السعر حسب المساحة — والتقدير مجاني.')],
           link: [href('cost-of-marble-restoration-vs-prevention/'), tr('Read the cost guide', 'اقرأ دليل التكلفة')] },
       ],
     },
@@ -2054,7 +2076,7 @@ function aboutStory() {
         </div>
       </div>
       <div class="ab-photo" ${reveal(120)}>
-        <img src="/assets/img/cs-office.webp" alt="${tr('Office glass finished by the Exotic Tint team', 'زجاج مكتب أنجزه فريق إكزوتك تينت')}" loading="lazy" decoding="async">
+        <img src="/assets/img/pf-win-13.webp" alt="${tr('Office glass finished by the Exotic Tint team', 'زجاج مكتب أنجزه فريق إكزوتك تينت')}" loading="lazy" decoding="async">
         <div class="ab-photo-tag glass-hud"><span class="ab-dot"></span>${tr('Installed on-site', 'تركيب في الموقع')}</div>
         <div class="sr-chip ab-photo-chip"><b>${tr('Homes · Offices · Buildings', 'منازل · مكاتب · مبانٍ')}</b></div>
       </div>
@@ -2114,7 +2136,7 @@ function pageAbout(page) {
   const body =
     aboutHero() +
     // after the ice hero: white, ice, white, ... (same rhythm as the homepage)
-    [aboutStory(), waBook(), areasSection(), aboutMission()]
+    [aboutStory(), aboutProfile(), waBook(), areasSection(), aboutMission()]
       .map((html, i) => `<div class="home-band ${i % 2 ? 'band-ice' : 'bg-white'} py-12 lg:py-16">${html}</div>`)
       .join('');
   return layout(
@@ -2460,8 +2482,8 @@ function finishGrid(img, title, text, items) {
       <p class="max-w-sm text-muted">${text}</p>
     </div>
     <div class="mt-10 grid gap-3 ${items.length === 2 ? 'sm:grid-cols-2' : 'grid-cols-2 lg:grid-cols-4'}">
-      ${items.map(([n, note, overlay]) => `<div class="group relative ${items.length === 2 ? 'aspect-[4/3]' : 'aspect-[3/4]'} overflow-hidden rounded-[22px]" data-a="up">
-        <img src="/assets/img/${img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
+      ${items.map(([n, note, overlay, own]) => `<div class="group relative ${items.length === 2 ? 'aspect-[4/3]' : 'aspect-[3/4]'} overflow-hidden rounded-[22px]" data-a="up">
+        <img src="/assets/img/${own || img}.webp" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
         <div class="absolute inset-0" style="${overlay}"></div>
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 to-transparent p-4 pt-16">
           <p class="font-head text-lg font-bold text-white">${n}</p>
@@ -2551,7 +2573,7 @@ function premiumConfig(slug) {
       sub: tr('Smart film goes on your existing glass. Switch it off and the glass frosts — switch it on and it’s crystal clear again.', 'يُركّب الفيلم الذكي على زجاجك الحالي. أطفئه فيصبح الزجاج مصنفراً — وشغّله فيعود شفافاً تماماً.'),
       facts: [['bolt', tr('Switch, remote or app', 'مفتاح أو ريموت أو تطبيق')], ['frost', tr('No new glass needed', 'دون تغيير الزجاج')], ['sun', tr('Light still comes in', 'الضوء يبقى يدخل')]],
       wa: tr('Hi, I want a price for smart switchable film. Glass size / room: ', 'مرحباً، أريد سعر الفيلم الذكي. مقاس الزجاج / الغرفة: '),
-      stage: { fx: 'smart', img: 'residential', pos: '60% 50%', alt: tr('Office glass with smart film', 'زجاج مكتب مع فيلم ذكي'), off: tr('Clear mode', 'الوضع الشفاف'), on: tr('Privacy mode', 'وضع الخصوصية'), metric: tr('Seen from outside', 'المرئي من الخارج'), vals: [tr('Everything', 'كل شيء'), tr('Nothing', 'لا شيء')] },
+      stage: { fx: 'smart', img: 'pf-priv-3', pos: '60% 50%', alt: tr('Office glass with smart film', 'زجاج مكتب مع فيلم ذكي'), off: tr('Clear mode', 'الوضع الشفاف'), on: tr('Privacy mode', 'وضع الخصوصية'), metric: tr('Seen from outside', 'المرئي من الخارج'), vals: [tr('Everything', 'كل شيء'), tr('Nothing', 'لا شيء')] },
       how: { title: tr('How smart film <span class="text-grad">switches</span>', 'كيف يتحول <span class="text-grad">الفيلم الذكي</span>'), outZone: tr('CORRIDOR', 'الممر'), inZone: tr('YOUR ROOM', 'غرفتك'), baseLabel: tr('Glass', 'الزجاج'), sourceEmoji: 'camera', insideEmoji: 'locked', layerLabel: tr('Smart film', 'فيلم ذكي'), layerFill: '#dfe7ef',
         rays: [
           { color: '#1d3150', label: tr('Eyes', 'الأنظار'), inLabel: tr('Can see in', 'يرون الداخل'), film: 'block', filmLabel: tr('View blocked', 'الرؤية محجوبة') },
@@ -2582,7 +2604,7 @@ function premiumConfig(slug) {
       sub: tr('Invisible film for marble, wood, tabletops, countertops and stainless steel. Stops stains, etching and scratches — for far less than restoring.', 'فيلم غير مرئي للرخام والخشب والطاولات وأسطح المطابخ والستانلس ستيل. يمنع البقع والتآكل والخدوش — بتكلفة أقل بكثير من الترميم.'),
       facts: [['shield', tr('Invisible gloss or matte', 'لامع أو مطفي غير مرئي')], ['clock', tr('Lasts 7–10 years', 'يدوم ٧–١٠ سنوات')], ['wallet', tr('Cheaper than restoring', 'أرخص من الترميم')]],
       wa: tr('Hi, I want surface protection film for: ', 'مرحباً، أريد فيلم حماية أسطح لـ: '),
-      stage: { fx: 'shield', img: 'marble', alt: tr('Marble table being protected', 'طاولة رخام تتم حمايتها'), off: tr('Unprotected surface', 'سطح دون حماية'), on: tr('Protection film on', 'مع فيلم الحماية'), metric: tr('Surface', 'السطح'), vals: [tr('Scratched & stained', 'خدوش وبقع'), tr('Protected', 'محمي')] },
+      stage: { fx: 'shield', img: 'pf-surf-7', alt: tr('Marble table being protected', 'طاولة رخام تتم حمايتها'), off: tr('Unprotected surface', 'سطح دون حماية'), on: tr('Protection film on', 'مع فيلم الحماية'), metric: tr('Surface', 'السطح'), vals: [tr('Scratched & stained', 'خدوش وبقع'), tr('Protected', 'محمي')] },
       how: { title: tr('How the film <span class="text-grad">protects your surfaces</span>', 'كيف يحمي الفيلم <span class="text-grad">أسطحك</span>'), outZone: tr('DAILY LIFE', 'الاستخدام اليومي'), inZone: tr('YOUR SURFACE', 'سطحك'), baseLabel: tr('Film layer', 'طبقة الفيلم'), sourceEmoji: 'droplet', insideEmoji: 'rock', layerLabel: tr('Protection film', 'فيلم حماية'), baseFill: '#f1ece4', baseStroke: '#d8cdbd', layerFill: '#c9a27a',
         rays: [
           { color: '#e9a63b', label: tr('Lemon & coffee', 'ليمون وقهوة'), inLabel: tr('Etches & stains', 'تآكل وبقع'), film: 'block', filmLabel: tr('Stays on the film', 'يبقى على الفيلم') },
@@ -2590,7 +2612,7 @@ function premiumConfig(slug) {
           { color: '#8b5cf6', label: tr('Fingerprints', 'البصمات'), inLabel: tr('Smudges', 'لطخات'), film: 'block', filmLabel: tr('Wipe clean', 'تُمسح بسهولة') },
         ],
         meter: ['', tr('High risk', 'خطر عالٍ'), tr('Protected', 'محمي'), tr('Protected', 'محمي')],
-        steps: [[tr('Daily life', 'الاستخدام اليومي'), tr('Surfaces take a beating', 'الأسطح تتعرض للكثير'), tr('Acid, keys, hot cups and fingerprints all leave their mark.', 'الأحماض والمفاتيح والأكواب الساخنة والبصمات كلها تترك أثرها.')], [tr('No film', 'بدون فيلم'), tr('Without film, marks are permanent', 'بدون فيلم، العلامات دائمة'), tr('Lemon etches marble, water rings wood, keys scratch steel — then you pay to restore.', 'الليمون يحفر الرخام والماء يترك حلقات على الخشب والمفاتيح تخدش الستانلس — ثم تدفع للترميم.')], [tr('With film', 'مع الفيلم'), tr('With protection film', 'مع فيلم الحماية'), tr('The film takes the hit. Wipe it clean — the surface underneath stays perfect.', 'الفيلم يتحمل الضرر. امسحه — ويبقى السطح تحته مثالياً.')], [tr('Result', 'النتيجة'), tr('What you save', 'ماذا توفر'), tr('Restoration can cost QAR 120–250/m² every few years. Film is QAR 80–120/m², once.', 'قد يكلف الترميم ١٢٠–٢٥٠ ريال/م² كل بضع سنوات. الفيلم ٨٠–١٢٠ ريال/م² مرة واحدة.')]],
+        steps: [[tr('Daily life', 'الاستخدام اليومي'), tr('Surfaces take a beating', 'الأسطح تتعرض للكثير'), tr('Acid, keys, hot cups and fingerprints all leave their mark.', 'الأحماض والمفاتيح والأكواب الساخنة والبصمات كلها تترك أثرها.')], [tr('No film', 'بدون فيلم'), tr('Without film, marks are permanent', 'بدون فيلم، العلامات دائمة'), tr('Lemon etches marble, water rings wood, keys scratch steel — then you pay to restore.', 'الليمون يحفر الرخام والماء يترك حلقات على الخشب والمفاتيح تخدش الستانلس — ثم تدفع للترميم.')], [tr('With film', 'مع الفيلم'), tr('With protection film', 'مع فيلم الحماية'), tr('The film takes the hit. Wipe it clean — the surface underneath stays perfect.', 'الفيلم يتحمل الضرر. امسحه — ويبقى السطح تحته مثالياً.')], [tr('Result', 'النتيجة'), tr('What you save', 'ماذا توفر'), tr('Restoration has to be repeated every few years. Film is installed once and protects for 7–10 years.', 'الترميم يتكرر كل بضع سنوات. أما الفيلم فيُركّب مرة واحدة ويحمي لمدة ٧–١٠ سنوات.')]],
         results: [tr('Stain, etch & scratch protection', 'حماية من البقع والتآكل والخدوش'), tr('Same natural look', 'نفس المظهر الطبيعي'), tr('Lasts 7–10 years', 'يدوم ٧–١٠ سنوات')], note: tr('Prices from our marble restoration guide.', 'الأسعار من دليل ترميم الرخام لدينا.') },
       ox: {
         kicker: tr('Four surfaces', 'أربعة أسطح'),
@@ -2604,9 +2626,8 @@ function premiumConfig(slug) {
         ],
       },
       middle: () => finishGrid('marble', tr('Gloss or <span class="text-grad">matte.</span>', 'لامع أو <span class="text-grad">مطفي.</span>'), tr('We match the film to your surface, so nobody can tell it’s there.', 'نطابق الفيلم مع سطحك حتى لا يلاحظه أحد.'), [
-        [tr('Gloss', 'لامع'), tr('For polished marble & steel — keeps the shine', 'للرخام المصقول والستانلس — يحافظ على اللمعة'), 'background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.65) 42%,rgba(255,255,255,.15) 52%,transparent 62%),linear-gradient(0deg,rgba(255,255,255,.08),rgba(255,255,255,.08))'],
-        [tr('Matte', 'مطفي'), tr('For honed stone & wood — no shine added', 'للحجر غير اللامع والخشب — دون لمعة إضافية'), 'background:rgba(238,234,226,.45);backdrop-filter:saturate(.55) contrast(.9);-webkit-backdrop-filter:saturate(.55) contrast(.9)'],
-      ]),
+        [tr('Gloss', 'لامع'), tr('For polished marble & steel — keeps the shine', 'للرخام المصقول والستانلس — يحافظ على اللمعة'), 'background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.65) 42%,rgba(255,255,255,.15) 52%,transparent 62%),linear-gradient(0deg,rgba(255,255,255,.08),rgba(255,255,255,.08))', 'pf-surf-5'],
+        [tr('Matte', 'مطفي'), tr('For honed stone & wood — no shine added', 'للحجر غير اللامع والخشب — دون لمعة إضافية'), 'background:linear-gradient(0deg,rgba(255,255,255,.06),rgba(255,255,255,.06))', 'pf-surf-2'],]),
       steps: [[tr('Send photos of the surface', 'أرسل صور السطح'), tr('Size and material. Fixed price back.', 'المقاس ونوع المادة. نرد بسعر ثابت.')], [tr('We clean & prep', 'نُنظف ونُجهز'), tr('The surface must be spotless first.', 'يجب أن يكون السطح نظيفاً تماماً أولاً.')], [tr('Film fitted invisibly', 'تركيب غير مرئي'), tr('Edges trimmed flush, ready to use.', 'حواف مقصوصة بدقة وجاهز للاستخدام.')]],
       cta: [tr('Protect it once. <span class="text-grad">Stop paying to restore it.</span>', 'احمه مرة واحدة. <span class="text-grad">وتوقف عن دفع تكاليف الترميم.</span>'), 'marble'],
     },
@@ -2616,7 +2637,7 @@ function premiumConfig(slug) {
       sub: tr('Decorative films, office branding, frosted designs and wallpaper — cut to your design and fitted on-site.', 'أفلام ديكورية وهوية بصرية للمكاتب وتصاميم مصنفرة وورق جدران — تُقص حسب تصميمك وتُركّب في موقعك.'),
       facts: [['edit', tr('Any design or logo', 'أي تصميم أو شعار')], ['check', tr('Proof before we cut', 'نموذج قبل القص')], ['layers', tr('Removable later', 'قابل للإزالة')]],
       wa: tr('Hi, I want decorative film / branding for: ', 'مرحباً، أريد فيلماً ديكورياً / هوية بصرية لـ: '),
-      stage: { fx: 'pattern', img: 'commercial', pos: '70% 40%', alt: tr('Office glass with branded film', 'زجاج مكتب مع فيلم بالهوية'), off: tr('Plain glass', 'زجاج عادي'), on: tr('Branded with Exotic Tint', 'بهوية من إكزوتك تينت'), metric: tr('Your glass', 'زجاجك'), vals: [tr('Plain', 'عادي'), tr('On brand', 'بهويتك')] },
+      stage: { fx: 'pattern', img: 'pf-win-3', pos: '70% 40%', alt: tr('Office glass with branded film', 'زجاج مكتب مع فيلم بالهوية'), off: tr('Plain glass', 'زجاج عادي'), on: tr('Branded with Exotic Tint', 'بهوية من إكزوتك تينت'), metric: tr('Your glass', 'زجاجك'), vals: [tr('Plain', 'عادي'), tr('On brand', 'بهويتك')] },
       how: { title: tr('How decorative film <span class="text-grad">works for you</span>', 'كيف يعمل الفيلم الديكوري <span class="text-grad">لصالحك</span>'), outZone: tr('PASSERS-BY', 'المارّة'), inZone: tr('YOUR SPACE', 'مساحتك'), baseLabel: tr('Glass', 'الزجاج'), sourceEmoji: 'camera', insideEmoji: 'office', layerLabel: tr('Decorative film', 'فيلم ديكوري'), layerFill: '#bfe5f6',
         rays: [
           { color: '#1d3150', label: tr('Eyes', 'الأنظار'), inLabel: tr('See everything', 'يرون كل شيء'), film: 'block', filmLabel: tr('View softened', 'الرؤية مخففة') },
@@ -3444,7 +3465,101 @@ function pagePost(page) {
 }
 
 /* ------------------------------------------------------------------ build */
-const renderers = { home: pageHome, about: pageAbout, services: pageServices, service: pageService, contact: pageContact, reviews: pageReviews, blogs: pageBlogs, post: pagePost };
+
+/* Portfolio: the client's real jobs, filterable, with a lightbox */
+function pagePortfolio(page) {
+  const CAT = {
+    sky: tr('Skylights', 'المناور'),
+    win: tr('Windows & façades', 'النوافذ والواجهات'),
+    priv: tr('Privacy & blackout', 'الخصوصية والتعتيم'),
+    surf: tr('Marble & surfaces', 'الرخام والأسطح'),
+  };
+  const counts = Object.fromEntries(Object.keys(CAT).map((k) => [k, PORTFOLIO.filter((p) => p.cat === k).length]));
+  const chip = (k, label, n, on) => `<button type="button" class="pf-chip${on ? ' is-on' : ''}" data-pf-filter="${k}" aria-pressed="${on}">${label} <span dir="ltr">${num(n)}</span></button>`;
+  const card = (p, i) => `
+      <button type="button" class="pf-item${i % 9 === 0 ? ' pf-big' : p.tall ? ' pf-tall' : i % 9 === 5 ? ' pf-wide' : ''}" data-pf-item="${p.cat}" data-pf-i="${i}" aria-label="${esc(CAT[p.cat])} — ${tr('open photo', 'فتح الصورة')} ${i + 1}">
+        <img src="/assets/img/${p.name}-sm.webp" data-full="/assets/img/${p.name}.webp" alt="${esc(CAT[p.cat])} — ${tr('Exotic Tint project in Qatar', 'مشروع إكزوتك تينت في قطر')}" loading="lazy" decoding="async">
+        <span class="pf-shade" aria-hidden="true"></span>
+        <span class="pf-tag">${CAT[p.cat]}</span>
+        <span class="pf-zoom" aria-hidden="true">${icon('plus', 'h-4 w-4', 2.6)}</span>
+      </button>`;
+  const body = `
+<section class="px-2.5 sm:px-3">
+  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+    <div class="pointer-events-none absolute inset-0 grid-lines"></div>
+    <div class="container-site relative py-10 text-center lg:py-14">
+      <nav class="flex items-center justify-center gap-2 text-sm text-muted" aria-label="Breadcrumb" data-a="down">
+        <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}<span class="font-semibold text-ink">${tr('Portfolio', 'أعمالنا')}</span>
+      </nav>
+      <h1 class="mx-auto mt-5 max-w-3xl text-balance font-head text-[2.3rem] font-extrabold leading-[1.06] text-ink sm:text-[3.4rem]">${tr('Real jobs. <span class="text-grad">Real results.</span>', 'أعمال حقيقية. <span class="text-grad">نتائج حقيقية.</span>')}</h1>
+          </div>
+  </div>
+</section>
+<section class="py-12 lg:py-16">
+  <div class="container-site">
+    <div class="pf-chips" role="group" aria-label="${tr('Filter projects', 'تصفية المشاريع')}">
+      ${chip('all', tr('All work', 'كل الأعمال'), PORTFOLIO.length, true)}
+      ${Object.entries(CAT).map(([k, l]) => chip(k, l, counts[k], false)).join('')}
+    </div>
+    <div class="pf-grid mt-8" data-pf>${PORTFOLIO.map(card).join('')}</div>
+  </div>
+</section>
+<section class="px-2.5 pb-16 sm:px-3">
+  <div class="pf-cta container-site">
+    <div>
+      <h2 class="font-head text-[1.8rem] font-extrabold leading-tight text-white sm:text-[2.3rem]">${tr('Want results like these?', 'تريد نتائج مثل هذه؟')}</h2>
+      <p class="mt-2 text-white/70">${tr('Send us a photo of your glass or surface — we reply with a free quote.', 'أرسل لنا صورة زجاجك أو سطحك — ونرد بعرض سعر مجاني.')}</p>
+    </div>
+    <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-primary">${waIcon('h-5 w-5')} ${tr('Get a free quote', 'احصل على عرض مجاني')}</a>
+  </div>
+</section>
+<div class="pf-box" data-pf-box hidden>
+  <button type="button" class="pf-x" data-pf-close aria-label="${tr('Close', 'إغلاق')}">${icon('x', 'h-5 w-5', 2.4)}</button>
+  <button type="button" class="pf-nav pf-prev" data-pf-prev aria-label="${tr('Previous', 'السابق')}">${icon('chevron', 'h-6 w-6 rotate-90 rtl:-rotate-90', 2.4)}</button>
+  <figure class="pf-fig"><img alt="" data-pf-img><figcaption data-pf-cap></figcaption></figure>
+  <button type="button" class="pf-nav pf-next" data-pf-next aria-label="${tr('Next', 'التالي')}">${icon('chevron', 'h-6 w-6 -rotate-90 rtl:rotate-90', 2.4)}</button>
+</div>`;
+  return layout(
+    page,
+    {
+      title: tr('Portfolio — Window Film & Surface Protection Projects in Qatar | Exotic Tint', 'أعمالنا — مشاريع أفلام النوافذ وحماية الأسطح في قطر | إكزوتك تينت'),
+      description: tr('Photos of real Exotic Tint jobs across Qatar: skylight film, villa and office windows, blackout and privacy film, marble and wood surface protection.', 'صور من أعمال إكزوتك تينت الحقيقية في قطر: أفلام المناور ونوافذ الفلل والمكاتب وأفلام التعتيم والخصوصية وحماية الرخام والخشب.'),
+      image: 'pf-sky-4',
+    },
+    body
+  );
+}
+
+/* About: company profile (facts we know; no invented numbers) */
+function aboutProfile() {
+  const fact = (k, v) => `<div class="cp-fact"><dt>${k}</dt><dd>${v}</dd></div>`;
+  const work = ['pf-win-13', 'pf-sky-6', 'pf-surf-7'];
+  return `
+<section>
+  <div class="container-site">
+    <div class="cp" ${reveal()}>
+      <div>
+        <span class="eyebrow">${tr('Company profile', 'ملف الشركة')}</span>
+        <h2 class="cp-title">${tr('Exotic Tint for <span class="text-grad">Trading and Contracting</span>', 'إكزوتك تينت <span class="text-grad">للتجارة والمقاولات</span>')}</h2>
+        <p class="cp-p">${tr('We are a Qatar-based trading and contracting company specialising in <strong>window films and surface protection</strong>. We supply and install heat-control and safety films, smart switchable glass, marble and surface protection films, decorative and branding films, and fabric nano coating — for villas, apartments, offices, shops and buildings.', 'نحن شركة تجارة ومقاولات مقرها قطر، متخصصة في <strong>أفلام النوافذ وحماية الأسطح</strong>. نورّد ونركّب أفلام العزل الحراري والأمان، والزجاج الذكي القابل للتحويل، وأفلام حماية الرخام والأسطح، والأفلام الديكورية والهوية البصرية، وطلاء النانو للأقمشة — للفلل والشقق والمكاتب والمحلات والمباني.')}</p>
+        <p class="cp-p">${tr('Every job is done <strong>on-site by our own team</strong>: we visit, measure, recommend the right film, install it and check the finish before we hand over.', 'يُنفَّذ كل عمل <strong>في الموقع بواسطة فريقنا</strong>: نزورك ونقيس ونوصي بالفيلم المناسب ثم نركّبه ونفحص النتيجة قبل التسليم.')}</p>
+        <dl class="cp-facts">
+          ${fact(tr('Company', 'الشركة'), tr('Exotic Tint for Trading and Contracting', 'إكزوتك تينت للتجارة والمقاولات'))}
+          ${fact(tr('Based in', 'المقر'), t(C.site.address))}
+          ${fact(tr('Coverage', 'التغطية'), tr('Doha, Lusail, The Pearl, Al Rayyan, Al Wakra and all of Qatar', 'الدوحة ولوسيل واللؤلؤة والريان والوكرة وكل قطر'))}
+          ${fact(tr('Services', 'الخدمات'), `${num(C.services.length)} ${tr('specialist services', 'خدمات متخصصة')}`)}
+          ${fact(tr('Clients', 'العملاء'), tr('Homes, villas, offices, shops and buildings', 'منازل وفلل ومكاتب ومحلات ومبانٍ'))}
+          ${fact(tr('Working hours', 'ساعات العمل'), t(C.site.hours))}
+        </dl>
+        <a href="${href('portfolio/')}" class="cp-link">${tr('See our portfolio', 'شاهد أعمالنا')} ${arrow('h-4 w-4')}</a>
+      </div>
+      <div class="cp-photos">${work.map((w, i) => `<img src="/assets/img/${w}${i ? '-sm' : ''}.webp" alt="${tr('Exotic Tint team at work in Qatar', 'فريق إكزوتك تينت أثناء العمل في قطر')}" loading="lazy" decoding="async">`).join('')}</div>
+    </div>
+  </div>
+</section>`;
+}
+
+const renderers = { home: pageHome, about: pageAbout, services: pageServices, service: pageService, contact: pageContact, reviews: pageReviews, portfolio: pagePortfolio, blogs: pageBlogs, post: pagePost };
 // Site base path: "/" for a custom domain or local dev, "/Exotic-tint-Qatar/" for GitHub Pages.
 // Set with the BASE environment variable at build time.
 const BASE = ('/' + (process.env.BASE || '').replace(/^\/+|\/+$/g, '') + '/').replace('//', '/');

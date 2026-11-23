@@ -318,7 +318,8 @@ function twin(host) {
     hg.setAttribute('position', new THREE.BufferAttribute(hpos, 3));
     const heat = new THREE.Points(hg, new THREE.PointsMaterial({ map: radial([[0, 'rgba(255,255,255,1)'], [1, 'rgba(255,255,255,0)']], 64), color: film ? '#93c5fd' : '#ffae5c', size: 0.13, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending }));
     g.add(heat);
-    const light = { v: 1 };
+    const light = { v: 1, h: film ? 0 : 1 }; // h: 1 = hot sun patch, 0 = film-cooled
+    const hotC = new THREE.Color('#ff8a3c'), coolC = new THREE.Color('#6fb3ff');
     S.frames.push((t) => {
       for (let i = 0; i < N; i++) {
         const b = base[i], u = (b.ph + t * sp * b.s) % 1;
@@ -334,9 +335,11 @@ function twin(host) {
         hpos[i * 3 + 2] = b.z;
       }
       hg.attributes.position.needsUpdate = true;
-      const lv = light.v;
-      patchMat.opacity = ((film ? 0.22 : 0.55) + Math.sin(t * 1.6) * 0.05) * lv;
-      beamMat.opacity = (film ? 0.05 : 0.2) * lv;
+      const lv = light.v, hk = light.h;
+      patchMat.opacity = (0.22 + 0.33 * hk + Math.sin(t * 1.6) * 0.05) * lv;
+      patchMat.color.copy(coolC).lerp(hotC, hk);
+      beamMat.opacity = (0.05 + 0.15 * hk) * lv;
+      beamMat.color.set(hk > 0.5 ? '#ffcf85' : '#9cc9ff');
     });
     rooms.push({ g, filmMesh, film, gMat, crackMat, shards, patchMat, beamMat, light });
   }
@@ -413,10 +416,45 @@ function twin(host) {
   const cur = () => modes[Math.min(modes.length - 1, +(host.dataset.step || 0))] || modes[0];
   let started = false;
   host.addEventListener('h3:step', () => { if (started) play(cur()); });
+  /* homepage story: same sun → film on → heat bounces → cooler, on a loop */
+  const story = host.classList.contains('tw-story');
+  const segs = [...host.querySelectorAll('[data-tw-seg]')], capN = host.querySelector('[data-tw-n]'), capT = host.querySelector('[data-tw-t]'), cap = capT && capT.parentNode;
+  const stepTo = (k) => {
+    segs.forEach((s, i) => { s.classList.toggle('is-on', i === k); s.classList.toggle('is-done', i < k); });
+    if (cap && segs[k]) { cap.classList.remove('is-swap'); void cap.offsetWidth; cap.classList.add('is-swap'); capN.textContent = '0' + (k + 1); capT.textContent = segs[k].dataset.label; }
+    if (cap) cap.classList.toggle('is-done', k === segs.length - 1);
+  };
+  function playStory() {
+    if (tl) tl.kill();
+    const Rm = rooms[1], P = rooms[0], f = Rm.filmMesh;
+    const t0 = host.querySelectorAll('[data-h3-temp]');
+    say(0, word('without', 'Without film'), '<b data-h3-temp>38</b>°C');
+    say(1, word('with', 'With Exotic Tint'), '<b data-h3-temp>38</b>°C');
+    const tt = host.querySelectorAll('[data-h3-temp]');
+    const lab = [...chips].map((ch) => ch.querySelector('.h3-chip-l'));
+    if (!lab[1].dataset.orig) lab[1].dataset.orig = lab[1].textContent;
+    lab[1].textContent = lab[0].textContent;
+    const a = { v: 34 }, c = { v: 34 };
+    tl = gsap.timeline({ onComplete: () => gsap.delayedCall(1.4, playStory) });
+    tl.set(f.scale, { y: 0.001 }, 0).set(Rm.light, { h: 1, v: 1 }, 0).set(P.light, { h: 1, v: 1 }, 0);
+    tl.call(() => stepTo(0), null, 0);
+    tl.to(a, { v: 44, duration: 2.2, ease: 'power1.out', onUpdate: () => set(tt[0], a.v, 0) }, 0.1);
+    tl.to(c, { v: 44, duration: 2.2, ease: 'power1.out', onUpdate: () => set(tt[1], c.v, 1) }, 0.1);
+    tl.call(() => stepTo(1), null, 2.4);
+    tl.call(() => { lab[1].textContent = lab[1].dataset.orig; }, null, 3.6);
+    tl.to(f.scale, { y: 1, duration: 1.6, ease: 'power3.inOut' }, 2.5);
+    tl.call(() => stepTo(2), null, 4.4);
+    tl.to(Rm.light, { h: 0, duration: 1.6, ease: 'power2.inOut' }, 4.4);
+    tl.to(c, { v: 32, duration: 2.2, ease: 'power2.out', onUpdate: () => set(tt[1], c.v, 1) }, 4.6);
+    tl.to(a, { v: 46, duration: 2.2, ease: 'power2.out', onUpdate: () => set(tt[0], a.v, 0) }, 4.6);
+    tl.call(() => stepTo(3), null, 7.0);
+    tl.to({}, { duration: 2.6 }, 7.0);
+    if (reduce) tl.progress(1);
+  }
   S.onStart = () => {
     const intro = gsap.timeline({ delay: 0.2 });
     rooms.forEach((r, i) => intro.from(r.g.position, { y: 5, duration: 1.1, ease: 'bounce.out' }, i * 0.2));
-    intro.call(() => { started = true; play(cur()); }, null, 1.1);
+    intro.call(() => { started = true; if (story) playStory(); else play(cur()); }, null, 1.1);
     if (reduce) intro.progress(1);
   };
 }
@@ -517,8 +555,13 @@ function spill(host) {
   const S = makeStage(host, { cam: [6.6, 7.0, 11.2], target: [0, 1.3, 0.1], fov: 30, fovTall: 46 });
   const G = plinth(S, 10, 7.4);
   lights(S, [5, 11, 7], '#fff1dc', 2.1);
-  S.add(S.rbox(9, 3.6, 0.2, 0.05), M('#f2eee8', { roughness: 0.9 }), [0, G + 1.8, -2.6]);
-  S.add(S.rbox(9, 0.9, 0.04, 0.01), M('#ffffff', { map: marble(), roughness: 0.25 }), [0, G + 2.15, -2.48], { cast: false });
+  S.add(S.rbox(9, 3.6, 0.2, 0.05), M('#cfe0d2', { roughness: 0.9 }), [0, G + 1.8, -2.6]);
+  const tiles = canvasTex(512, 128, (g, w, h) => {
+    const cs = ['#2f7f8f', '#3b9aa8', '#1f6672', '#4fb1ba'], t = 32;
+    for (let y = 0; y < h; y += t) for (let x = 0; x < w; x += t) { g.fillStyle = cs[(Math.random() * 4) | 0]; g.fillRect(x + 1, y + 1, t - 2, t - 2); g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(x + 3, y + 3, t - 14, 4); }
+    g.fillStyle = '#e7f2ef'; for (let y = 0; y <= h; y += t) g.fillRect(0, y - 1, w, 2); for (let x = 0; x <= w; x += t) g.fillRect(x - 1, 0, 2, h);
+  });
+  S.add(S.rbox(9, 0.9, 0.04, 0.01), M('#ffffff', { map: tiles, roughness: 0.25, envMapIntensity: 1 }), [0, G + 2.15, -2.48], { cast: false });
   // back counter + cabinets
   S.add(S.rbox(8.6, 1.5, 0.9, 0.04), M('#ffffff', { map: walnut(), roughness: 0.5 }), [0, G + 0.75, -2.0]);
   S.add(S.rbox(8.8, 0.08, 1.0, 0.02), M('#ffffff', { map: marble(), roughness: 0.2 }), [0, G + 1.54, -2.0]);
@@ -535,21 +578,25 @@ function spill(host) {
     steel: { map: null, color: '#c9ced6', roughness: 0.22, metalness: 1 },
   };
   // film layer + sheen that sweeps on as it is applied
-  const filmMat = new THREE.MeshStandardMaterial({ color: '#7cc0ff', transparent: true, opacity: 0, roughness: 0.05, metalness: 0.2, depthWrite: false });
+  const filmMat = new THREE.MeshStandardMaterial({ color: '#3fa2ff', emissive: '#1d8cff', emissiveIntensity: 0.35, transparent: true, opacity: 0, roughness: 0.05, metalness: 0.2, depthWrite: false });
   S.add(new THREE.BoxGeometry(4.96, 0.004, 2.36), filmMat, [0, topY + 0.003, 0.4], { cast: false, receive: false });
   const sheenMat = new THREE.MeshBasicMaterial({ map: canvasTex(128, 8, (g, w, h) => { const gr = g.createLinearGradient(0, 0, w, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,.95)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h); }), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
   const sheen = S.add(new THREE.PlaneGeometry(0.9, 2.36), sheenMat, [-2.4, topY + 0.01, 0.4], { rot: [-Math.PI / 2, 0, 0], cast: false, receive: false });
   // stools
   [-1.4, 0, 1.4].forEach((x) => {
-    S.add(new THREE.CylinderGeometry(0.32, 0.3, 0.1, 32), M('#2b3a52', { roughness: 0.6 }), [x, G + 1.1, 2.1]);
+    S.add(new THREE.CylinderGeometry(0.32, 0.3, 0.1, 32), M('#1f6672', { roughness: 0.55 }), [x, G + 1.1, 2.1]);
     S.add(new THREE.CylinderGeometry(0.04, 0.04, 1.0, 10), M('#c9a25e', { metalness: 1, roughness: 0.3 }), [x, G + 0.58, 2.1]);
     S.add(new THREE.TorusGeometry(0.22, 0.02, 8, 30), M('#c9a25e', { metalness: 1, roughness: 0.3 }), [x, G + 0.4, 2.1], { rot: [Math.PI / 2, 0, 0] });
   });
   // pendants
   [-1.4, 0, 1.4].forEach((x) => {
     S.add(new THREE.CylinderGeometry(0.008, 0.008, 1.6, 6), M('#1f2937'), [x, G + 4.0, 0.4], { cast: false });
-    S.add(new THREE.SphereGeometry(0.2, 24, 16), glowM('#fff1d6'), [x, G + 3.1, 0.4], { cast: false });
+    S.add(new THREE.ConeGeometry(0.3, 0.32, 32, 1, true), M('#c9a25e', { metalness: 1, roughness: 0.3, side: THREE.DoubleSide }), [x, G + 3.28, 0.4], { cast: false });
+    S.add(new THREE.SphereGeometry(0.14, 24, 16), glowM('#ffd27a'), [x, G + 3.12, 0.4], { cast: false });
   });
+  // potted plant on the back counter
+  S.add(new THREE.CylinderGeometry(0.22, 0.17, 0.4, 24), M('#e9dccb', { roughness: 0.8 }), [3.2, G + 1.78, -2.1]);
+  for (let i = 0; i < 9; i++) { const a = (i / 9) * Math.PI * 2; S.add(new THREE.SphereGeometry(0.17, 12, 10), M(i % 2 ? '#4f9d69' : '#3e8a59', { roughness: 0.7 }), [3.2 + Math.cos(a) * 0.17, G + 2.2 + (i % 3) * 0.12, -2.1 + Math.sin(a) * 0.17]); }
   // fruit bowl
   S.add(new THREE.LatheGeometry([[0, 0], [0.32, 0.02], [0.4, 0.16], [0.42, 0.2]].map(([a, b]) => new THREE.Vector2(a, b)), 40), M('#ffffff', { roughness: 0.4, side: THREE.DoubleSide }), [-1.5, topY, 0.1]);
   [[-1.58, 0.12, 0.06, '#f59e0b'], [-1.42, 0.14, 0.16, '#84cc16'], [-1.5, 0.22, 0.02, '#ef4444']].forEach(([x, y, z, c]) => S.add(new THREE.SphereGeometry(0.12, 20, 14), M(c, { roughness: 0.5 }), [x, topY + y, 0.1 + z]));
