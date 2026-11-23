@@ -213,21 +213,15 @@ ${graph.map((g) => `<script type="application/ld+json">${JSON.stringify(g)}</scr
 function header(page) {
   const other = L === 'en' ? 'ar' : 'en';
   const cur = (k) => (page.key === k ? ' aria-current="page"' : '');
-  const MG = { 'architectural-window-film-solutions': 'pf-sky-4', 'smart-glass-privacy-solutions': 'pf-priv-3', 'surface-protection-solutions': 'pf-surf-5', 'decorative-interior-solutions': 'pf-win-3', 'fabric-material-protection': 'nano' };
-  const mgImg = (s) => (MG[s.slug].startsWith('pf-') ? MG[s.slug] + '-sm' : MG[s.slug]);
   const megaItems = C.services
     .map(
-      (s, i) => `<a href="${href('service/' + s.slug + '/')}" class="mg-item${i ? '' : ' is-on'}" data-mg-img="/assets/img/${mgImg(s)}.webp" data-mg-t="${esc(t(s.title))}" data-mg-n="${num(s.options.length)} ${s.options.length === 1 ? tr('solution', 'حل') : tr('solutions', 'حلول')}">
-        <img class="mg-thumb" src="/assets/img/${mgImg(s)}.webp" alt="" loading="lazy" decoding="async">
-        <span class="min-w-0"><span class="mg-t">${t(s.title)}</span><span class="mg-s">${t(s.short)}</span></span>
+      (s) => `<a href="${href('service/' + s.slug + '/')}" class="mg-item">
+        <span class="mg-ic" style="background:${SV[s.slug].bg}">${img3d(SV[s.slug].emoji, 'h-6 w-6')}</span>
+        <span class="mg-t">${t(s.title)}</span>
+        ${arrow('mg-arr h-4 w-4')}
       </a>`
     )
     .join('');
-  const s0 = C.services[0];
-  const megaFeature = `<a href="${href('service/' + s0.slug + '/')}" class="mg-feat" data-mg-feat>
-          <img src="/assets/img/${mgImg(s0)}.webp" alt="" data-mg-fimg loading="lazy" decoding="async">
-          <span class="mg-feat-b"><span class="mg-feat-n" data-mg-fn>${num(s0.options.length)} ${tr('solutions', 'حلول')}</span><span class="mg-feat-t" data-mg-ft>${t(s0.title)}</span></span>
-        </a>`;
   return `
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">${t(C.ui.skip)}</a>
 
@@ -249,14 +243,8 @@ function header(page) {
       <div class="has-mega" data-mega>
         <button type="button" class="nav-link" aria-expanded="false" data-mega-btn${page.key === 'service' || page.key === 'services' ? ' aria-current="page"' : ''}>${t(C.ui.nav.services)} ${icon('chevron', 'chev h-4 w-4')}</button>
         <div class="mega" data-mega-panel>
-          <div class="mg-grid">
-            <div class="mg-list">${megaItems}</div>
-            ${megaFeature}
-          </div>
-          <div class="mg-foot">
-            <a href="${href('service/')}" class="mg-all">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
-            <a href="${waHello()}" target="_blank" rel="noopener" class="mg-wa">${waIcon('h-4 w-4')} ${tr('Free quote on WhatsApp', 'عرض مجاني عبر واتساب')}</a>
-          </div>
+          <div class="mg-list">${megaItems}</div>
+          <a href="${href('service/')}" class="mg-all">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
         </div>
       </div>
       <a href="${href('about/')}" class="nav-link"${cur('about')}>${t(C.ui.nav.about)}</a>

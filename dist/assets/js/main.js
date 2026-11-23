@@ -1031,18 +1031,3 @@ document.addEventListener('click', function (e) {
   box.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
   box.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + ((dx < 0) !== rtl ? 1 : -1)); x0 = null; });
 })();
-
-/* Services dropdown: the feature panel follows the hovered service */
-(function () {
-  var feat = document.querySelector('[data-mg-feat]');
-  if (!feat) return;
-  var img = feat.querySelector('[data-mg-fimg]'), ft = feat.querySelector('[data-mg-ft]'), fn = feat.querySelector('[data-mg-fn]');
-  var items = [].slice.call(document.querySelectorAll('.mg-item[data-mg-img]'));
-  items.forEach(function (it) {
-    it.addEventListener('mouseenter', function () {
-      items.forEach(function (x) { x.classList.toggle('is-on', x === it); });
-      if (img.getAttribute('src') !== it.dataset.mgImg) { img.style.opacity = '0'; setTimeout(function () { img.src = it.dataset.mgImg; img.style.opacity = '1'; }, 150); }
-      ft.textContent = it.dataset.mgT; fn.textContent = it.dataset.mgN; feat.href = it.href;
-    });
-  });
-})();

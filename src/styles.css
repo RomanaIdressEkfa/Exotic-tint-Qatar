@@ -2719,29 +2719,6 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
 .nav-pill .nav-link:hover { color: #0878e8; }
 .nav-pill .nav-link[aria-current='page'] { color: #0878e8 !important; }
 
-/* ---------- Services dropdown v2: real photos, one feature panel ---------- */
-.mega { width: 760px !important; padding: .75rem !important; border-radius: 22px !important; }
-.mg-grid { display: grid; grid-template-columns: 1fr 250px; gap: .75rem; }
-.mg-list { grid-template-columns: 1fr !important; gap: 2px !important; }
-.mg-item { gap: .8rem !important; padding: .5rem .6rem !important; border-radius: 14px !important; }
-.mg-item:hover, .mg-item.is-on { background: #f3f8ff !important; color: var(--ink) !important; }
-.mg-thumb { flex-shrink: 0; width: 46px; height: 46px; border-radius: 12px; object-fit: cover; box-shadow: 0 6px 14px -8px rgba(7,29,56,.5); }
-.mg-t { display: block; font-size: .92rem !important; font-weight: 700 !important; white-space: normal !important; color: var(--ink); transition: color .2s; }
-.mg-s { display: block; margin-top: .1rem; font-size: .76rem; color: #64748b; }
-.mg-item:hover .mg-t, .mg-item.is-on .mg-t { color: #0878e8; }
-.mg-feat { position: relative; display: block; overflow: hidden; border-radius: 16px; min-height: 100%; background: #dfe7f1; }
-.mg-feat img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .35s ease, transform 1.2s ease; }
-.mg-feat:hover img { transform: scale(1.05); }
-.mg-feat::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(7,29,56,.82)); }
-.mg-feat-b { position: absolute; z-index: 1; inset-inline: 14px; bottom: 14px; display: grid; gap: .2rem; }
-.mg-feat-n { justify-self: start; padding: .2rem .55rem; border-radius: 99px; font-size: .68rem; font-weight: 800; color: #fff; background: rgba(255,255,255,.2); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
-.mg-feat-t { font: 800 1.02rem/1.25 'Inter', 'IBM Plex Sans Arabic', sans-serif; color: #fff; }
-.mg-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .6rem; padding: .7rem .6rem .2rem; border-top: 1px solid #eef2f7; }
-.mg-all { margin: 0 !important; padding: 0 !important; border: 0 !important; gap: .4rem; justify-content: flex-start !important; }
-.mg-wa { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; font-weight: 700; color: #16a34a; }
-.mg-wa:hover { color: #15803d; }
-@media (max-width: 1180px) { .mega { width: 640px !important; } .mg-grid { grid-template-columns: 1fr 200px; } }
-
 /* ---------- Homepage hero: bigger headline + proof row ---------- */
 [data-hero] h1.font-head { font-size: clamp(2.6rem, 1.5rem + 3.1vw, 4.1rem) !important; line-height: 1.04 !important; letter-spacing: -.035em; }
 [dir='rtl'] [data-hero] h1.font-head { line-height: 1.28 !important; letter-spacing: 0; }
@@ -2855,11 +2832,5 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
 @media (max-width: 640px) { .tw-story .tw3-time { padding: .55rem .5rem; } .tw3-seg em { width: 22px; height: 22px; font-size: .64rem; } .tw3-seg i { top: 10px; inset-inline-start: calc(50% + 13px); width: calc(100% - 26px); } .tw3-seg span { font-size: .6rem !important; } }
 /* two rooms: one guide only — the bottom step track (no caption over the rooms) */
 .tw-story .tw3-now { display: none !important; }
-/* homepage What to Know: the 3D renders are shown whole (zoomed out), real photos keep filling the frame */
-.kn-img:has(img[src*="/kn-"]) { background: radial-gradient(70% 70% at 50% 45%, #ffffff, #eef5fd) !important; }
-.kn-img img[src*="/kn-"], .kn-panel.is-on .kn-img img[src*="/kn-"] { object-fit: contain !important; transform: scale(.94) !important; }
-.kn-panel.is-on .kn-img img[src*="/kn-"] { transform: scale(.98) !important; }
-.kn-img img[src*="/kn-ceramic"], .kn-img img[src*="/kn-install"], .kn-img img[src*="/kn-price"],
-.kn-panel.is-on .kn-img img[src*="/kn-ceramic"], .kn-panel.is-on .kn-img img[src*="/kn-install"], .kn-panel.is-on .kn-img img[src*="/kn-price"] {
-  transform: scale(.8) !important;
-  -webkit-mask-image: radial-gradient(ellipse 70% 68% at 50% 50%, #000 60%, transparent 100%) !important; mask-image: radial-gradient(ellipse 70% 68% at 50% 50%, #000 60%, transparent 100%) !important; }
+/* homepage What to Know: every picture fills its frame (no shrink, no empty band) */
+.kn-img img, .kn-panel.is-on .kn-img img { object-fit: cover !important; transform: none !important; -webkit-mask-image: none !important; mask-image: none !important; }
