@@ -54,6 +54,7 @@ function init() {
     { x: 9.5, y: 9.5, z: 16.0, tx: -0.2, ty: 1.4, tz: 0 },
   ];
   const cam = { ...CAMS[0] };
+  if (/[?&]capture/.test(location.search)) window.__hxCam = cam; // used only to render still images
 
   /* ---------- canvas helpers ---------- */
   const rr = (g, x, y, w, h, r) => {

@@ -2853,3 +2853,13 @@ h1.font-head.post-h1 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem) !impor
 .tw3-seg.is-done span { color: #071d38 !important; }
 .tw3-seg.is-done b { width: 100% !important; background: var(--grad) !important; }
 @media (max-width: 640px) { .tw-story .tw3-time { padding: .55rem .5rem; } .tw3-seg em { width: 22px; height: 22px; font-size: .64rem; } .tw3-seg i { top: 10px; inset-inline-start: calc(50% + 13px); width: calc(100% - 26px); } .tw3-seg span { font-size: .6rem !important; } }
+/* two rooms: one guide only — the bottom step track (no caption over the rooms) */
+.tw-story .tw3-now { display: none !important; }
+/* homepage What to Know: the 3D renders are shown whole (zoomed out), real photos keep filling the frame */
+.kn-img:has(img[src*="/kn-"]) { background: radial-gradient(70% 70% at 50% 45%, #ffffff, #eef5fd) !important; }
+.kn-img img[src*="/kn-"], .kn-panel.is-on .kn-img img[src*="/kn-"] { object-fit: contain !important; transform: scale(.94) !important; }
+.kn-panel.is-on .kn-img img[src*="/kn-"] { transform: scale(.98) !important; }
+.kn-img img[src*="/kn-ceramic"], .kn-img img[src*="/kn-install"], .kn-img img[src*="/kn-price"],
+.kn-panel.is-on .kn-img img[src*="/kn-ceramic"], .kn-panel.is-on .kn-img img[src*="/kn-install"], .kn-panel.is-on .kn-img img[src*="/kn-price"] {
+  transform: scale(.8) !important;
+  -webkit-mask-image: radial-gradient(ellipse 70% 68% at 50% 50%, #000 60%, transparent 100%) !important; mask-image: radial-gradient(ellipse 70% 68% at 50% 50%, #000 60%, transparent 100%) !important; }
