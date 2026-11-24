@@ -1,0 +1,2 @@
+# Local Laragon preview: http://localhost/Exotictintqatar/ opens the built site
+RedirectMatch 302 ^/Exotictintqatar/?$ /Exotictintqatar/preview/
