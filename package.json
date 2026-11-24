@@ -10,7 +10,8 @@
     "build": "npm run html && npm run css && npm run og",
     "dev": "npm run build && node scripts/serve.js",
     "serve": "node scripts/serve.js",
-    "og": "node scripts/og.js"
+    "og": "node scripts/og.js",
+    "preview": "node scripts/preview.js"
   },
   "devDependencies": {
     "qrcode": "^1.5.4",

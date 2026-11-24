@@ -464,7 +464,8 @@ function init() {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // keep the whole room in frame on narrow screens
-    camera.fov = w / h < 0.95 ? 36 : 32;
+    // inner pages can ask for a closer view (data-zoom on the stage), the homepage keeps the default
+    camera.fov = w / h < 0.95 ? 36 : 32 / (parseFloat(host.dataset.zoom) || 1);
     camera.updateProjectionMatrix();
   }
   resize();

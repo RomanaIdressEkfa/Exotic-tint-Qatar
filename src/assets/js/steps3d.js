@@ -36,7 +36,7 @@ function init() {
 
   /* ---------- renderer / scene / camera ---------- */
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, innerWidth < 700 ? 1.5 : 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
@@ -587,13 +587,13 @@ function init() {
   ];
 
   /* ---------- camera ---------- */
-  const camTo = (a, d = 1.6) => gsap.to(cam, { ...CAMS[a], duration: d, ease: 'power2.inOut', overwrite: true });
+  const camTo = (a, d = 2.1) => gsap.to(cam, { ...CAMS[a], duration: d, ease: 'power3.inOut', overwrite: true });
   function resize() {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.fov = w / h < 1 ? 40 : 30;
+    camera.fov = w / h < 1 ? 40 : 31;
     camera.updateProjectionMatrix();
   }
   resize();
@@ -616,7 +616,7 @@ function init() {
         onComplete: () => { Object.assign(cam, CAMS[0]); run(); gsap.to(canvas, { opacity: 1, duration: 0.7 }); },
       });
     } else {
-      camTo(a, instant ? 0 : 1.6);
+      camTo(a, instant ? 0 : 2.1);
       run();
     }
   }
@@ -644,15 +644,25 @@ function init() {
   /* ---------- render loop (only while visible) ---------- */
   let running = false, started = false, raf = 0;
   const clock = new THREE.Clock();
+  let fc = 0, sx = ar ? -1.02 : 1.02, sy = 1.02;
   const sunNdc = new THREE.Vector3(), sunNow = new THREE.Vector3(), sunDir = new THREE.Vector3();
   function frame() {
     if (!running) return;
     const t = clock.getElapsedTime();
-    camera.position.set(cam.x + look.x * 1.4, cam.y - look.y * 0.9 + Math.sin(t * 0.5) * 0.08, cam.z);
+    // slow, gentle drift around the house so the scene always feels alive
+    camera.position.set(cam.x + look.x * 1.4 + Math.sin(t * 0.16) * 0.55, cam.y - look.y * 0.9 + Math.sin(t * 0.5) * 0.08, cam.z + Math.cos(t * 0.16) * 0.35);
     camera.lookAt(cam.tx, cam.ty, cam.tz);
     camera.updateMatrixWorld();
     // sunlight comes from where the sun sits on the page: just past the card's top-right corner
-    sunNdc.set(ar ? -1.02 : 1.02, 1.02, 0.5).unproject(camera).sub(camera.position).normalize();
+    // (read from the page sun itself, so the beam follows it on phones where it sits inside the card)
+    if (!(fc++ % 12)) {
+      const sEl = host.closest('.hx-stage-wrap')?.querySelector('.hx-sun-core');
+      if (sEl) {
+        const r = host.getBoundingClientRect(), q = sEl.getBoundingClientRect();
+        if (r.width && q.width) { sx = ((q.left + q.width / 2 - r.left) / r.width) * 2 - 1; sy = -(((q.top + q.height / 2 - r.top) / r.height) * 2 - 1); }
+      }
+    }
+    sunNdc.set(sx, sy, 0.5).unproject(camera).sub(camera.position).normalize();
     sunNow.copy(camera.position).addScaledVector(sunNdc, 11);
     sun.position.copy(sun.target.position).addScaledVector(sunDir.copy(sunNow).sub(sun.target.position).normalize(), 17);
     if (beamGeo) {

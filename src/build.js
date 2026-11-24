@@ -70,6 +70,21 @@ const P = {
   copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
   instagram: '<rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/>',
 };
+/* Services dropdown: premium duotone icon set — soft blue fill + gradient outline (colours set in CSS) */
+const mi = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const MEGA_DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="mg-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3aa0ff"/><stop offset="1" stop-color="#0553a3"/></linearGradient></defs></svg>`;
+const MEGA_IC = {
+  // building facade, film sheen across the glass, sun
+  'architectural-window-film-solutions': mi('<path class="f" d="M4 21V8.5L11 5v16z"/><path class="s" d="M4 21V8.5L11 5v16M11 21h9V10.5L11 8"/><path class="s" d="M6.5 11v1.5M6.5 15v1.5M8.5 10v1.5M8.5 14v1.5M14 13h3M14 16h3"/><path class="s o" d="M13.5 19.5l5-5"/><circle class="f s" cx="19" cy="4.5" r="2"/>'),
+  // glass panel: half clear, half frosted, with a switch
+  'smart-glass-privacy-solutions': mi('<rect class="s" x="3" y="3.5" width="13" height="17" rx="2"/><path class="f" d="M9.5 3.5H14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H9.5z"/><path class="s" d="M9.5 3.5v17"/><path class="s o" d="M5.5 7.5l2-2M5.5 11l2-2"/><rect class="s" x="18.5" y="7" width="3" height="8" rx="1.5"/><circle class="d" cx="20" cy="9.2" r="1"/>'),
+  // shield over a polished slab
+  'surface-protection-solutions': mi('<path class="f s" d="M12 2.8l6 2.3v4.3c0 3.6-2.5 6.1-6 7.2-3.5-1.1-6-3.6-6-7.2V5.1z"/><path class="s" d="M9.4 9.6l1.8 1.8 3.4-3.4"/><path class="s" d="M3 19.5h18M5 22h14"/><path class="s o" d="M7 19.5l1.5-1.5"/>'),
+  // patterned decorative panel
+  'decorative-interior-solutions': mi('<rect class="f s" x="4" y="3" width="16" height="18" rx="2"/><path class="s" d="M12 6.5l2.5 2.5-2.5 2.5L9.5 9zM12 12.5l2.5 2.5-2.5 2.5L9.5 15z"/><path class="s o" d="M6.5 6.5v11M17.5 6.5v11"/>'),
+  // sofa with liquid beading off
+  'fabric-material-protection': mi('<path class="f" d="M4.5 13.5h15V17h-15z"/><path class="s" d="M5.5 11V8.5A2.5 2.5 0 0 1 8 6h8a2.5 2.5 0 0 1 2.5 2.5V11"/><path class="s" d="M3 13a2 2 0 0 1 4 0v.5h10V13a2 2 0 0 1 4 0v4H3z"/><path class="s" d="M5 17v2M19 17v2"/><path class="f s" d="M12 .9s-1.7 1.9-1.7 3a1.7 1.7 0 0 0 3.4 0c0-1.1-1.7-3-1.7-3z"/>'),
+};
 const icon = (name, cls = 'h-5 w-5', sw = 1.9) =>
   `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[name]}</svg>`;
 const waIcon = (cls = 'h-5 w-5') =>
@@ -202,7 +217,7 @@ function head(page, meta) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 ${(page.key === 'home' || page.service) ? '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>' : ''}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800${L === 'ar' ? '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700' : ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/app.css">
 <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('gsap-ready');setTimeout(function(){if(!window.__gsapOn)d.classList.remove('gsap-ready')},4000)}})(document.documentElement)</script>
 ${(page.key === 'home' || page.service) ? '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>' : ''}
@@ -216,9 +231,8 @@ function header(page) {
   const megaItems = C.services
     .map(
       (s) => `<a href="${href('service/' + s.slug + '/')}" class="mg-item">
-        <span class="mg-ic" style="background:${SV[s.slug].bg}">${img3d(SV[s.slug].emoji, 'h-6 w-6')}</span>
+        <span class="mg-ic">${MEGA_IC[s.slug] || ''}</span>
         <span class="mg-t">${t(s.title)}</span>
-        ${arrow('mg-arr h-4 w-4')}
       </a>`
     )
     .join('');
@@ -243,8 +257,8 @@ function header(page) {
       <div class="has-mega" data-mega>
         <button type="button" class="nav-link" aria-expanded="false" data-mega-btn${page.key === 'service' || page.key === 'services' ? ' aria-current="page"' : ''}>${t(C.ui.nav.services)} ${icon('chevron', 'chev h-4 w-4')}</button>
         <div class="mega" data-mega-panel>
-          <div class="mg-list">${megaItems}</div>
-          <a href="${href('service/')}" class="mg-all">${tr('All services', 'كل الخدمات')} ${arrow('h-4 w-4')}</a>
+          ${MEGA_DEFS}<div class="mg-list">${megaItems}</div>
+          <a href="${href('service/')}" class="mg-all">${tr('All services', 'كل الخدمات')}</a>
         </div>
       </div>
       <a href="${href('about/')}" class="nav-link"${cur('about')}>${t(C.ui.nav.about)}</a>
@@ -316,7 +330,7 @@ function footer() {
     </a>`;
   const colCls = 'f-up py-8 lg:py-10';
   return `
-<footer class="relative mt-6 overflow-hidden bg-ink text-white" data-footer>
+<footer class="relative overflow-hidden bg-ink text-white" data-footer>
   <div class="pointer-events-none absolute inset-0 grid-lines-dark opacity-40"></div>
   <div class="pointer-events-none absolute -top-32 start-0 h-72 w-[40rem] rounded-full bg-gold-500/15 blur-[110px]"></div>
   <div class="f-topline pointer-events-none absolute inset-x-0 top-0 h-px"></div>
@@ -430,21 +444,22 @@ function archVisual({ image, alt, top, bottom }) {
 function hero() {
   return `
 <section class="px-2.5 sm:px-3">
-  <div class="hero-bg relative overflow-hidden rounded-[28px]" data-hero>
+  <div class="hero-bg hero-pro relative overflow-hidden rounded-[28px]" data-hero data-hp>
     ${aurora()}
+    <div class="hp-fx" aria-hidden="true"><i class="hp-mesh"></i><i class="hp-sun"></i><i class="hp-beam"></i><i class="hp-beam hp-b2"></i><i class="hp-spot"></i><i class="hp-noise"></i></div>
     <div class="pointer-events-none absolute inset-0 grid-lines"></div>
     <div class="container-site relative grid items-center gap-6 pb-48 pt-10 lg:grid-cols-12 lg:gap-4 lg:pb-52 lg:pt-6">
       <!-- copy (kept short) -->
       <div class="lg:col-span-5">
-        <span class="chip" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('sun', 'h-4 w-4', 2.2)}</span>${tr('Window tint · Qatar', 'تظليل النوافذ · قطر')}</span>
+        <span class="chip hp-chip" data-a="left"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('sun', 'h-4 w-4', 2.2)}</span>${tr('Window tint · Qatar', 'تظليل النوافذ · قطر')}</span>
         <h1 class="mt-6 font-head text-[2.6rem] font-extrabold leading-[1.02] text-ink min-[400px]:text-[3rem] sm:text-[4rem] lg:text-[3.6rem] xl:text-[4.6rem]">
           <span class="block" data-split>${tr('Stay cool.', 'برودة دائمة.')}</span>
-          <span class="block text-grad" data-a="up">${tr('Stay protected.', 'حماية تامة.')}</span>
+          <span class="block text-grad hp-sheen" data-a="up">${tr('Stay protected.', 'حماية تامة.')}</span>
         </h1>
         <p class="mt-5 max-w-md text-[1.1rem] leading-relaxed text-muted" data-a="up">${tr('Window film, smart glass and surface protection for villas, offices and buildings — installed on-site across Qatar.', 'أفلام نوافذ وزجاج ذكي وحماية أسطح للفلل والمكاتب والمباني — نركّبها في موقعك في أنحاء قطر.')}</p>
         <div class="hero-actions mt-8 flex flex-wrap gap-3" data-a="up">
-          <a href="${href('contact/')}#quote" class="btn btn-primary">${t(C.ui.quote)} ${arrow()}</a>
-          <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
+          <a href="${href('contact/')}#quote" class="btn btn-primary hp-shine">${t(C.ui.quote)} ${arrow()}</a>
+          <a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-white hp-glass">${waIcon('h-5 w-5 text-[#25D366]')} WhatsApp</a>
         </div>
       </div>
 
@@ -452,6 +467,7 @@ function hero() {
       <div class="relative lg:col-span-7" data-a="up">
         <div class="room3d relative aspect-square w-full sm:aspect-[5/4] lg:aspect-[11/10]" data-room>
           <div class="pointer-events-none absolute inset-[12%] rounded-full bg-gold-300/30 blur-[80px]"></div>
+          <div class="hp-stage" aria-hidden="true"><i class="hp-floor"></i><i class="hp-orbit"><b></b></i><i class="hp-orbit hp-o2"><b></b></i><span class="hp-dust">${Array.from({ length: 16 }, (_, k) => `<i style="--x:${(37 + ((k * 29) % 50))}%;--y:${(18 + ((k * 23) % 46))}%;--d:${(5 + (k % 5) * 1.3).toFixed(1)}s;--w:${-(k * 0.7).toFixed(1)}s;--s:${2 + (k % 3)}px"></i>`).join('')}</span></div>
           <canvas class="relative h-full w-full" aria-label="${tr('3D living room showing window film blocking the sun', 'غرفة ثلاثية الأبعاد توضح حجب فيلم النوافذ للشمس')}" role="img"></canvas>
           <img src="/assets/img/residential.webp" alt="" class="room-fallback-img absolute inset-[8%] hidden h-[84%] w-[84%] rounded-[28px] object-cover shadow-float">
 
@@ -512,7 +528,6 @@ function servicesGrid() {
         <div class="sv2-top"><span class="sv2-n" dir="ltr">${pad(i + 1)}</span><span class="sv2-count">${n} ${n === 1 ? tr('solution', 'حل') : tr('solutions', 'حلول')}</span></div>
         <h3 class="sv2-h">${t(s.title)}</h3>
         <img src="/assets/img/svc3d-${R[s.slug]}.webp" alt="${esc(t(s.title))} — ${esc(t(s.short))}" class="sv2-img" loading="lazy" decoding="async" width="560" height="700">
-        <span class="sv2-go" aria-hidden="true"><span class="sv2-go-t">${tr('Explore', 'استكشف')}</span>${arrow('h-4 w-4')}</span>
       </a>`;
   };
   return `
@@ -814,7 +829,7 @@ function homeTwin() {
 
 /* 2 · stage with an in-scene control panel, use cases beside it */
 function homeSmart() {
-  const use = (ic, a, b) => `<li class="sm2-use"><span class="sm2-ic">${icon(ic, 'h-5 w-5', 2.2)}</span><span><b>${a}</b><span>${b}</span></span></li>`;
+  const use = (ic, a) => `<li class="sm2-use sm4-tile"><span class="sm2-ic">${icon(ic, 'h-5 w-5', 2.2)}</span><b>${a}</b></li>`;
   return `
 <section class="py-14 lg:py-20">
   <div class="container-site">
@@ -834,17 +849,12 @@ function homeSmart() {
       <div class="sm2-text" ${reveal(60)}>
         <span class="eyebrow">${tr('Smart glass', 'الزجاج الذكي')}</span>
         <h2 class="h3-title">${tr('Private <span class="text-grad">at a tap.</span>', 'خصوصية <span class="text-grad">بلمسة.</span>')}</h2>
-        <p class="h3-line">${tr('Switchable film is applied to your existing glass. Power on — clear. Power off — frosted, in under a second.', 'يُركّب الفيلم الذكي على زجاجك الحالي. تشغيل — شفاف. إطفاء — مصنفر، في أقل من ثانية.')}</p>
-        <ul class="sm2-uses sm3-list">
-          ${use('building', tr('Meeting rooms', 'غرف الاجتماعات'), tr('Open by day, private for calls.', 'مفتوحة نهاراً وخاصة للمكالمات.'))}
-          ${use('home', tr('Bathrooms & bedrooms', 'الحمامات وغرف النوم'), tr('Light in, view out — only when you want.', 'ضوء ورؤية — فقط عندما تريد.'))}
-          ${use('shield', tr('Clinics & offices', 'العيادات والمكاتب'), tr('Privacy for patients and staff.', 'خصوصية للمرضى والموظفين.'))}
+        <p class="h3-line">${tr('Clear when it is on. Frosted when it is off — on your existing glass.', 'شفاف عند التشغيل. مصنفر عند الإطفاء — على زجاجك الحالي.')}</p>
+        <ul class="sm2-uses sm4-tiles">
+          ${use('building', tr('Meeting rooms', 'غرف الاجتماعات'))}
+          ${use('home', tr('Bed &amp; bath', 'النوم والحمام'))}
+          ${use('shield', tr('Clinics & offices', 'العيادات والمكاتب'))}
         </ul>
-        <div class="sm3-facts">
-          <span><b>${tr('&lt; 1 sec', '&lt; ثانية')}</b>${tr('to switch', 'للتحويل')}</span>
-          <span><b>${tr('Existing', 'الزجاج')}</b>${tr('glass, no new panes', 'الحالي دون تغيير')}</span>
-          <span><b>${tr('Remote', 'ريموت')}</b>${tr('switch or app', 'مفتاح أو تطبيق')}</span>
-        </div>
       </div>
     </div>
   </div>
@@ -871,7 +881,7 @@ function homeSpill() {
         <span class="eyebrow">${tr('Surface protection', 'حماية الأسطح')}</span>
         <h2 class="h3-title">${tr('Spill it. <span class="text-grad">Wipe it.</span>', 'اسكبه. <span class="text-grad">امسحه.</span>')}</h2>
         <p class="h3-line">${tr('A clear film seals the surface, so liquids sit on top and wipe straight off — no stains, no etching.', 'فيلم شفاف يغلق السطح، فتبقى السوائل فوقه وتُمسح فوراً — بلا بقع ولا تآكل.')}</p>
-        <p class="sp9-mat">${surf.map(([k, l]) => `<span>${l}</span>`).join('')}</p>
+        <ul class="sp10-mats">${surf.map(([k, l]) => `<li class="sp10-mat"><i class="sp10-sw sp10-${k}" aria-hidden="true"></i><b>${l}</b></li>`).join('')}</ul>
         <button type="button" class="sp3-replay" data-h3-again><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> ${tr('Replay', 'إعادة')}</button>
       </div>
       ${h3Stage('spill', 'tp-counter', overlay, 'sp3-stage')}
@@ -948,7 +958,7 @@ function knowledgeRows({ title, intro, rows }) {
         </button>`;
   const panel = (r, i) => `
         <article class="kn-panel kn-c${i % 5}${i ? '' : ' is-on'}" role="tabpanel" data-kn-panel="${i}">
-          <div class="kn-img">
+          <div class="kn-img" style="--bg:url('/assets/img/${r.img}.webp')">
             <img src="/assets/img/${r.img}.webp" alt="${esc(r.h.replace(/&amp;/g, '&'))}" loading="lazy" decoding="async">
             <span class="kn-chip"><b>${r.chip[0]}</b>${r.chip[1] ? `<span>${r.chip[1]}</span>` : ''}</span>
           </div>
@@ -2223,8 +2233,7 @@ ${hero}
     <div class="lg:col-span-6">${S.map(block).join('')}</div>
   </div>
 </section>
-${faqSection(C.homeFaq)}
-${quoteSection()}`;
+${faqSection(C.homeFaq)}`;
   return layout(
     page,
     {
@@ -2355,7 +2364,7 @@ function fxStage(cfg) {
 function roomStage() {
   return `
   <div class="relative" data-a="up">
-    <div class="room3d relative aspect-[4/5] w-full sm:aspect-[5/4]" data-room>
+    <div class="room3d relative aspect-[4/5] w-full sm:aspect-[5/4]" data-room data-zoom="1.22">
       <div class="pointer-events-none absolute inset-[12%] rounded-full bg-gold-300/30 blur-[80px]"></div>
       <canvas class="relative h-full w-full" aria-label="${tr('3D living room showing window film blocking the sun', 'غرفة ثلاثية الأبعاد توضح حجب فيلم النوافذ للشمس')}" role="img"></canvas>
       <img src="/assets/img/residential.webp" alt="" class="room-fallback-img absolute inset-[8%] hidden h-[84%] w-[84%] rounded-[28px] object-cover shadow-float">
@@ -3396,45 +3405,34 @@ function pagePost(page) {
   const p = page.post;
   const toc = p.body.filter((b) => b.h).map((b, i) => `<li><a href="#s${i + 1}" class="block rounded-lg px-3 py-2 text-sm text-muted transition hover:bg-tint hover:text-ink">${t(b.h)}</a></li>`).join('');
   const others = POSTS.filter((x) => x !== p);
+  const more = others.slice(0, 3);
   const body = `
 <section class="px-2.5 sm:px-3">
-  <div class="hero-bg relative overflow-hidden rounded-[28px]">
+  <div class="hero-bg pst-hero relative overflow-hidden rounded-[28px]">
     <div class="pointer-events-none absolute inset-0 grid-lines"></div>
-    <div class="container-site relative py-12 lg:py-16">
-      <nav class="flex flex-wrap items-center gap-2 text-sm text-muted" aria-label="Breadcrumb">
-        <a href="${href()}" class="font-semibold hover:text-gold-700">${t(C.ui.nav.home)}</a>${icon('chevron', 'h-3.5 w-3.5 -rotate-90 rtl:rotate-90')}
-        <a href="${href('blogs/')}" class="font-semibold hover:text-gold-700">${tr('Blog', 'المدونة')}</a>
-      </nav>
-      <div class="mt-8 max-w-4xl">
-        <span class="chip"><span class="grid h-7 w-7 place-items-center rounded-full bg-grad text-white">${icon('edit', 'h-4 w-4', 2.2)}</span>${t(p.cat)}</span>
-        <h1 class="post-h1 mt-5 max-w-3xl text-balance font-head text-[2.2rem] font-extrabold leading-[1.1] text-ink sm:text-[3rem]">${t(p.title)}</h1>
-        <div class="mt-7 flex flex-wrap items-center gap-5 text-sm text-muted">
-          <span class="flex items-center gap-2.5">${mark('h-10 w-10 shadow')}<b class="text-ink">${tr('Exotic Tint team', 'فريق إكزوتك تينت')}</b></span>
-          <span class="flex items-center gap-1.5">${icon('calendar', 'h-4 w-4')} ${fmtDate(p.date)}</span>
-          <span class="flex items-center gap-1.5">${icon('clock', 'h-4 w-4')} ${num(p.read)} ${tr('min read', 'دقائق قراءة')}</span>
-        </div>
-      </div>
+    <div class="container-site pst-hero-in relative">
+      <h1 class="post-h1 font-head text-balance text-ink">${t(p.title)}</h1>
     </div>
   </div>
 </section>
-<section class="py-14 lg:py-20">
-  <div class="container-site grid gap-12 lg:grid-cols-12">
-    <article class="min-w-0 lg:col-span-8">
-      <img src="/assets/img/${p.img}.webp" alt="${esc(t(p.title))}" class="aspect-[16/9] w-full rounded-[24px] object-cover shadow-card">
-      <div class="mt-4">${renderBlocks(p.body)}</div>
-      <div class="post-cta mt-12">
+<div class="container-site pst-cover"><img src="/assets/img/${p.img}.webp" alt="${esc(t(p.title))}" fetchpriority="high"></div>
+<section class="pst-main">
+  <div class="container-site pst-grid">
+    <article class="pst-body min-w-0">
+      ${renderBlocks(p.body)}
+      <div class="post-cta mt-14">
         <p class="font-head text-2xl font-extrabold text-white">${tr('Ready to upgrade your glass?', 'مستعد لترقية زجاجك؟')}</p>
         <div class="mt-5 flex flex-wrap gap-3"><a href="${href('contact/')}#quote" class="btn btn-white">${t(C.ui.quote)} ${arrow()}</a><a href="${waHello()}" target="_blank" rel="noopener" class="btn btn-glass">${waIcon('h-4 w-4')} WhatsApp</a></div>
       </div>
     </article>
-    <aside class="lg:col-span-4">
-      <div class="sticky top-28 space-y-5">
-        <div class="card p-5"><p class="px-3 font-head text-lg font-bold text-ink">${tr('In this article', 'في هذا المقال')}</p><ol class="mt-3 space-y-0.5">${toc}</ol></div>
-        <div class="card p-5"><p class="font-head text-lg font-bold text-ink">${tr('More articles', 'مقالات أخرى')}</p>
-          ${others.map((o) => `<a href="${href(o.slug + '/')}" class="group mt-4 flex gap-3"><img src="/assets/img/${o.img}.webp" alt="" class="h-16 w-16 shrink-0 rounded-xl object-cover" loading="lazy" decoding="async"><span class="line-clamp-3 text-sm font-semibold leading-snug text-ink group-hover:text-gold-700">${t(o.title)}</span></a>`).join('')}
-        </div>
-      </div>
-    </aside>
+  </div>
+</section>
+<section class="pst-more">
+  <div class="container-site">
+    <h2 class="pst-more-h">${tr('Keep reading', 'تابع القراءة')}</h2>
+    <div class="pst-more-grid">
+      ${more.map((o) => `<a href="${href(o.slug + '/')}" class="pst-card"><span class="pst-card-img"><img src="/assets/img/${o.img}.webp" alt="" loading="lazy" decoding="async"></span><span class="pst-card-b"><span class="pst-card-cat">${t(o.cat)}</span><span class="pst-card-t">${t(o.title)}</span><span class="pst-card-d">${fmtDate(o.date)} · ${num(o.read)} ${tr('min read', 'دقائق قراءة')}</span></span></a>`).join('')}
+    </div>
   </div>
 </section>
 `;
@@ -3554,7 +3552,7 @@ const BASE = ('/' + (process.env.BASE || '').replace(/^\/+|\/+$/g, '') + '/').re
 function write(file, html) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   if (BASE !== '/' && file.endsWith('.html')) {
-    html = html.replace(/(href|src|action)="\/(?!\/)/g, `$1="${BASE}`).replace(/url=\/(?!\/)/g, `url=${BASE}`);
+    html = html.replace(/(href|src|action)="\/(?!\/)/g, `$1="${BASE}`).replace(/url=\/(?!\/)/g, `url=${BASE}`).replace(/url\('\/(?!\/)/g, `url('${BASE}`);
   }
   fs.writeFileSync(file, html);
 }

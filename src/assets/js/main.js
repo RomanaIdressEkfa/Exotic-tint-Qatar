@@ -1031,3 +1031,37 @@ document.addEventListener('click', function (e) {
   box.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
   box.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + ((dx < 0) !== rtl ? 1 : -1)); x0 = null; });
 })();
+
+/* Hero: soft spotlight follows the cursor (desktop, fine pointers only) */
+(function heroSpot() {
+  var h = document.querySelector('[data-hp]');
+  if (!h || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var raf = 0, x = 0, y = 0;
+  h.addEventListener('pointermove', function (e) {
+    var r = h.getBoundingClientRect(); x = e.clientX - r.left; y = e.clientY - r.top;
+    if (!raf) raf = requestAnimationFrame(function () { h.style.setProperty('--mx', x + 'px'); h.style.setProperty('--my', y + 'px'); raf = 0; });
+  });
+  h.addEventListener('pointerenter', function () { h.classList.add('is-hover'); });
+  h.addEventListener('pointerleave', function () { h.classList.remove('is-hover'); });
+})();
+
+/* Hero: pause decorative animations when the hero scrolls out of view */
+(function heroPause() {
+  var h = document.querySelector('[data-hp]');
+  if (!h || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (es) { h.classList.toggle('hp-paused', !es[0].isIntersecting); }, { rootMargin: '80px' }).observe(h);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { h.classList.add('hp-paused'); return; } var r = h.getBoundingClientRect(); h.classList.toggle('hp-paused', r.bottom < -80 || r.top > innerHeight + 80); });
+})();
+
+/* Blog article: highlight the section you are reading in the side list */
+(function postToc() {
+  var links = document.querySelectorAll('.pst-toc a[data-toc]');
+  if (!links.length || !('IntersectionObserver' in window)) return;
+  var map = {}; links.forEach(function (a) { map[a.dataset.toc] = a; });
+  var set = function (id) { links.forEach(function (a) { a.classList.toggle('is-on', a.dataset.toc === id); }); };
+  set(links[0].dataset.toc);
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting && map[e.target.id]) set(e.target.id); });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  Object.keys(map).forEach(function (id) { var h = document.getElementById(id); if (h) io.observe(h); });
+})();

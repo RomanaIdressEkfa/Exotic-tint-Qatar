@@ -92,7 +92,7 @@ const services = [
   },
   {
     slug: 'surface-protection-solutions',
-    img: 'marble',
+    img: 'pf-surf-5',
     icon: 'shield',
     title: ['Surface Protection Solutions', 'حلول حماية الأسطح'],
     short: ['Marble, wood & steel', 'الرخام والخشب والستانلس'],

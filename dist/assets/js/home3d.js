@@ -215,7 +215,7 @@ function stepModes(host, play) {
    1. Same sun, two rooms
    ====================================================================== */
 function twin(host) {
-  const S = makeStage(host, { cam: [0, 7.4, 14.6], target: [0, 1.25, -0.4], fov: 30, fovTall: 56, minHFov: 50 });
+  const S = makeStage(host, { cam: [0, 8.1, 16.3], target: [0, 1.15, -0.4], fov: 30, fovTall: 56, minHFov: 54 });
   const G = plinth(S, 13.4, 6.6);
   const sun = lights(S, [3, 11, -12], '#ffd29a', 2.6);
 
